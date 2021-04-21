@@ -15,12 +15,12 @@ import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
-import TEditor from '@/components/TEditor.vue'
+// import TEditor from '@/components/TEditor.vue'
 // 实际打包时应该不引入mock
 /* eslint-disable */
 if (process.env.NODE_ENV == 'dev-mock') require('@/mock')
 
-Vue.component('TEditor', TEditor)
+// Vue.component('TEditor', TEditor)
 
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)

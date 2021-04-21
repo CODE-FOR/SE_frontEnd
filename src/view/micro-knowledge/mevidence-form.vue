@@ -19,7 +19,7 @@
   </Form>
 </template>
 <script>
-import tinymce from 'tinymce/tinymce'
+// import tinymce from 'tinymce/tinymce'
 import { createEvidence, getTags } from '@/api/microknowledge.js'
 import { getErrModalOptions } from '@/libs/util.js'
 import TEditor from '../../components/TEditor.vue'
