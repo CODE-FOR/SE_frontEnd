@@ -71,10 +71,10 @@
             全部
           </Option>
           <Option value="micro-evidence">
-            微证据
+            论文
           </Option>
           <Option value="micro-suppose">
-            微猜想
+            论文解读
           </Option>
         </i-select>
         <br>

@@ -40,7 +40,7 @@
             <TabPane :label="postText" name="myPost">
               <Select v-if="isSponsor" v-model="postSelectType" style="margin-bottom:20px;width:auto;alian:right" value='knowledge' @on-change="changePostType">
                 <!-- TODO -->
-                <Option label="微知识" value="微知识">论文解读</Option>
+                <Option label="微知识" value="微知识">论文</Option>
                 <Option label="项目" value="项目">项目</Option>
               </Select>
               <template v-if="data.length !== 0&&postSelectType==='微知识'">
@@ -56,7 +56,7 @@
                   <Row>
                     <i-col span="4">
                       <!-- {{ item.type === 0 ? '微证据' : '微猜想' }}: -->
-                      {{ item.type === 0 ? '论文解读' : '微猜想' }}
+                      {{ item.type === 0 ? '论文' : '论文解读' }}
                       <Tag :color="calTagColor(item.judge_status)"> {{ item.judge_status === 0 ? "审核中" : item.judge_status === 1 ?  "审核通过" : "未通过" }} </Tag>
                     </i-col>
                     <i-col span="7" class="post-content">

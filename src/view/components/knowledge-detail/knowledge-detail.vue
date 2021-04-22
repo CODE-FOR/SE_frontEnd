@@ -5,7 +5,7 @@
         发布者:
         <a href="">{{ creator.username }}</a>
       </p>
-      <p slot="extra">{{ kind === 0 ? '微证据' : '微猜想' }}发布于: {{ createAt }}</p>
+      <p slot="extra">{{ kind === 0 ? '论文' : '论文解读' }}发布于: {{ createAt }}</p>
       <Row>
         {{ content }}
       </Row>

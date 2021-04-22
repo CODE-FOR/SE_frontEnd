@@ -3,14 +3,17 @@
     <i-col offset="1" span="8">
       <Card>
         <Form ref="form" :model="form" :rules="ruleCustom" :label-width="120" style="margin-right: 50px;">
-          <Form-item label="微证据引用1" prop="citation1"><Input :disabled="true" type="text" v-model="form.citation1" placeholder="请在右侧引用微证据" /></Form-item>
-          <Form-item label="微证据引用2" prop="citation2"><Input :disabled="true" type="text" placeholder="请在右侧引用微证据" v-model="form.citation2" /></Form-item>
-          <Form-item label="主题" prop="topic">
+          <Form-item label="论文" prop="citation1"><Input :disabled="true" type="text" v-model="form.citation1" placeholder="请在右侧引用论文" /></Form-item>
+          <!-- <Form-item label="微证据引用2" prop="citation2"><Input :disabled="true" type="text" placeholder="请在右侧引用微证据" v-model="form.citation2" /></Form-item> -->
+          <!-- <Form-item label="主题" prop="topic">
             <Select v-model="form.topic" multiple style="width:200px" filterable>
               <Option v-for="item in topicList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
+          </Form-item> -->
+          <!-- <Form-item label="内容" prop="content"><Input type="textarea" placeholder="内容不超过200字" maxLength=200 :rows=12 v-model="form.content" /></Form-item> -->
+          <Form-item label="论文解读内容" prop="content">
+            <TEditor id="tinymce" v-model="form.content" :init="editorInit"/>
           </Form-item>
-          <Form-item label="内容" prop="content"><Input type="textarea" placeholder="内容不超过200字" maxLength=200 :rows=12 v-model="form.content" /></Form-item>
           <Form-item label="标签" prop="tags"><Input type="text" placeholder="请输入至少三个标签(以空格分隔)" v-model="form.tags" /></Form-item>
           <Button type="primary" @click="handleSubmit('form')" long>发布</Button>
         </Form>
@@ -58,38 +61,42 @@
   </Row>
 </template>
 <script>
+import TEditor from '@/components/TEditor.vue'
 import KnowledgeCard from './knowledge-card.vue'
 import { favorKnowledgeList, createConjecture, getTags } from '@/api/microknowledge.js'
 import { getUserInfo } from '@/api/user'
 import { getErrModalOptions, getLocalTime } from '@/libs/util.js'
+import tinymce from 'tinymce'
 export default {
   components: {
-    KnowledgeCard
+    KnowledgeCard,
+    TEditor
   },
   data () {
     const validateCitation = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入参考文献'))
+        callback(new Error('请选择需要解读的论文'))
       } else {
         callback()
       }
     }
     const validateContent = (rule, value, callback) => {
+      value = tinymce.activeEditor.getContent()
       if (value === '') {
-        callback(new Error('请输入猜想内容(不超过200字)'))
-      } else if (value.length > 200) {
-        callback(new Error('内容不得超过200字'))
+        callback(new Error('请输入论文解读内容(不超过3000字)'))
+      } else if (value.length > 3000) {
+        callback(new Error('内容不得超过3000字'))
       } else {
         callback()
       }
     }
-    const validateTopic = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('请选择主题'))
-      } else {
-        callback()
-      }
-    }
+    // const validateTopic = (rule, value, callback) => {
+    //   if (value.length === 0) {
+    //     callback(new Error('请选择主题'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     const validateTags = (rule, value, callback) => {
       if (value === '' || value.split(' ').length < 3) {
         callback(new Error('请输入至少3个标签(以空格分隔)'))
@@ -107,11 +114,11 @@ export default {
       form: {
         topic: [],
         content: '',
-        tags: '',
+        // tags: '',
         citation1: '',
-        citation2: '',
+        // citation2: '',
         citationid1: '',
-        citationid2: ''
+        // citationid2: ''
       },
       evidences: [],
       ruleCustom: {
@@ -122,20 +129,20 @@ export default {
             trigger: 'blur'
           }
         ],
-        citation2: [
-          {
-            required: true,
-            validator: validateCitation,
-            trigger: 'blur'
-          }
-        ],
-        topic: [
-          {
-            required: true,
-            validator: validateTopic,
-            trigger: 'blur'
-          }
-        ],
+        // citation2: [
+        //   {
+        //     required: true,
+        //     validator: validateCitation,
+        //     trigger: 'blur'
+        //   }
+        // ],
+        // topic: [
+        //   {
+        //     required: true,
+        //     validator: validateTopic,
+        //     trigger: 'blur'
+        //   }
+        // ],
         content: [
           {
             required: true,
@@ -143,13 +150,13 @@ export default {
             trigger: 'blur'
           }
         ],
-        year: [
-          {
-            required: true,
-            message: '请输入参考文献年份',
-            trigger: 'blur'
-          }
-        ],
+        // year: [
+        //   {
+        //     required: true,
+        //     message: '请输入参考文献年份',
+        //     trigger: 'blur'
+        //   }
+        // ],
         tags: [
           {
             required: true,
@@ -193,13 +200,16 @@ export default {
     },
 
     handleSubmit (name) {
+      alert('get in')
       this.$refs[name].validate(valid => {
         if (valid) {
           const tags = this.form.topic.map(tag => { return { name: tag, type: 0 } }).concat(this.form.tags.split(' ').map(tag => { return { name: tag, type: 1 } }))
           createConjecture('post', {
-            content: this.form.content,
+            // content: this.form.content,
+            content: tinymce.activeEditor.getContent(),
             tags: tags,
-            evidences: [this.form.citationid1, this.form.citationid2]
+            // evidences: [this.form.citationid1, this.form.citationid2]
+            evidences: this.form.citationid1
           }).then(res => { this.$Message.success('发布成功!请等待审核！') }).catch(err => { this.$Modal.error(getErrModalOptions(err)) })
         } else {
           this.$Message.error('发布失败!')

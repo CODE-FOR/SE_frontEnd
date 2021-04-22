@@ -40,8 +40,9 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        // target: 'http://test.eaglebu.cn:8000'
-        target: 'http://localhost:0080'
+        // target: 'http://localhost:80'
+        target: 'http://114.115.215.200:8080',
+        changeOrigin: true
       }
     }
   }

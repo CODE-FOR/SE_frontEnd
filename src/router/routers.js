@@ -97,7 +97,7 @@ export default [
         meta: {
           icon: 'logo-markdown',
           // title: '发布微证据'
-          title: '发布论文解读'
+          title: '发布论文'
         },
         component: () => import('@/view/micro-knowledge/mevidence-form.vue')
       },
@@ -106,7 +106,7 @@ export default [
         name: 'publish_conjecture',
         meta: {
           icon: 'ios-create',
-          title: '发布微猜想'
+          title: '发布论文解读'
         },
         component: () => import('@/view/micro-knowledge/mconjecture-form.vue')
       },
