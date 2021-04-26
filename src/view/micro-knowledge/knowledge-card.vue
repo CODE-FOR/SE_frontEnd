@@ -1,6 +1,12 @@
 <template>
   <div>
+    <div class="ivu-card-head">
+      <template v-if="kind === 1">
+        <h2>论文题目 {{ title }}</h2>
+      </template>
+    </div>
     <card :bordered="false" dis-hover :style="citeStyle">
+      
       <div slot="title">
         发布者:
         <a @click.prevent="showUser" :id="id">{{ creator['username'] === '' ? '未知用户' : creator['username']}}</a>
@@ -51,11 +57,7 @@
         </Modal>
       </div>
       <!-- <p slot="extra">{{ kind === 0 ? '微证据' : '微猜想' }}发布于: {{ createAt }}</p> -->
-      <template v-if="kind === 1">
-        <Row>
-          {{ title }}
-        </Row>
-      </template>
+      
       <p slot="extra">{{ kind === 0 ? '论文' : '论文解读' }}发布于: {{ createAt }}</p>
       <Row v-html="htmlvalue"></Row>
       <!-- <Row>{{ content }}</Row> -->
@@ -151,10 +153,10 @@ export default {
       default: 0
     },
 
-    citeMessageInit: {
-      type: String,
-      default: '引用'
-    },
+    // citeMessageInit: {
+    //   type: String,
+    //   default: '引用'
+    // },
 
     createAt: {
       type: String,
@@ -173,64 +175,70 @@ export default {
       }
     },
 
-    isLike: {
-      type: Boolean,
-      default: false
-    },
+    // isLike: {
+    //   type: Boolean,
+    //   default: false
+    // },
 
-    isCollect: {
-      type: Boolean,
-      default: false
-    },
+    // isCollect: {
+    //   type: Boolean,
+    //   default: false
+    // },
 
-    likeNumber: {
-      type: Number,
-      default: 0
-    },
+    // likeNumber: {
+    //   type: Number,
+    //   default: 0
+    // },
 
-    favorNumber: {
-      type: Number,
-      default: 0
-    },
+    // favorNumber: {
+    //   type: Number,
+    //   default: 0
+    // },
 
-    displayType: {
-      type: Number,
-      default: 0
-    },
+    // displayType: {
+    //   type: Number,
+    //   default: 0
+    // },
 
     source: { // 微证据专用
       type: String,
       default: ''
     },
 
-    citation: { // 微证据专用
-      type: String,
-      default: ''
-    },
+    // citation: { // 微证据专用
+    //   type: String,
+    //   default: ''
+    // },
 
     publishedYear: {
       type: Number,
       default: 0
     },
 
-    evidences: {
+    // evidences: {
+    //   type: Array,
+    //   default: () => {
+    //     return []
+    //   }
+    // }, 
+
+    title: {
+      type: String,
+      default: '标题'
+    },
+
+    author: {
       type: Array,
       default: () => {
         return []
       }
-    },
-
-    // TODO: add title but not used yet
-    title: {
-      type: String,
-      default: ''
     }
   },
 
   data () {
     return {
       htmlvalue: this.$props.content,
-      like: this.$props.isLike,
+      // like: this.$props.isLike,
       totalLike: this.$props.likeNumber,
       totalFavor: this.$props.favorNumber,
       collect: this.$props.isCollect,
@@ -241,7 +249,9 @@ export default {
       showUserControl: false,
       userInfo: {},
       followText: '',
-      title: 'test'
+      // TODO:
+      title: this.$props.title,
+      author: this.$props.author
     }
   },
 

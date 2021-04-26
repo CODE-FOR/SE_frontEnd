@@ -1,6 +1,6 @@
 import { getRequest } from './utils'
 
-export const createEvidence = (method, params) => {
+export const createPaper = (method, params) => {
   const url = '/api/paper'
   return getRequest(url, method, params)
 }

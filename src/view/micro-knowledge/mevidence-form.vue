@@ -25,7 +25,7 @@
 </template>
 <script>
 // import tinymce from 'tinymce/tinymce'
-import { createEvidence, getTags } from '@/api/microknowledge.js'
+import { createPaper, getTags } from '@/api/microknowledge.js'
 import { getErrModalOptions } from '@/libs/util.js'
 import TEditor from '@/components/TEditor.vue'
 export default {
@@ -220,7 +220,7 @@ export default {
             author: this.form.author.split(' ')
           }
           console.log(data)
-          createEvidence('post', data).then(res => {
+          createPaper('post', data).then(res => {
             this.$Message.success('发布成功!请等待审核！')
           }).catch(
             this.$Modal.error(getErrModalOptions(err))
