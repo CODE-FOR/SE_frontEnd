@@ -215,7 +215,7 @@ export default {
             // citation: this.form.citation,
             // source: this.form.citationUrl,
             published_year: this.form.year,
-            paper_link: this.form.paperLink,
+            source: this.form.paperLink,
             title: this.form.title,
             author: this.form.author.split(' ')
           }

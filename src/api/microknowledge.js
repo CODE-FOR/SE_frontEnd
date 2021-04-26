@@ -1,7 +1,7 @@
 import { getRequest } from './utils'
 
 export const createEvidence = (method, params) => {
-  const url = '/api/micro-evidence'
+  const url = '/api/paper'
   return getRequest(url, method, params)
 }
 
@@ -53,7 +53,7 @@ export const getMicroknowledgeComments = (method, params) => {
 
 export const microKnowledgeIdReq = (id, type, method, params) => {
   // type 0: evidence 1: conjecture
-  const typeUrl = type === 0 ? 'micro-evidence' : 'micro-conjecture'
+  const typeUrl = type === 0 ? 'paper' : 'micro-conjecture'
   const url = `/api/${typeUrl}/${id}`
   return getRequest(url, method, params)
 }

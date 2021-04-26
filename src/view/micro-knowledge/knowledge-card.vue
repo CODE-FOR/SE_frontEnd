@@ -51,7 +51,7 @@
         </Modal>
       </div>
       <!-- <p slot="extra">{{ kind === 0 ? '微证据' : '微猜想' }}发布于: {{ createAt }}</p> -->
-      <template v-if="kind === 0">
+      <template v-if="kind === 1">
         <Row>
           {{ title }}
         </Row>
@@ -273,6 +273,7 @@ export default {
 
   methods: {
     onLike: function () {
+      console.log(this.title)
       this.like = !this.like
       if (this.like) {
         this.totalLike += 1
