@@ -155,17 +155,18 @@ export default {
       microKnowledgeIdReq(1, 0, 'get').then(res => {
           let mapDAta = {
             id: 1,
-            creator: res.created_by,
-            createAt: getLocalTime(res.created_at),
-            publishedYear: res.published_year,
-            content: res.abstract, 
-            tags: res.tags,
+            creator: res.data.created_by,
+            createAt: getLocalTime(res.data.created_at),
+            publishedYear: res.data.published_year,
+            content: res.data.abstract, 
+            tags: res.data.tags,
             // isLike: 0,
             // isCollect: 0,
             // likeNumber: 0,
             // favorNumber: 0,
             // displayType: 0,
-            source: res.source,
+            source: res.data.source
+            // author: res.data.author
             // citation: 'http://www.baidu.com',
             // evidences: [],
           };
