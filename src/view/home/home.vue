@@ -165,8 +165,8 @@ export default {
             // likeNumber: 0,
             // favorNumber: 0,
             // displayType: 0,
-            source: res.data.source
-            // author: res.data.author
+            source: res.data.source,
+            author: res.data.author
             // citation: 'http://www.baidu.com',
             // evidences: [],
           };

@@ -87,6 +87,9 @@
       <Row>
         <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{ tag.name }}</Tag>
       </Row>
+      <Row>
+        <Tag v-for="(au, indexForAuthor) in author" :key="indexForAuthor" class="sysTopics">{{ au }}</Tag>
+      </Row>
       <br />
       <template v-if="displayType === 0">
         <Row>
