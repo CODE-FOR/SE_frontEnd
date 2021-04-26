@@ -51,6 +51,7 @@ export const getMicroknowledgeComments = (method, params) => {
   return getRequest(url, method, params)
 }
 
+// TODO:
 export const microKnowledgeIdReq = (id, type, method, params) => {
   // type 0: evidence 1: conjecture
   const typeUrl = type === 0 ? 'paper' : 'micro-conjecture'

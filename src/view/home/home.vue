@@ -107,7 +107,7 @@
 <script>
 import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
 import { recentKnowledge } from "@/api/user";
-import { getTags, recommend } from "@/api/microknowledge";
+import { getTags, recommend,  microKnowledgeIdReq} from "@/api/microknowledge";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 export default {
   name: "home",
@@ -151,55 +151,80 @@ export default {
 
   methods: {
     loadData: function () {
-      this.loading = true
-      recommend({
-        num: this.pageSize
-      }).then(res => {
-        const oldLength = this.idList.length
-        const mapData = res.data.models.map(item => {
-          if (this.idList.includes(item.id)) {
-            return false
-          } else {
-            this.idList.push(item.id)
-          }
-          return {
-            id: item.id,
-            created_by: {
-              id: item.created_by.id,
-              username: item.created_by.username
-            },
-            kind: 1,
-            // kind: item.microconjecture ? 1 : 0,
-            createAt: getLocalTime(item.created_at),
-            publishedYear: item.published_year,
-            content: item.abstract,
-            // content: item.content,
-            tags: item.tags,
-            // tags: item.tag_list,
-            // isLike: item.is_like,
-            // isCollect: item.is_favor,
-            // likeNumber: item.like_num,
-            // favorNumber: item.favor_num,
+      alert('?')
+      microKnowledgeIdReq(1, 0, 'get').then(res => {
+          let mapDAta = {
+            id: 1,
+            creator: res.created_by,
+            createAt: getLocalTime(res.created_at),
+            publishedYear: res.published_year,
+            content: res.abstract, 
+            tags: res.tags,
+            // isLike: 0,
+            // isCollect: 0,
+            // likeNumber: 0,
+            // favorNumber: 0,
             // displayType: 0,
-            source: item.source,
-            // citation: item.citation,
-            // evidences: []
-          }
-        })
-        this.items.push(...mapData.filter(x => x))
-        if (res.data.total_count < this.pageSize) {
-          this.hasNextPage = false
-        } else if (oldLength === this.idList.length) {
-          this.hasNextPage = false
-        }
-        this.loading = false
+            source: res.source,
+            // citation: 'http://www.baidu.com',
+            // evidences: [],
+          };
+          this.items.push(mapDAta);
+            this.loading = false;
       }).catch(error => {
-        console.log(error.response.status)
-        if (error.response.status === 400) {
-          this.hasNextPage = false
-        }
+        console.log(error)
       })
     },
+    // loadData: function () {
+    //   this.loading = true
+    //   recommend({
+    //     num: this.pageSize
+    //   }).then(res => {
+    //     const oldLength = this.idList.length
+    //     const mapData = res.data.models.map(item => {
+    //       if (this.idList.includes(item.id)) {
+    //         return false
+    //       } else {
+    //         this.idList.push(item.id)
+    //       }
+    //       return {
+    //         id: item.id,
+    //         created_by: {
+    //           id: item.created_by.id,
+    //           username: item.created_by.username
+    //         },
+    //         kind: 1,
+    //         // kind: item.microconjecture ? 1 : 0,
+    //         createAt: getLocalTime(item.created_at),
+    //         publishedYear: item.published_year,
+    //         content: item.abstract,
+    //         // content: item.content,
+    //         tags: item.tags,
+    //         // tags: item.tag_list,
+    //         // isLike: item.is_like,
+    //         // isCollect: item.is_favor,
+    //         // likeNumber: item.like_num,
+    //         // favorNumber: item.favor_num,
+    //         // displayType: 0,
+    //         source: item.source,
+    //         // citation: item.citation,
+    //         // evidences: []
+    //       }
+    //     })
+    //     this.items.push(...mapData.filter(x => x))
+    //     if (res.data.total_count < this.pageSize) {
+    //       this.hasNextPage = false
+    //     } else if (oldLength === this.idList.length) {
+    //       this.hasNextPage = false
+    //     }
+    //     this.loading = false
+    //   }).catch(error => {
+    //     console.log(error.response.status)
+    //     if (error.response.status === 400) {
+    //       this.hasNextPage = false
+    //     }
+    //   })
+    // },
 
     // loadData: function () {
     //   this.loading = true;
