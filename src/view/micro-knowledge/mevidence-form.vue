@@ -3,6 +3,7 @@
     <!-- <Form-item label="参考文献" prop="citation"><Input type="text" v-model="form.citation" placeholder='请输入参考文献(GB7714格式)' /></Form-item> -->
     <Form-item label="标题" prop="title"><Input type="text" v-model="form.title" placeholder="请输入论文标题" /></Form-item>
     <!-- <Form-item label="参考文献链接(可选)" prop="citationUrl"><Input type="url" placeholder='请输入参考文献链接(可选)' v-model="form.citationUrl" /></Form-item> -->
+    <Form-item label="作者" prop="author"><Input type="text" placeholder='请输入作者(以空格分隔)' v-model="form.author" /></Form-item>
     <Form-item label="论文年份" prop="year">
       <Input-number v-model="form.year" />
     </Form-item>
@@ -78,6 +79,12 @@ export default {
       }
     }
 
+    // const validateAuthor = (rule, value, callback) => {
+    //   if (value === '' {
+    //     callback(new Error('请输入论文的作者'))
+    //   }) else if 
+    // }
+
     const validateTags = (rule, value, callback) => {
       if (value === '' || value.split(' ').length < 3) {
         callback(new Error('请输入至少3个标签(以空格分隔)'))
@@ -102,6 +109,14 @@ export default {
       }
     }
 
+    const validateAuthorArrayNotEmpty = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入作者'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       topicList: [
         // { value: '大数据', label: '大数据' },
@@ -121,7 +136,8 @@ export default {
         tags: '',
         year: null,
         paperLink: '',
-        title: ''
+        title: '',
+        author: []
         // citationUrl: '',
         // citation: ''
       },
@@ -172,6 +188,13 @@ export default {
             validator: validateTags,
             trigger: 'blur'
           }
+        ],
+        author: [
+          {
+            required: true,
+            validator: validateAuthorArrayNotEmpty,
+            trigger: 'blur'
+          }
         ]
       }
     }
@@ -187,14 +210,14 @@ export default {
         if (valid) {
           const tags = this.form.topic.map(tag => { return { name: tag, type: 0 } }).concat(this.form.tags.split(' ').map(tag => { return { name: tag, type: 1 } }))
           const data = {
-            content: tinymce.activeEditor.getContent(),
-            // content: this.form.summary,
+            abstract: tinymce.activeEditor.getContent(),
             tags: tags,
             // citation: this.form.citation,
             // source: this.form.citationUrl,
             published_year: this.form.year,
-            paperLink: this.form.paperLink,
-            title: this.form.title
+            paper_link: this.form.paperLink,
+            title: this.form.title,
+            author: this.form.author.split(' ')
           }
           console.log(data)
           createEvidence('post', data).then(res => {

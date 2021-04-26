@@ -1,6 +1,6 @@
 <template>
   <Row>
-    <i-col offset="1" span="8">
+    <i-col offset="1" span="12">
       <Card>
         <Form ref="form" :model="form" :rules="ruleCustom" :label-width="120" style="margin-right: 50px;">
           <Form-item label="论文" prop="citation1"><Input :disabled="true" type="text" v-model="form.citation1" placeholder="请在右侧引用论文" /></Form-item>
@@ -19,7 +19,7 @@
         </Form>
       </Card>
     </i-col>
-    <i-col offset="4" span="10">
+    <i-col offset="2" span="7">
       <Divider> 从收藏中选取引用 </Divider>
       <Scroll v-if="evidences.length !== 0" height="550">
         <knowledge-card v-for="prop of evidences" :key="prop.id" @cite-event="handleCite" v-bind="prop" />

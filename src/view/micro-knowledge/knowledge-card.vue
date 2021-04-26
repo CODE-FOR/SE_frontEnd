@@ -51,7 +51,11 @@
         </Modal>
       </div>
       <!-- <p slot="extra">{{ kind === 0 ? '微证据' : '微猜想' }}发布于: {{ createAt }}</p> -->
-      
+      <template v-if="kind === 0">
+        <Row>
+          {{ title }}
+        </Row>
+      </template>
       <p slot="extra">{{ kind === 0 ? '论文' : '论文解读' }}发布于: {{ createAt }}</p>
       <Row v-html="htmlvalue"></Row>
       <!-- <Row>{{ content }}</Row> -->
@@ -156,7 +160,7 @@ export default {
       type: String,
       default: '年/月/日'
     },
-
+    
     content: {
       type: String,
       default: '这是一个展示示例'
@@ -214,6 +218,12 @@ export default {
       default: () => {
         return []
       }
+    },
+
+    // TODO: add title but not used yet
+    title: {
+      type: String,
+      default: ''
     }
   },
 
@@ -230,7 +240,8 @@ export default {
       detailController: false,
       showUserControl: false,
       userInfo: {},
-      followText: ''
+      followText: '',
+      title: 'test'
     }
   },
 
