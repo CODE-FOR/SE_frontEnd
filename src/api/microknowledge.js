@@ -1,3 +1,5 @@
+// TODO: change function name
+
 import { getRequest } from './utils'
 
 export const createPaper = (method, params) => {

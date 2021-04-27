@@ -151,7 +151,7 @@ export default {
 
   methods: {
     loadData: function () {
-      microKnowledgeIdReq(2, 0, 'get').then(res => {
+      microKnowledgeIdReq(17, 0, 'get').then(res => {
           let mapDAta = {
             id: 2,
             creator: res.data.created_by,

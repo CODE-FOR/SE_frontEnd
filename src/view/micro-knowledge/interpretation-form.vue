@@ -3,7 +3,7 @@
     <i-col offset="1" span="12">
       <Card>
         <Form ref="form" :model="form" :rules="ruleCustom" :label-width="120" style="margin-right: 50px;">
-          <Form-item label="论文" prop="citation1"><Input :disabled="true" type="text" v-model="form.citation1" placeholder="请在右侧引用论文" /></Form-item>
+          <Form-item label="论文" prop="paperCitation"><Input :disabled="true" type="text" v-model="form.paperCitation" placeholder="请在右侧引用论文" /></Form-item>
           <!-- <Form-item label="微证据引用2" prop="citation2"><Input :disabled="true" type="text" placeholder="请在右侧引用微证据" v-model="form.citation2" /></Form-item> -->
           <!-- <Form-item label="主题" prop="topic">
             <Select v-model="form.topic" multiple style="width:200px" filterable>
@@ -21,8 +21,8 @@
     </i-col>
     <i-col offset="2" span="7">
       <Divider> 从收藏中选取引用 </Divider>
-      <Scroll v-if="evidences.length !== 0" height="550">
-        <knowledge-card v-for="prop of evidences" :key="prop.id" @cite-event="handleCite" v-bind="prop" />
+      <Scroll v-if="papers.length !== 0" height="550">
+        <knowledge-card v-for="prop of papers" :key="prop.id" @cite-event="handleChosePaper" v-bind="prop" />
         <Row v-if="loading">
           <i-col class="demo-spin-col">
             <Spin fix>
@@ -73,7 +73,7 @@ export default {
     TEditor
   },
   data () {
-    const validateCitation = (rule, value, callback) => {
+    const validatePaper = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请选择需要解读的论文'))
       } else {
@@ -115,24 +115,24 @@ export default {
         topic: [],
         content: '',
         // tags: '',
-        citation1: '',
+        paperCitation: '',
         // citation2: '',
-        citationid1: '',
+        papaerId1: '',
         // citationid2: ''
       },
-      evidences: [],
+      papers: [],
       ruleCustom: {
-        citation1: [
+        paperCitation: [
           {
             required: true,
-            validator: validateCitation,
+            validator: validatePaper,
             trigger: 'blur'
           }
         ],
         // citation2: [
         //   {
         //     required: true,
-        //     validator: validateCitation,
+        //     validator: validatePaper,
         //     trigger: 'blur'
         //   }
         // ],
@@ -191,7 +191,7 @@ export default {
         micro_conjecture: false
       }).then(res => {
         const data = this.changeToprops(res.data.page)
-        this.evidences.push(...data)
+        this.papers.push(...data)
         this.hasNext = res.data.has_next
         this.loading = false
       }).catch(err => {
@@ -200,7 +200,7 @@ export default {
     },
 
     handleSubmit (name) {
-      alert('get in')
+      alert()
       this.$refs[name].validate(valid => {
         if (valid) {
           const tags = this.form.topic.map(tag => { return { name: tag, type: 0 } }).concat(this.form.tags.split(' ').map(tag => { return { name: tag, type: 1 } }))
@@ -208,8 +208,7 @@ export default {
             // content: this.form.content,
             content: tinymce.activeEditor.getContent(),
             tags: tags,
-            // evidences: [this.form.citationid1, this.form.citationid2]
-            evidences: this.form.citationid1
+            paper_id: this.form.papaerId1
           }).then(res => { this.$Message.success('发布成功!请等待审核！') }).catch(err => { this.$Modal.error(getErrModalOptions(err)) })
         } else {
           this.$Message.error('发布失败!')
@@ -221,16 +220,16 @@ export default {
       this.$refs[name].resetFields()
     },
 
-    handleCite (event) {
+    handleChosePaper (event) {
       if (event.cited) {
-        if (this.form.citation1 === '') {
-          [this.form.citationid1, this.form.citation1] = [event.id, event.content]
+        if (this.form.paperCitation === '') {
+          [this.form.papaerId1, this.form.paperCitation] = [event.id, event.content]
         } else if (this.form.citation2 === '') {
           [this.form.citationid2, this.form.citation2] = [event.id, event.content]
         }
       } else {
-        if (this.form.citationid1 === event.id) {
-          [this.form.citationid1, this.form.citation1] = [this.form.citationid2, this.form.citation2]
+        if (this.form.papaerId1 === event.id) {
+          [this.form.papaerId1, this.form.paperCitation] = [this.form.citationid2, this.form.citation2]
         }
         [this.form.citationid2, this.form.citation2] = ['', '']
       }

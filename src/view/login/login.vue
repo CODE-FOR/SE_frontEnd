@@ -5,7 +5,7 @@
 <template>
   <div class="login">
     <div class="login-con">
-      <img src='../../assets/images/logo-title.png' />
+      <img src='../../assets/images/title-zaolunzi.png' />
       <Card icon="log-in"
             :bordered="false"
             dis-hover>
