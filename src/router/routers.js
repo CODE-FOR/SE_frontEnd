@@ -92,23 +92,23 @@ export default [
     component: Main,
     children: [
       {
-        path: 'publish_evidence',
-        name: 'publish_evidence',
+        path: 'paper',
+        name: 'publish_paper',
         meta: {
           icon: 'logo-markdown',
           // title: '发布微证据'
           title: '发布论文'
         },
-        component: () => import('@/view/micro-knowledge/mevidence-form.vue')
+        component: () => import('@/view/micro-knowledge/paper-form.vue')
       },
       {
-        path: 'publish_conjecture',
-        name: 'publish_conjecture',
+        path: 'publish_interpretation',
+        name: 'publish_interpretation',
         meta: {
           icon: 'ios-create',
           title: '发布论文解读'
         },
-        component: () => import('@/view/micro-knowledge/mconjecture-form.vue')
+        component: () => import('@/view/micro-knowledge/interpretation-form.vue')
       },
       {
         path: 'create_project',

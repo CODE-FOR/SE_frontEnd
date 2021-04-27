@@ -151,10 +151,9 @@ export default {
 
   methods: {
     loadData: function () {
-      alert('?')
-      microKnowledgeIdReq(1, 0, 'get').then(res => {
+      microKnowledgeIdReq(2, 0, 'get').then(res => {
           let mapDAta = {
-            id: 1,
+            id: 2,
             creator: res.data.created_by,
             createAt: getLocalTime(res.data.created_at),
             publishedYear: res.data.published_year,
@@ -166,7 +165,8 @@ export default {
             // favorNumber: 0,
             // displayType: 0,
             source: res.data.source,
-            author: res.data.author
+            author: res.data.author,
+            title: res.data.title
             // citation: 'http://www.baidu.com',
             // evidences: [],
           };
