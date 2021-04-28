@@ -112,12 +112,12 @@ export default {
       pageSize: 5,
       topicList: [],
       form: {
-        topic: [],
+        topic: [], // tags
         content: '',
         // tags: '',
         paperCitation: '',
         // citation2: '',
-        papaerId1: '',
+        paperId1: ''
         // citationid2: ''
       },
       papers: [],
@@ -219,7 +219,6 @@ export default {
     handleReset (name) {
       this.$refs[name].resetFields()
     },
-
 
     // TODO: only choose one paper, but citation can have two
     handleChosePaper (event) {

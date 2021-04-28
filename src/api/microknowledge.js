@@ -92,3 +92,9 @@ export const teditorImg = (params) => {
   const url = `/api/todo/url`
   return getRequest(url, 'post', params)
 }
+
+// TODO: confirm URL!!!
+export const getInterpretation = (id, method, params) => {
+  const url = `api/???/${id}`
+  return getRequest(url, method, params)
+}
