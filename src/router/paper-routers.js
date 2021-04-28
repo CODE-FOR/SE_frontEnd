@@ -7,13 +7,3 @@ export const paperRoute = {
     hideInMenu: true
   }
 }
-
-export const paperInterpretation = {
-  path: '/paper/:id/interpretation',
-  name: 'interpretation',
-  component: () => import('@/view/interpretation/interpretation-list'),
-  meta: {
-    title: '论文解读',
-    icon: 'ios-person'
-  }
-}

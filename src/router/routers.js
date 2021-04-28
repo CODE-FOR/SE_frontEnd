@@ -1,6 +1,6 @@
 import Main from '@/components/main'
 import UserRoute from './user-routers'
-import {paperRoute, paperInterpretation} from './paper-routers'
+import { paperRoute } from './paper-routers'
 // import parentView from '@/components/parent-view'
 
 /**
@@ -51,7 +51,6 @@ export default [
         component: () => import('@/view/home')
       },
       paperRoute,
-      paperInterpretation,
       // {
       //   path: '/paper/:id',
       //   name: 'paper',
