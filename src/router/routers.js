@@ -1,5 +1,6 @@
 import Main from '@/components/main'
 import UserRoute from './user-routers'
+import {paperRoute, paperInterpretation} from './paper-routers'
 // import parentView from '@/components/parent-view'
 
 /**
@@ -49,6 +50,26 @@ export default [
         },
         component: () => import('@/view/home')
       },
+      paperRoute,
+      paperInterpretation,
+      // {
+      //   path: '/paper/:id',
+      //   name: 'paper',
+      //   component: () => import('@/view/paper/paper-info'),
+      //   meta: {
+      //     title: '论文相关',
+      //     hideInMenu: true
+      //   }
+      // },
+      // {
+      //   path: '/paper/:id/interpretation',
+      //   name: 'interpretation',
+      //   component: () => import('@/view/interpretation/interpretation-list'),
+      //   meta: {
+      //     title: '论文解读',
+      //     icon: 'ios-person'
+      //   }
+      // },
       {
         path: 'search/:query',
         name: 'search',

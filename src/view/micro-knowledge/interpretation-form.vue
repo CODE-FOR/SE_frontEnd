@@ -220,6 +220,8 @@ export default {
       this.$refs[name].resetFields()
     },
 
+
+    // TODO: only choose one paper, but citation can have two
     handleChosePaper (event) {
       if (event.cited) {
         if (this.form.paperCitation === '') {

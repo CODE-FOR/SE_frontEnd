@@ -48,6 +48,7 @@ export default {
   publish_paper: '发布论文',
   // publish_evidence: '发布微证据',
   publish_interpretation: '发布论文解读',
+  interpretation: '论文解读',
   all_projects: '受赞助的项目',
   user: '用户相关',
   user_info: '个人主页',

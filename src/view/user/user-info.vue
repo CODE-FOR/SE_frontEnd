@@ -525,6 +525,9 @@ export default {
 
   methods: {
     init: async function () {
+      // console.log('fuck')
+      // console.log(this.$route.params.id)
+      // console.log(this.$store.state)
       if (!this.$store.state.user.userId) {
         await getUserInfo().then(res => {
           console.log(res)
