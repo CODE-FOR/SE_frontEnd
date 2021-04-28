@@ -3,7 +3,6 @@ export const paperRoute = {
   name: 'paper',
   component: () => import('@/view/paper/paper-info'),
   meta: {
-    title: '论文相关',
-    hideInMenu: true
+    title: '论文相关'
   }
 }

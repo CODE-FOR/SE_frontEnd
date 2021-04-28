@@ -15,6 +15,7 @@ import { getTags, recommend, microKnowledgeIdReq } from "@/api/microknowledge";
 export default {
   data() {
     return {
+      id: this.$route.params.id,
       title: "title",
       abstract: "abstract",
     };
@@ -27,8 +28,7 @@ export default {
   methods: {
     loadData() {
       alert("?");
-      let id = parseInt(this.$route.params.id);
-      microKnowledgeIdReq(id, 0, "get")
+      microKnowledgeIdReq(this.id, 0, "get")
         .then((res) => {
           this.title = res.data.title;
           this.abstract = res.data.abstract;
@@ -39,5 +39,9 @@ export default {
       console.log(this.title);
     },
   },
+
+  loadInterpretation() {
+
+  }
 };
 </script>

@@ -61,6 +61,12 @@ export const microKnowledgeIdReq = (id, type, method, params) => {
   return getRequest(url, method, params)
 }
 
+// TODO: need backend api
+export const getPaperInterpretations = (method, params) => {
+  const url = '/api/interpretation'
+  return getRequest(url, method, params)
+}
+
 export const recommend = (params) => {
   const url = 'api/recommend'
   return getRequest(url, 'get', params)
