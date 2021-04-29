@@ -1,5 +1,5 @@
 export const paperRoute = {
-  path: '/paper/:id',
+  path: '/paper',
   name: 'paper',
   component: () => import('@/view/paper/paper-info'),
   meta: {

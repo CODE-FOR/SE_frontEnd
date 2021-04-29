@@ -153,7 +153,7 @@ export default {
     loadData: function () {
       microKnowledgeIdReq(17, 0, 'get').then(res => {
           let mapDAta = {
-            id: 2,
+            id: 17,
             creator: res.data.created_by,
             createAt: getLocalTime(res.data.created_at),
             publishedYear: res.data.published_year,

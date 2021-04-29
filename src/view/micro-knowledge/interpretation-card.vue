@@ -70,83 +70,37 @@
           </Row>
         </Modal>
       </div>
-      <!-- <p slot="extra">{{ kind === 0 ? '微证据' : '微猜想' }}发布于: {{ createAt }}</p> -->
-
-      <p slot="extra">
-        论文解读发布于: {{ createAt }}
-      </p>
+      <p slot="extra">论文解读发布于: {{ createAt }}</p>
       <Row v-html="htmlvalue"></Row>
       <br />
-      <template v-if="kind === 0">
-        <Row>
-          论文链接: <a :href="source"> {{ source }} </a> (
-          {{ publishedYear }} )
-        </Row>
-        <br />
-      </template>
-      <Modal v-model="detailController" :footer-hide="true">
-        <Divider />
-        <Row v-for="item in evidences" :key="item.id">
-          <i-col style="font-size: 18px">
-            {{ item.content }}
-          </i-col>
-          <br />
-          <i-col style="font-size: 14px">
-            参考文献: <a :href="item.source"> {{ item.citation }} </a>
-          </i-col>
-          <i-col style="font-size: 14px">
-            由
-            <a @click.prevent="jumpUserInfo(item.created_by.id)">
-              {{ item.created_by.username }}
-            </a>
-            发布于：{{ getTime(item.created_at) }}
-          </i-col>
-          <Divider />
-        </Row>
-      </Modal>
       <Row>
-        <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
-          tag.name
-        }}</Tag>
+        <i-col span="12">
+          <ButtonGroup>
+            <i-button @click="onLike" style="font-size: 14px">
+              <Icon type="md-thumbs-up" :color="likeColor" />
+              点赞 {{ totalLike }}
+            </i-button>
+            <i-button @click="onCollect" style="font-size: 14px">
+              <Icon :type="collectType" :color="collectColor" />
+              收藏 {{ totalFavor }}
+            </i-button>
+            <i-button @click="onComment" style="font-size: 14px">
+              <Icon type="ios-chatbubbles" />
+              评论
+            </i-button>
+            <i-button @click="handleJumpInterpretation" style="font-size: 14px">
+              <Icon type="ios-more" />
+              查看详细内容
+            </i-button>
+          </ButtonGroup>
+        </i-col>
+        <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">
+          <a href="#" @click.prevent="showDetail"> 查看参考 </a>
+        </i-col>
       </Row>
-      <br />
-      作者:
-      <br />
-      <br />
-      <Row>
-        <Tag
-          v-for="(au, indexForAuthor) in author"
-          :key="indexForAuthor"
-          class="sysTopics"
-          >{{ au.toString() }}</Tag
-        >
-      </Row>
-      <br />
-      <!-- <template v-if="displayType === 0"> -->
-        <Row>
-          <i-col span="12">
-            <ButtonGroup>
-              <i-button @click="onLike" style="font-size: 14px">
-                <Icon type="md-thumbs-up" :color="likeColor" />
-                点赞 {{ totalLike }}
-              </i-button>
-              <i-button @click="onCollect" style="font-size: 14px">
-                <Icon :type="collectType" :color="collectColor" />
-                收藏 {{ totalFavor }}
-              </i-button>
-              <i-button @click="onComment" style="font-size: 14px">
-                <Icon type="ios-chatbubbles" />
-                评论
-              </i-button>
-            </ButtonGroup>
-          </i-col>
-          <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">
-            <a href="#" @click.prevent="showDetail"> 查看参考 </a>
-          </i-col>
-        </Row>
-        <Card v-if="showComment" style="margin-top: 10px">
-          <comment v-bind="comments"></comment>
-        </Card>
+      <Card v-if="showComment" style="margin-top: 10px">
+        <comment v-bind="comments"></comment>
+      </Card>
       <!-- </template> -->
       <template v-else-if="displayType === 1">
         <Button class="cite" @click="onCite" type="primary">{{
@@ -189,17 +143,6 @@ export default {
       },
     },
 
-    kind: {
-      // 0: 微证据, 1: 微猜想
-      type: Number,
-      default: 0,
-    },
-
-    // citeMessageInit: {
-    //   type: String,
-    //   default: '引用'
-    // },
-
     createAt: {
       type: String,
       default: "年/月/日",
@@ -208,13 +151,6 @@ export default {
     content: {
       type: String,
       default: "这是一个展示示例",
-    },
-
-    tags: {
-      type: Array,
-      default: () => {
-        return [];
-      },
     },
 
     // isLike: {
@@ -241,47 +177,12 @@ export default {
     //   type: Number,
     //   default: 0
     // },
-
-    source: {
-      // 微证据专用
-      type: String,
-      default: "",
-    },
-
-    // citation: { // 微证据专用
-    //   type: String,
-    //   default: ''
-    // },
-
-    publishedYear: {
-      type: Number,
-      default: 0,
-    },
-
-    // evidences: {
-    //   type: Array,
-    //   default: () => {
-    //     return []
-    //   }
-    // },
-
-    title: {
-      type: String,
-      default: "标题",
-    },
-
-    author: {
-      type: Array,
-      default: () => {
-        return [];
-      },
-    },
   },
 
   data() {
     return {
       htmlvalue: this.$props.content,
-      // like: this.$props.isLike,
+      like: this.$props.isLike,
       totalLike: this.$props.likeNumber,
       totalFavor: this.$props.favorNumber,
       collect: this.$props.isCollect,
@@ -327,7 +228,7 @@ export default {
   methods: {
     onLike: function () {
       alert(this.author);
-      console.log(this.title)
+      console.log(this.title);
       this.like = !this.like;
       if (this.like) {
         this.totalLike += 1;
@@ -505,6 +406,15 @@ export default {
 
     getTime: function (time) {
       return getLocalTime(time);
+    },
+
+    handleJumpInterpretation: function () {
+      this.$router.push({
+        name: "interpretation",
+        params: {
+          id: this.id,
+        }
+      });
     },
   },
 };

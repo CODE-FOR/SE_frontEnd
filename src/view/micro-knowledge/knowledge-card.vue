@@ -2,7 +2,7 @@
   <div>
     <div class="ivu-card-head">
       <!-- <template v-if="kind === 1"> -->
-        <h2>论文题目 {{ title }}</h2>
+      <h2>论文题目 {{ title }}</h2>
       <!-- </template> -->
     </div>
     <card :bordered="false" dis-hover :style="citeStyle">
@@ -85,8 +85,7 @@
       <br />
       <template v-if="kind === 0">
         <Row>
-          论文链接: <a :href="source"> {{ source }} </a> (
-          {{ publishedYear }} )
+          论文链接: <a :href="source"> {{ source }} </a> ( {{ publishedYear }} )
         </Row>
         <br />
       </template>
@@ -129,30 +128,34 @@
       </Row>
       <br />
       <!-- <template v-if="displayType === 0"> -->
-        <Row>
-          <i-col span="12">
-            <ButtonGroup>
-              <i-button @click="onLike" style="font-size: 14px">
-                <Icon type="md-thumbs-up" :color="likeColor" />
-                点赞 {{ totalLike }}
-              </i-button>
-              <i-button @click="onCollect" style="font-size: 14px">
-                <Icon :type="collectType" :color="collectColor" />
-                收藏 {{ totalFavor }}
-              </i-button>
-              <i-button @click="onComment" style="font-size: 14px">
-                <Icon type="ios-chatbubbles" />
-                评论
-              </i-button>
-            </ButtonGroup>
-          </i-col>
-          <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">
-            <a href="#" @click.prevent="showDetail"> 查看参考 </a>
-          </i-col>
-        </Row>
-        <Card v-if="showComment" style="margin-top: 10px">
-          <comment v-bind="comments"></comment>
-        </Card>
+      <Row>
+        <i-col span="12">
+          <ButtonGroup>
+            <i-button @click="onLike" style="font-size: 14px">
+              <Icon type="md-thumbs-up" :color="likeColor" />
+              点赞 {{ totalLike }}
+            </i-button>
+            <i-button @click="onCollect" style="font-size: 14px">
+              <Icon :type="collectType" :color="collectColor" />
+              收藏 {{ totalFavor }}
+            </i-button>
+            <i-button @click="onComment" style="font-size: 14px">
+              <Icon type="ios-chatbubbles" />
+              评论
+            </i-button>
+            <i-button @click="handleJumpPaper" style="font-size: 14px">
+              <Icon type="ios-more" />
+              查看详细内容
+            </i-button>
+          </ButtonGroup>
+        </i-col>
+        <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">
+          <a href="#" @click.prevent="showDetail"> 查看参考 </a>
+        </i-col>
+      </Row>
+      <Card v-if="showComment" style="margin-top: 10px">
+        <comment v-bind="comments"></comment>
+      </Card>
       <!-- </template> -->
       <template v-else-if="displayType === 1">
         <Button class="cite" @click="onCite" type="primary">{{
@@ -286,6 +289,7 @@ export default {
 
   data() {
     return {
+      id: this.$props.id,
       htmlvalue: this.$props.content,
       // like: this.$props.isLike,
       totalLike: this.$props.likeNumber,
@@ -333,7 +337,7 @@ export default {
   methods: {
     onLike: function () {
       alert(this.author);
-      console.log(this.title)
+      console.log(this.title);
       this.like = !this.like;
       if (this.like) {
         this.totalLike += 1;
@@ -511,6 +515,15 @@ export default {
 
     getTime: function (time) {
       return getLocalTime(time);
+    },
+
+    handleJumpPaper: function () {
+      this.$router.push({
+        name: "paper",
+        params: {
+          id: this.id,
+        }
+      })
     },
   },
 };
