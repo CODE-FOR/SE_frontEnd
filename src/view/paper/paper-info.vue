@@ -3,28 +3,52 @@
     <h1 align="center">
       {{ title }}
     </h1>
-    <i-col offset="4" span="16">
-      <Tabs value="paperAbstract">
-        <TabPane label="论文详情" name="paperAbstract">
-          <KnowledgeCard
-            :key="id"
-            :content="content"
-            :creator="creator"
-            :createAt="createAt"
-            :tags="tags"
-            :source="source"
-            :publishedYear="publishedYear"
-            :author="author"
-          />
-        </TabPane>
-        <TabPane label="论文解读列表" name="interpretationList">
-          <template v-if="items.length !== 0">
-            <InterpretationCard
-              v-for="item in pageComponent.items"
-              :key="item.id"
-              v-bind="item"
+    <i-col offset="2" span="20">
+      <Card>
+        <Tabs value="paperAbstract">
+          <TabPane label="论文详情" name="paperAbstract">
+            <KnowledgeCard
+              :key="id"
+              :content="content"
+              :creator="creator"
+              :createAt="createAt"
+              :tags="tags"
+              :source="source"
+              :publishedYear="publishedYear"
+              :author="author"
+              :isInDetail="1"
             />
-            <Row v-if="loading">
+          </TabPane>
+          <TabPane label="论文解读列表" name="interpretationList">
+            <template v-if="items.length !== 0">
+              <InterpretationCard
+                v-for="item in pageComponent.items"
+                :key="item.id"
+                v-bind="item"
+              />
+              <Row v-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
+              <Page
+                :total="items.length"
+                :current="pageComponent.pageIndex"
+                :page-size="pageComponent.pageSize"
+                prev-text="上一页"
+                next-text="下一页"
+                show-elevator
+                @on-change="changeIndexPage"
+              ></Page>
+            </template>
+            <template v-else>
               <i-col class="demo-spin-col" offset="8" span="8">
                 <Spin fix>
                   <Icon
@@ -35,31 +59,10 @@
                   <div>Loading</div>
                 </Spin>
               </i-col>
-            </Row>
-            <Page
-              :total="items.length"
-              :current="pageComponent.pageIndex"
-              :page-size="pageComponent.pageSize"
-              prev-text="上一页"
-              next-text="下一页"
-              show-elevator
-              @on-change="changeIndexPage"
-            ></Page>
-          </template>
-          <template v-else>
-            <i-col class="demo-spin-col1" offset="8" span="8">
-              <Spin fix>
-                <Icon
-                  type="ios-loading"
-                  size="18"
-                  class="demo-spin-icon-load"
-                ></Icon>
-                <div>Loading</div>
-              </Spin>
-            </i-col>
-          </template>
-        </TabPane>
-      </Tabs>
+            </template>
+          </TabPane>
+        </Tabs>
+      </Card>
     </i-col>
   </div>
 </template>
@@ -89,7 +92,7 @@ export default {
       loading: true,
       pageComponent: {
         pageIndex: 1,
-        pageSize: 3,
+        pageSize: 1,
         items: [],
       },
     };

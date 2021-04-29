@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div class="ivu-card-head">
-      <!-- <template v-if="kind === 1"> -->
-      <h2>{{ title }}</h2>
-      <!-- </template> -->
-    </div>
+    <template v-if="isInDetail === 0">
+      <div class="ivu-card-head">
+        <!-- <template v-if="kind === 1"> -->
+        <h2>{{ title }}</h2>
+        <!-- </template> -->
+      </div>
+    </template>
     <card :bordered="false" dis-hover :style="citeStyle">
       <div slot="title">
         发布者:
@@ -185,6 +187,7 @@ export default {
     comment,
   },
   props: {
+    //TODO: others is_in_detail
     isInDetail: {
       type: Number,
       default: 0,

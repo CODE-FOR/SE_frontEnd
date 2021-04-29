@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="ivu-card-head">
+      <!-- <template v-if="kind === 1"> -->
+      <h2>{{ title }}</h2>
+      <!-- </template> -->
+    </div>
     <card :bordered="false" dis-hover :style="citeStyle">
       <div slot="title">
         发布者:
@@ -94,9 +99,6 @@
             </i-button>
           </ButtonGroup>
         </i-col>
-        <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">
-          <a href="#" @click.prevent="showDetail"> 查看参考 </a>
-        </i-col>
       </Row>
       <Card v-if="showComment" style="margin-top: 10px">
         <comment v-bind="comments"></comment>
@@ -107,6 +109,11 @@
           citeMessage
         }}</Button>
       </template>
+      <Row>
+        <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
+          tag.name
+        }}</Tag>
+      </Row>
     </card>
     <Divider />
   </div>
@@ -133,7 +140,19 @@ export default {
       default: 0,
     },
 
-    creator: {
+    title: {
+      type: String,
+      default: 'title'
+    },
+
+    tags: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+
+    created_by: {
       type: Object,
       default: () => {
         return {
@@ -143,7 +162,7 @@ export default {
       },
     },
 
-    createAt: {
+    created_at: {
       type: String,
       default: "年/月/日",
     },
@@ -193,6 +212,8 @@ export default {
       showUserControl: false,
       userInfo: {},
       followText: "",
+      creator: this.$props.created_by,
+      createAt: getLocalTime(this.$props.created_at),
       // TODO:
       title: this.$props.title,
       author: this.$props.author,
