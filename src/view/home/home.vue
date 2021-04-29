@@ -109,6 +109,7 @@ import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
 import { recentKnowledge } from "@/api/user";
 import { getTags, recommend,  microKnowledgeIdReq} from "@/api/microknowledge";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
+import { getPaperList } from "@/api/microknowledge"
 export default {
   name: "home",
 
@@ -150,108 +151,76 @@ export default {
   },
 
   methods: {
+    // TODO: url is 'paper/page/:id'
+    // loadData: function () {
+    //   microKnowledgeIdReq(17, 0, 'get').then(res => {
+    //       let mapDAta = {
+    //         id: 17,
+    //         creator: res.data.created_by,
+    //         createAt: getLocalTime(res.data.created_at),
+    //         publishedYear: res.data.published_year,
+    //         content: res.data.abstract, 
+    //         tags: res.data.tags,
+    //         // isLike: 0,
+    //         // isCollect: 0,
+    //         // likeNumber: 0,
+    //         // favorNumber: 0,
+    //         // displayType: 0,
+    //         source: res.data.source,
+    //         author: res.data.author,
+    //         title: res.data.title
+    //         // citation: 'http://www.baidu.com',
+    //         // evidences: [],
+    //       };
+    //       this.items.push(mapDAta);
+    //         this.loading = false;
+    //   }).catch(error => {
+    //     console.log(error)
+    //   })
+    // },
     loadData: function () {
-      microKnowledgeIdReq(17, 0, 'get').then(res => {
-          let mapDAta = {
-            id: 17,
-            creator: res.data.created_by,
-            createAt: getLocalTime(res.data.created_at),
-            publishedYear: res.data.published_year,
-            content: res.data.abstract, 
-            tags: res.data.tags,
+      this.loading = true
+      getPaperList(this.pageIndex).then(res => {
+        const oldLength = this.idList.length
+        const mapData = res.data.papers.map(item => {
+          if (this.idList.includes(item.id)) {
+            return false
+          } else {
+            this.idList.push(item.id)
+          }
+          return {
+            id: item.id,
+            creator: item.created_by,
+            createAt: getLocalTime(item.created_at),
+            publishedYear: item.published_year,
+            content: item.abstract, 
+            tags: item.tags,
             // isLike: 0,
             // isCollect: 0,
             // likeNumber: 0,
             // favorNumber: 0,
             // displayType: 0,
-            source: res.data.source,
-            author: res.data.author,
-            title: res.data.title
+            source: item.source,
+            author: item.author,
+            title: item.title
             // citation: 'http://www.baidu.com',
             // evidences: [],
-          };
-          this.items.push(mapDAta);
-            this.loading = false;
+          }
+        })
+        this.items.push(...mapData.filter(x => x))
+        if (res.data.total_count < this.pageSize) {
+          this.hasNextPage = false
+        } else if (oldLength === this.idList.length) {
+          this.hasNextPage = false
+        }
+        this.loading = false
       }).catch(error => {
-        console.log(error)
+        console.log(error.response.status)
+        if (error.response.status === 400) {
+          this.hasNextPage = false
+        }
       })
     },
-    // loadData: function () {
-    //   this.loading = true
-    //   recommend({
-    //     num: this.pageSize
-    //   }).then(res => {
-    //     const oldLength = this.idList.length
-    //     const mapData = res.data.models.map(item => {
-    //       if (this.idList.includes(item.id)) {
-    //         return false
-    //       } else {
-    //         this.idList.push(item.id)
-    //       }
-    //       return {
-    //         id: item.id,
-    //         created_by: {
-    //           id: item.created_by.id,
-    //           username: item.created_by.username
-    //         },
-    //         kind: 1,
-    //         // kind: item.microconjecture ? 1 : 0,
-    //         createAt: getLocalTime(item.created_at),
-    //         publishedYear: item.published_year,
-    //         content: item.abstract,
-    //         // content: item.content,
-    //         tags: item.tags,
-    //         // tags: item.tag_list,
-    //         // isLike: item.is_like,
-    //         // isCollect: item.is_favor,
-    //         // likeNumber: item.like_num,
-    //         // favorNumber: item.favor_num,
-    //         // displayType: 0,
-    //         source: item.source,
-    //         // citation: item.citation,
-    //         // evidences: []
-    //       }
-    //     })
-    //     this.items.push(...mapData.filter(x => x))
-    //     if (res.data.total_count < this.pageSize) {
-    //       this.hasNextPage = false
-    //     } else if (oldLength === this.idList.length) {
-    //       this.hasNextPage = false
-    //     }
-    //     this.loading = false
-    //   }).catch(error => {
-    //     console.log(error.response.status)
-    //     if (error.response.status === 400) {
-    //       this.hasNextPage = false
-    //     }
-    //   })
-    // },
-
-    // loadData: function () {
-    //   this.loading = true;
-    //   let mapDAta = {
-    //     id: 1,
-    //     creator: {
-    //       id: 1,
-    //       username: 'lzw_user',
-    //     },
-    //     kind: 1,
-    //     createAt: getLocalTime('August 19, 1975 23:15:30 GMT+00:00'),
-    //     publishedYear: 2021,
-    //     content: '<p>test</p>', 
-    //     tags: ['a', 'b', 'c', 'd'],
-    //     isLike: 0,
-    //     isCollect: 0,
-    //     likeNumber: 0,
-    //     favorNumber: 0,
-    //     displayType: 0,
-    //     source: 'http://www.baidu.com',
-    //     citation: 'http://www.baidu.com',
-    //     evidences: [],
-    //   };
-    //   this.items.push(mapDAta);
-    //   this.loading = false;
-    // },
 
     loadFavor: function () {
       this.loading = true;

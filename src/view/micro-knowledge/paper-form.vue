@@ -3,7 +3,7 @@
     <!-- <Form-item label="参考文献" prop="citation"><Input type="text" v-model="form.citation" placeholder='请输入参考文献(GB7714格式)' /></Form-item> -->
     <Form-item label="标题" prop="title"><Input type="text" v-model="form.title" placeholder="请输入论文标题" /></Form-item>
     <!-- <Form-item label="参考文献链接(可选)" prop="citationUrl"><Input type="url" placeholder='请输入参考文献链接(可选)' v-model="form.citationUrl" /></Form-item> -->
-    <Form-item label="作者" prop="author"><Input type="text" placeholder='请输入作者(以空格分隔)' v-model="form.author" /></Form-item>
+    <Form-item label="作者" prop="author"><Input type="text" placeholder='请输入作者(以逗号分隔)' v-model="form.author" /></Form-item>
     <Form-item label="论文年份" prop="year">
       <Input-number v-model="form.year" />
     </Form-item>
@@ -51,9 +51,9 @@ export default {
       value = tinymce.activeEditor.getContent()
       // alert(value)
       if (value === '') {
-        callback(new Error('请输入微证据内容(不超过200字)'))
-      } else if (value.length > 1000) {
-        callback(new Error('内容不得超过200字'))
+        callback(new Error('请输入微证据内容(不超过5000字)'))
+      } else if (value.length > 5000) {
+        callback(new Error('内容不得超过5000字'))
       } else {
         callback()
       }
@@ -217,7 +217,7 @@ export default {
             published_year: this.form.year,
             source: this.form.paperLink,
             title: this.form.title,
-            author: this.form.author.split(' ')
+            author: this.form.author.split(',')
           }
           console.log(data)
           createPaper('post', data).then(res => {

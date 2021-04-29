@@ -2,7 +2,7 @@
   <div>
     <div class="ivu-card-head">
       <!-- <template v-if="kind === 1"> -->
-      <h2>论文题目 {{ title }}</h2>
+      <h2>{{ title }}</h2>
       <!-- </template> -->
     </div>
     <card :bordered="false" dis-hover :style="citeStyle">
