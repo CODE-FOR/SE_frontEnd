@@ -50,9 +50,13 @@ html,body{
   50%  { transform: rotate(180deg);}
   to   { transform: rotate(360deg);}
 }
+.demo-spin-col1{
+  height: 100px;
+  position: relative;
+  background-color: #b4b3b3;
+}
 .demo-spin-col{
   height: 100px;
   position: relative;
-  background-color: #515a6e;
 }
 </style>

@@ -47,7 +47,7 @@
             ></Page>
           </template>
           <template v-else>
-            <i-col class="demo-spin-col" offset="8" span="8">
+            <i-col class="demo-spin-col1" offset="8" span="8">
               <Spin fix>
                 <Icon
                   type="ios-loading"
