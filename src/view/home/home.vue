@@ -10,33 +10,7 @@
                 :key="item.id"
                 v-bind="item"
               />
-              <!-- <Row v-if="loading">
-                <i-col class="demo-spin-col" offset="8" span="8">
-                  <Spin fix>
-                    <Icon
-                      type="ios-loading"
-                      size="18"
-                      class="demo-spin-icon-load"
-                    ></Icon>
-                    <div>Loading</div>
-                  </Spin>
-                </i-col>
-              </Row> -->
             </template>
-            <!-- <template v-else>
-              <Row>
-                <i-col class="demo-spin-col" offset="8" span="8">
-                  <Spin fix>
-                    <Icon
-                      type="ios-loading"
-                      size="18"
-                      class="demo-spin-icon-load"
-                    ></Icon>
-                    <div>Loading</div>
-                  </Spin>
-                </i-col>
-              </Row>
-            </template> -->
           </TabPane>
           <TabPane label="关注" name="favorite">
             <template v-if="items.length !== 0">
@@ -127,8 +101,6 @@ export default {
       pageIndex: 1,
       hasNextPage: true,
       items: [],
-      // pageSize: 15,
-      idList: [],
       loading: true,
       pageComponent: {
         pageSize: 5,
@@ -170,24 +142,21 @@ export default {
 
     loadData: function () {
       this.loading = true;
-      this.pageComponent.items = []
+      this.pageComponent.items = [];
       getPaperList(this.pageComponent.pageIndex)
         .then((res) => {
           this.pageComponent.pageNum = res.data.page_num;
           this.hasNextPage = res.data.has_next;
-          const oldLength = this.idList.length;
           const mapData = res.data.papers.map((item) => {
-            // if (this.idList.includes(item.id)) {
-            //   return false;
-            // } else {
-            //   this.idList.push(item.id);
-            // }
             return {
               id: item.id,
               creator: item.created_by,
               createAt: getLocalTime(item.created_at),
               publishedYear: item.published_year,
-              content: item.abstract,
+              content:
+                item.abstract.replace(/<[^>]+>/g, "").length > 100
+                  ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
+                  : item.abstract.replace(/<[^>]+>/g, ""),
               tags: item.tags,
               // isLike: 0,
               // isCollect: 0,
@@ -200,19 +169,6 @@ export default {
             };
           });
           this.pageComponent.items.push(...mapData.filter((x) => x));
-          // this.items.push(...mapData.filter((x) => x));
-          if (res.data.total_count < this.pageSize) {
-            this.hasNextPage = false;
-          } else if (oldLength === this.idList.length) {
-            this.hasNextPage = false;
-          }
-          // this.pageComponent.items = this.items.slice(
-          //   (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
-          //   Math.min(
-          //     this.pageComponent.pageIndex * this.pageComponent.pageSize,
-          //     this.items.length
-          //   )
-          // );
           this.loading = false;
         })
         .catch((error) => {
@@ -221,7 +177,7 @@ export default {
             this.hasNextPage = false;
           }
         });
-        console.log(this.pageComponent.items)
+      console.log(this.pageComponent.items);
     },
 
     loadFavor: function () {
@@ -281,15 +237,6 @@ export default {
       this.items = [];
       this.idList = [];
       this.loadData();
-    },
-
-    loadMoreData: function () {
-      this.pageIndex += 1;
-      if (this.activeTab === "favorite") {
-        this.loadFavor();
-      } else {
-        this.loadData();
-      }
     },
 
     changeTab: function (name) {

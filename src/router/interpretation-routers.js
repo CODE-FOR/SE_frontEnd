@@ -1,5 +1,5 @@
 export const interpretationRoute = {
-  path: '/interpretation',
+  path: '/interpretation/:id',
   name: 'interpretation',
   component: () => import('@/view/interpretation/interpretation-info'),
   meta: {
