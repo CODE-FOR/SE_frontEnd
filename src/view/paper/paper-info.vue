@@ -102,10 +102,9 @@ export default {
 
   methods: {
     loadData: function () {
+      this.loading = true;
       microKnowledgeIdReq(this.id, 0, "get")
         .then((res) => {
-          console.log("fuck");
-          console.log(res);
           this.title = res.data.title;
           this.content = res.data.abstract;
           this.creator = res.data.created_by;
@@ -114,7 +113,16 @@ export default {
           this.tags = res.data.tags;
           this.author = res.data.author;
           this.source = res.data.source;
-          console.log(this.content);
+          this.items = res.data.interpretations;
+          this.pageComponent.items = this.items.slice(
+            (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
+            Math.min(
+              this.pageComponent.pageIndex * this.pageComponent.pageSize,
+              this.items.length
+            )
+          );
+          console.log(this.pageComponent.items);
+          this.loading = false;
         })
         .catch((error) => {
           console.log(error);
@@ -125,7 +133,7 @@ export default {
       this.pageComponent.pageIndex = i;
       this.pageComponent.items = this.items.slice(
         (i - 1) * this.pageComponent.pageSize,
-        Math.main(i * this.pageComponent.pageSize, this.items.length)
+        Math.min(i * this.pageComponent.pageSize, this.items.length)
       );
     },
   },

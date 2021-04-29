@@ -227,8 +227,6 @@ export default {
 
   methods: {
     onLike: function () {
-      alert(this.author);
-      console.log(this.title);
       this.like = !this.like;
       if (this.like) {
         this.totalLike += 1;
