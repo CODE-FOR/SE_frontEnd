@@ -153,7 +153,11 @@ export default {
         evidences: [],
       };
       this.items.push(mapData);
-      this.pageIndex.items = this.items.slice(
+      console.log(this.items.slice(
+        (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
+        Math.min(this.pageComponent.pageIndex * this.pageComponent.pageSize, this.items.length)
+      ))
+      this.pageComponent.items = this.items.slice(
         (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
         Math.min(this.pageComponent.pageIndex * this.pageComponent.pageSize, this.items.length)
       );
