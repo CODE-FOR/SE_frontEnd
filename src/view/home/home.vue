@@ -4,13 +4,13 @@
       <Card>
         <Tabs v-model="activeTab" @on-click="changeTab">
           <TabPane label="推荐" name="recommend">
-            <template v-if="items.length !== 0">
+            <template v-if="pageComponent.items.length !== 0">
               <KnowledgeCard
-                v-for="item in items"
+                v-for="item in pageComponent.items"
                 :key="item.id"
                 v-bind="item"
               />
-              <Row v-if="loading">
+              <!-- <Row v-if="loading">
                 <i-col class="demo-spin-col" offset="8" span="8">
                   <Spin fix>
                     <Icon
@@ -21,17 +21,9 @@
                     <div>Loading</div>
                   </Spin>
                 </i-col>
-              </Row>
-              <Row v-else-if="hasNextPage">
-                <i-col style="text-align: center">
-                  <a @click.prevent="loadMoreData"> 加载更多 </a>
-                </i-col>
-              </Row>
-              <Row v-else>
-                <i-col style="text-align: center"> 暂无更多微知识 </i-col>
-              </Row>
+              </Row> -->
             </template>
-            <template v-else>
+            <!-- <template v-else>
               <Row>
                 <i-col class="demo-spin-col" offset="8" span="8">
                   <Spin fix>
@@ -44,7 +36,7 @@
                   </Spin>
                 </i-col>
               </Row>
-            </template>
+            </template> -->
           </TabPane>
           <TabPane label="关注" name="favorite">
             <template v-if="items.length !== 0">
@@ -99,6 +91,15 @@
             </template>
           </TabPane>
         </Tabs>
+        <Page
+          :total="pageComponent.pageNum * 5"
+          :current="pageComponent.pageIndex"
+          :page-size="pageComponent.pageSize"
+          prev-text="上一页"
+          next-text="下一页"
+          show-elevator
+          @on-change="changeIndexPage"
+        ></Page>
       </Card>
     </i-col>
   </Row>
@@ -107,9 +108,9 @@
 <script>
 import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
 import { recentKnowledge } from "@/api/user";
-import { getTags, recommend,  microKnowledgeIdReq} from "@/api/microknowledge";
+import { getTags, recommend, microKnowledgeIdReq } from "@/api/microknowledge";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
-import { getPaperList } from "@/api/microknowledge"
+import { getPaperList } from "@/api/microknowledge";
 export default {
   name: "home",
 
@@ -126,9 +127,15 @@ export default {
       pageIndex: 1,
       hasNextPage: true,
       items: [],
-      pageSize: 15,
+      // pageSize: 15,
       idList: [],
       loading: true,
+      pageComponent: {
+        pageSize: 5,
+        pageIndex: 1,
+        items: [],
+        pageNum: 0,
+      },
     };
   },
 
@@ -151,75 +158,70 @@ export default {
   },
 
   methods: {
-    // TODO: url is 'paper/page/:id'
-    // loadData: function () {
-    //   microKnowledgeIdReq(17, 0, 'get').then(res => {
-    //       let mapDAta = {
-    //         id: 17,
-    //         creator: res.data.created_by,
-    //         createAt: getLocalTime(res.data.created_at),
-    //         publishedYear: res.data.published_year,
-    //         content: res.data.abstract, 
-    //         tags: res.data.tags,
-    //         // isLike: 0,
-    //         // isCollect: 0,
-    //         // likeNumber: 0,
-    //         // favorNumber: 0,
-    //         // displayType: 0,
-    //         source: res.data.source,
-    //         author: res.data.author,
-    //         title: res.data.title
-    //         // citation: 'http://www.baidu.com',
-    //         // evidences: [],
-    //       };
-    //       this.items.push(mapDAta);
-    //         this.loading = false;
-    //   }).catch(error => {
-    //     console.log(error)
-    //   })
-    // },
+    changeIndexPage: function (i) {
+      setTimeout(() => {
+        document
+          .getElementsByClassName("content-wrapper ivu-layout-content")[0]
+          .scroll(0, 0);
+      }, 400);
+      this.pageComponent.pageIndex = i;
+      this.loadData();
+    },
+
     loadData: function () {
-      this.loading = true
-      getPaperList(this.pageIndex).then(res => {
-        const oldLength = this.idList.length
-        const mapData = res.data.papers.map(item => {
-          if (this.idList.includes(item.id)) {
-            return false
-          } else {
-            this.idList.push(item.id)
+      this.loading = true;
+      this.pageComponent.items = []
+      getPaperList(this.pageComponent.pageIndex)
+        .then((res) => {
+          this.pageComponent.pageNum = res.data.page_num;
+          this.hasNextPage = res.data.has_next;
+          const oldLength = this.idList.length;
+          const mapData = res.data.papers.map((item) => {
+            // if (this.idList.includes(item.id)) {
+            //   return false;
+            // } else {
+            //   this.idList.push(item.id);
+            // }
+            return {
+              id: item.id,
+              creator: item.created_by,
+              createAt: getLocalTime(item.created_at),
+              publishedYear: item.published_year,
+              content: item.abstract,
+              tags: item.tags,
+              // isLike: 0,
+              // isCollect: 0,
+              // likeNumber: 0,
+              // favorNumber: 0,
+              // displayType: 0,
+              source: item.source,
+              author: item.author,
+              title: item.title,
+            };
+          });
+          this.pageComponent.items.push(...mapData.filter((x) => x));
+          // this.items.push(...mapData.filter((x) => x));
+          if (res.data.total_count < this.pageSize) {
+            this.hasNextPage = false;
+          } else if (oldLength === this.idList.length) {
+            this.hasNextPage = false;
           }
-          return {
-            id: item.id,
-            creator: item.created_by,
-            createAt: getLocalTime(item.created_at),
-            publishedYear: item.published_year,
-            content: item.abstract, 
-            tags: item.tags,
-            // isLike: 0,
-            // isCollect: 0,
-            // likeNumber: 0,
-            // favorNumber: 0,
-            // displayType: 0,
-            source: item.source,
-            author: item.author,
-            title: item.title
-            // citation: 'http://www.baidu.com',
-            // evidences: [],
-          }
+          // this.pageComponent.items = this.items.slice(
+          //   (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
+          //   Math.min(
+          //     this.pageComponent.pageIndex * this.pageComponent.pageSize,
+          //     this.items.length
+          //   )
+          // );
+          this.loading = false;
         })
-        this.items.push(...mapData.filter(x => x))
-        if (res.data.total_count < this.pageSize) {
-          this.hasNextPage = false
-        } else if (oldLength === this.idList.length) {
-          this.hasNextPage = false
-        }
-        this.loading = false
-      }).catch(error => {
-        console.log(error.response.status)
-        if (error.response.status === 400) {
-          this.hasNextPage = false
-        }
-      })
+        .catch((error) => {
+          console.log(error.response.status);
+          if (error.response.status === 400) {
+            this.hasNextPage = false;
+          }
+        });
+        console.log(this.pageComponent.items)
     },
 
     loadFavor: function () {
