@@ -17,7 +17,7 @@
         <Row v-else>
           <h1 align="center">{{ paperCitation }}</h1>
           <Divider />
-          标签：<Tag v-for="item in topic" :key="index" class="sysTopics">{{
+          标签：<Tag v-for="(item, index) in topic" :key="index" class="sysTopics">{{
           item
           }}</Tag>
           <Divider />

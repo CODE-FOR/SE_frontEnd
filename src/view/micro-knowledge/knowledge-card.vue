@@ -147,10 +147,12 @@
                 评论
               </i-button>
             </template>
-            <i-button @click="handleJumpPaper" style="font-size: 14px">
-              <Icon type="ios-more" />
-              查看详细内容
-            </i-button>
+            <template v-if="isInDetail === 0">
+              <i-button @click="handleJumpPaper" style="font-size: 14px">
+                <Icon type="ios-more" />
+                查看详细内容
+              </i-button>
+            </template>
           </ButtonGroup>
         </i-col>
         <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">

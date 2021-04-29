@@ -89,14 +89,18 @@
               <Icon :type="collectType" :color="collectColor" />
               收藏 {{ totalFavor }}
             </i-button>
-            <i-button @click="onComment" style="font-size: 14px">
-              <Icon type="ios-chatbubbles" />
-              评论
-            </i-button>
-            <i-button @click="handleJumpInterpretation" style="font-size: 14px">
-              <Icon type="ios-more" />
-              查看详细内容
-            </i-button>
+            <template v-if="isInDetail === 1">
+              <i-button @click="onComment" style="font-size: 14px">
+                <Icon type="ios-chatbubbles" />
+                评论
+              </i-button>
+            </template>
+            <template v-if="isInDetail === 0">
+              <i-button @click="handleJumpInterpretation" style="font-size: 14px">
+                <Icon type="ios-more" />
+                查看详细内容
+              </i-button>
+            </template>
           </ButtonGroup>
         </i-col>
       </Row>
@@ -135,6 +139,12 @@ export default {
     comment,
   },
   props: {
+
+    isInDetail: {
+      type: Number,
+      default: 0,
+    },
+
     id: {
       type: Number,
       default: 0,
