@@ -6,7 +6,16 @@
     <i-col offset="4" span="16">
       <Tabs value="paperAbstract">
         <TabPane label="论文详情" name="paperAbstract">
-          <span v-html="abstract" />
+          <KnowledgeCard
+            :key="id"
+            :content="content"
+            :creator="creator"
+            :createAt="createAt"
+            :tags="tags"
+            :source="source"
+            :publishedYear="publishedYear"
+            :author="author"
+          />
         </TabPane>
         <TabPane label="论文解读列表" name="interpretationList">
           <template v-if="items.length !== 0">
@@ -37,6 +46,18 @@
               @on-change="changeIndexPage"
             ></Page>
           </template>
+          <template v-else>
+            <i-col class="demo-spin-col" offset="8" span="8">
+              <Spin fix>
+                <Icon
+                  type="ios-loading"
+                  size="18"
+                  class="demo-spin-icon-load"
+                ></Icon>
+                <div>Loading</div>
+              </Spin>
+            </i-col>
+          </template>
         </TabPane>
       </Tabs>
     </i-col>
@@ -46,21 +67,26 @@
 
 <script>
 import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
+import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
 import { getTags, recommend, microKnowledgeIdReq } from "@/api/microknowledge";
 import { getPaperInterpreations } from "@/api/microknowledge";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 export default {
-  components: { InterpretationCard },
+  components: { InterpretationCard, KnowledgeCard },
   data() {
     return {
       id: parseInt(this.$route.params.id),
       title: "title",
-      abstract: "abstract",
-      idList: [],
+      content: "abstract",
+      creator: {},
+      createAt: "2000/01/01",
+      tags: [],
+      source: "source",
+      publishedYear: 2000,
+      title: "title",
+      author: "author",
       items: [],
-      hasNextPage: true,
       loading: true,
-      pageIndex: 0,
       pageComponent: {
         pageIndex: 1,
         pageSize: 3,
@@ -78,14 +104,21 @@ export default {
     loadData: function () {
       microKnowledgeIdReq(this.id, 0, "get")
         .then((res) => {
+          console.log("fuck");
+          console.log(res);
           this.title = res.data.title;
-          this.abstract = res.data.abstract;
-          // this.items = res.data.interpretations
+          this.content = res.data.abstract;
+          this.creator = res.data.created_by;
+          this.createAt = getLocalTime(res.data.created_at);
+          this.publishedYear = res.data.publishedYear;
+          this.tags = res.data.tags;
+          this.author = res.data.author;
+          this.source = res.data.source;
+          console.log(this.content);
         })
         .catch((error) => {
           console.log(error);
         });
-        console.log(this.items)
     },
 
     changeIndexPage: function (i) {

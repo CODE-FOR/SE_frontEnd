@@ -53,5 +53,6 @@ html,body{
 .demo-spin-col{
   height: 100px;
   position: relative;
+  background-color: #515a6e;
 }
 </style>

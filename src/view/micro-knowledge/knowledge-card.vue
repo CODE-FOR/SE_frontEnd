@@ -80,7 +80,7 @@
       <p slot="extra">
         {{ kind === 0 ? "论文" : "论文解读" }}发布于: {{ createAt }}
       </p>
-      <Row v-html="htmlvalue"></Row>
+      <Row v-html="content"></Row>
       <!-- <Row>{{ content }}</Row> -->
       <br />
       <template v-if="kind === 0">
@@ -276,7 +276,7 @@ export default {
 
     title: {
       type: String,
-      default: "标题",
+      default: "",
     },
 
     author: {
@@ -290,7 +290,6 @@ export default {
   data() {
     return {
       id: this.$props.id,
-      htmlvalue: this.$props.content,
       // like: this.$props.isLike,
       totalLike: this.$props.likeNumber,
       totalFavor: this.$props.favorNumber,
