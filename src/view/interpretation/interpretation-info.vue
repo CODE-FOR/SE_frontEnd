@@ -1,37 +1,38 @@
 <template>
   <div>
-    <i-col span="16" offset="4">
-      <i-col offset="2" span="20">
-        <Card>
-          <Tabs value="paperAbstract">
-            <TabPane label="论文解读详情" name="paperAbstract">
-              <Row v-if="loading">
-                <i-col class="demo-spin-col" offset="8" span="8">
-                  <Spin fix>
-                    <Icon
-                      type="ios-loading"
-                      size="18"
-                      class="demo-spin-icon-load"
-                    ></Icon>
-                    <div>Loading</div>
-                  </Spin>
-                </i-col>
-              </Row>
-              <Row v-else>
-                <InterpretationCard
-                  :id="id"
-                  :content="content"
-                  :title="title"
-                  :tags="tags"
-                  :created_by="creator"
-                  :created_at="createdAt"
-                  :isInDetail="1"
-                />
-              </Row>
-            </TabPane>
-          </Tabs>
-        </Card>
-      </i-col>
+    <i-col offset="2" span="20">
+      <Card>
+        <Tabs value="paperAbstract">
+          <TabPane label="论文解读详情" name="paperAbstract">
+            <template v-if="loading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </template>
+            <template v-else>
+              <InterpretationCard
+                :id="id"
+                :content="content"
+                :title="title"
+                :tags="tags"
+                :created_by="creator"
+                :created_at="createdAt"
+                :isInDetail="1"
+              />
+            </template>
+          </TabPane>
+          <TabPane label="评论列表" name="commentList">
+            // TODO: show comments
+          </TabPane>
+        </Tabs>
+      </Card>
     </i-col>
   </div>
 </template>
@@ -51,7 +52,6 @@ export default {
       title: "456",
       tags: [],
       content: "456",
-      // paperCitation: "",
       paperId: 0,
       creator: {},
       createdAt: "",
@@ -65,28 +65,21 @@ export default {
 
   methods: {
     loadData() {
-      alert(this.id);
+      this.loading = true;
       getInterpretation(this.id)
         .then((res) => {
           console.log(res);
-          // this.tags = res.data.tags;
-          this.tags = [{ id: 1, name: "test", type: 0 }];
+          this.tags = res.data.tags;
           this.content = res.data.content;
-          // this.paperCitation = res.data.paper.title;
           this.paperId = parseInt(res.data.paper.id);
           this.creator = res.data.created_by;
           this.createdAt = getLocalTime(res.data.created_at);
           this.title = res.data.title;
-          console.log("fuck");
-          console.log(this.content);
-          console.log(this.createdAt);
-          console.log(this.creator);
+          this.loading = false;
         })
         .catch((error) => {
           console.log(error);
         });
-      this.loading = false;
-      // console.log(this.title);
     },
   },
 };
