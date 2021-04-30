@@ -98,8 +98,7 @@ export const teditorImg = (params) => {
   return getRequest(url, 'post', params)
 }
 
-// TODO: confirm URL!!!
-export const getInterpretation = (id, method, params) => {
-  const url = `api/???/${id}`
-  return getRequest(url, method, params)
+export const getInterpretation = (id, params) => {
+  const url = `/api/interpretation/${id}`
+  return getRequest(url, 'get', params)
 }

@@ -27,3 +27,4 @@ yarn-error.log*
 
 build/env.js
 vue.config.js
+git_log.txt
