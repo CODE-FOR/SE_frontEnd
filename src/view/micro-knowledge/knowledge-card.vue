@@ -301,11 +301,11 @@ export default {
 
   data() {
     return {
-      id: this.$props.id,
+      // id: this.$props.id,
       // like: this.$props.isLike,
-      totalLike: this.$props.likeNumber,
-      totalFavor: this.$props.favorNumber,
-      collect: this.$props.isCollect,
+      // totalLike: this.$props.likeNumber,
+      // totalFavor: this.$props.favorNumber,
+      // collect: this.$props.isCollect,
       cited: false,
       showComment: false,
       comments: [],
@@ -314,8 +314,8 @@ export default {
       userInfo: {},
       followText: "",
       // TODO:
-      title: this.$props.title,
-      author: this.$props.author,
+      // title: this.$props.title,
+      // author: this.$props.author,
     };
   },
 

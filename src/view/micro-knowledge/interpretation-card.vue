@@ -9,7 +9,7 @@
       <div slot="title">
         发布者:
         <a @click.prevent="showUser" :id="id">{{
-          creator["username"] === "" ? "未知用户" : creator["username"]
+          created_by["username"] === "" ? "未知用户" : created_by["username"]
         }}</a>
         <Modal v-model="showUserControl" footer-hide>
           <Row>
@@ -75,8 +75,14 @@
           </Row>
         </Modal>
       </div>
-      <p slot="extra">论文解读发布于: {{ createAt }}</p>
-      <Row v-html="htmlvalue"></Row>
+      <p slot="extra">论文解读发布于: {{ created_at }}</p>
+      <Row v-html="content"></Row>
+      <br />
+      <Row>
+        <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
+          tag.name
+        }}</Tag>
+      </Row>
       <br />
       <Row>
         <i-col span="12">
@@ -96,7 +102,10 @@
               </i-button>
             </template>
             <template v-if="isInDetail === 0">
-              <i-button @click="handleJumpInterpretation" style="font-size: 14px">
+              <i-button
+                @click="handleJumpInterpretation"
+                style="font-size: 14px"
+              >
                 <Icon type="ios-more" />
                 查看详细内容
               </i-button>
@@ -113,11 +122,6 @@
           citeMessage
         }}</Button>
       </template>
-      <Row>
-        <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
-          tag.name
-        }}</Tag>
-      </Row>
     </card>
     <Divider />
   </div>
@@ -139,7 +143,6 @@ export default {
     comment,
   },
   props: {
-
     isInDetail: {
       type: Number,
       default: 0,
@@ -152,7 +155,7 @@ export default {
 
     title: {
       type: String,
-      default: 'title'
+      default: "title",
     },
 
     tags: {
@@ -210,23 +213,21 @@ export default {
 
   data() {
     return {
-      htmlvalue: this.$props.content,
-      like: this.$props.isLike,
-      totalLike: this.$props.likeNumber,
-      totalFavor: this.$props.favorNumber,
-      collect: this.$props.isCollect,
+      // like: this.$props.isLike,
+      // totalLike: this.$props.likeNumber,
+      // totalFavor: this.$props.favorNumber,
+      // collect: this.$props.isCollect,
       cited: false,
       showComment: false,
       comments: [],
       detailController: false,
       showUserControl: false,
       userInfo: {},
-      followText: "",
-      creator: this.$props.created_by,
-      createAt: getLocalTime(this.$props.created_at),
-      // TODO:
-      title: this.$props.title,
-      author: this.$props.author,
+      // followText: "",
+      // created_by: this.$props.created_by,
+      // createAt: getLocalTime(this.$props.created_at),
+      // title: this.$props.title,
+      // author: this.$props.author,
     };
   },
 
@@ -390,7 +391,7 @@ export default {
     },
 
     showUser: function () {
-      getUserInfo(this.$props.creator.id)
+      getUserInfo(this.$props.created_by.id)
         .then((res) => {
           this.showUserControl = true;
           this.userInfo = res.data;
@@ -402,7 +403,7 @@ export default {
 
     handleFollow: function () {
       if (this.userInfo.is_following) {
-        unfollow(this.creator.id)
+        unfollow(this.created_by.id)
           .then((res) => {
             this.userInfo.is_following = false;
             this.userInfo.total_fan -= 1;
@@ -412,7 +413,7 @@ export default {
             this.$Modal.error(getErrModalOptions(error));
           });
       } else {
-        follow(this.creator.id)
+        follow(this.created_by.id)
           .then((res) => {
             this.userInfo.is_following = true;
             this.userInfo.total_fan += 1;
@@ -442,7 +443,7 @@ export default {
         name: "interpretation",
         params: {
           id: this.id,
-        }
+        },
       });
     },
   },

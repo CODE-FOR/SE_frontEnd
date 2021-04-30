@@ -100,7 +100,6 @@ export default {
 
   mounted() {
     this.loadData();
-    this.loadInterpretation();
   },
 
   methods: {
@@ -116,6 +115,13 @@ export default {
           this.tags = res.data.tags;
           this.author = res.data.author;
           this.source = res.data.source;
+          let i;
+          for (i in res.data.interpretations) {
+            res.data.interpretations[i].content = res.data.interpretations[i].content.replace(/<[^>]+>/g, "").length > 100
+                  ? res.data.interpretations[i].content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
+                  : res.data.interpretations[i].content.replace(/<[^>]+>/g, "")
+            res.data.interpretations[i].created_at = getLocalTime(res.data.interpretations[i].created_at)
+          }
           this.items = res.data.interpretations;
           this.pageComponent.items = this.items.slice(
             (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
@@ -124,7 +130,7 @@ export default {
               this.items.length
             )
           );
-          console.log(this.pageComponent.items);
+          console.log(this.items);
           this.loading = false;
         })
         .catch((error) => {

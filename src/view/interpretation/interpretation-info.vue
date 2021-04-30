@@ -1,46 +1,37 @@
 <template>
   <div>
     <i-col span="16" offset="4">
-      <Card>
-        <Row v-if="loading">
-          <i-col class="demo-spin-col" offset="8" span="8">
-            <Spin fix>
-              <Icon
-                type="ios-loading"
-                size="18"
-                class="demo-spin-icon-load"
-              ></Icon>
-              <div>Loading</div>
-            </Spin>
-          </i-col>
-        </Row>
-        <Row v-else>
-          <InterpretationCard
-            :key="id"
-            :content="content"
-            :title="title"
-            :tags="tags"
-            :created_by="createdBy"
-            :created_at="createdAt"
-            :isInDetail="1"
-          />
-          <!-- <h1 align="center">{{ paperCitation }}</h1>
-          <Divider />
-          标签：<Tag
-            v-for="(item, index) in topic"
-            :key="index"
-            class="sysTopics"
-            >{{ item }}</Tag
-          >
-          <Divider />
-          <div>
-            <div align="left" style="float: left">解读发布者：{{ author }}</div>
-            <div align="right">发布时间：{{ createTime }}</div>
-          </div>
-          <Divider /> -->
-          <!-- {{ content }} -->
-        </Row>
-      </Card>
+      <i-col offset="2" span="20">
+        <Card>
+          <Tabs value="paperAbstract">
+            <TabPane label="论文解读详情" name="paperAbstract">
+              <Row v-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
+              <Row v-else>
+                <InterpretationCard
+                  :id="id"
+                  :content="content"
+                  :title="title"
+                  :tags="tags"
+                  :created_by="creator"
+                  :created_at="createdAt"
+                  :isInDetail="1"
+                />
+              </Row>
+            </TabPane>
+          </Tabs>
+        </Card>
+      </i-col>
     </i-col>
   </div>
 </template>
@@ -52,19 +43,17 @@ import { getTags, recommend, getInterpretation } from "@/api/microknowledge";
 import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
 
 export default {
-
-  components: {InterpretationCard},
+  components: { InterpretationCard },
 
   data() {
     return {
-      id: this.$route.params.id,
-      title: "",
-      abstract: "",
+      id: parseInt(this.$route.params.id),
+      title: "456",
       tags: [],
-      content: "",
-      paperCitation: "",
+      content: "456",
+      // paperCitation: "",
       paperId: 0,
-      createdBy: {},
+      creator: {},
       createdAt: "",
       loading: true,
     };
@@ -76,19 +65,22 @@ export default {
 
   methods: {
     loadData() {
+      alert(this.id);
       getInterpretation(this.id)
         .then((res) => {
           console.log(res);
-          this.tags = res.data.tags;
+          // this.tags = res.data.tags;
+          this.tags = [{ id: 1, name: "test", type: 0 }];
           this.content = res.data.content;
-          this.paperCitation = res.data.paper.title;
-          this.paperId = res.data.paper.id;
-          this.createdBy = res.data.created_by;
-          this.createdAt = res.data.created_at;
+          // this.paperCitation = res.data.paper.title;
+          this.paperId = parseInt(res.data.paper.id);
+          this.creator = res.data.created_by;
+          this.createdAt = getLocalTime(res.data.created_at);
           this.title = res.data.title;
-          console.log('fuck')
-          console.log(this.createdAt)
-          console.log(this.createdBy)
+          console.log("fuck");
+          console.log(this.content);
+          console.log(this.createdAt);
+          console.log(this.creator);
         })
         .catch((error) => {
           console.log(error);
