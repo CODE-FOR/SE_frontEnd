@@ -89,11 +89,11 @@
           <ButtonGroup>
             <i-button @click="onLike" style="font-size: 14px">
               <Icon type="md-thumbs-up" :color="likeColor" />
-              点赞 {{ totalLike }}
+              点赞 {{ likeNumber }}
             </i-button>
             <i-button @click="onCollect" style="font-size: 14px">
               <Icon :type="collectType" :color="collectColor" />
-              收藏 {{ totalFavor }}
+              收藏 {{ favorNumber }}
             </i-button>
             <template v-if="isInDetail === 1">
               <i-button @click="onComment" style="font-size: 14px">
@@ -137,6 +137,7 @@ import {
 import { follow, unfollow, getUserInfo } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
 import comment from "@/components/comment/comment.vue";
+import { likeInterpretation, collectInterpretation } from '../../api/microknowledge';
 export default {
   name: "KnowledgeCard",
   components: {
@@ -185,89 +186,62 @@ export default {
       default: "这是一个展示示例",
     },
 
-    // isLike: {
-    //   type: Boolean,
-    //   default: false
-    // },
+    isLike: {
+      type: Boolean,
+      default: false
+    },
 
-    // isCollect: {
-    //   type: Boolean,
-    //   default: false
-    // },
+    isCollect: {
+      type: Boolean,
+      default: false
+    },
 
-    // likeNumber: {
-    //   type: Number,
-    //   default: 0
-    // },
+    likeNumber: {
+      type: Number,
+      default: 0
+    },
 
-    // favorNumber: {
-    //   type: Number,
-    //   default: 0
-    // },
-
-    // displayType: {
-    //   type: Number,
-    //   default: 0
-    // },
+    favorNumber: {
+      type: Number,
+      default: 0
+    },
   },
 
   data() {
     return {
-      // like: this.$props.isLike,
-      // totalLike: this.$props.likeNumber,
-      // totalFavor: this.$props.favorNumber,
-      // collect: this.$props.isCollect,
-      cited: false,
       showComment: false,
       comments: [],
       detailController: false,
       showUserControl: false,
       userInfo: {},
-      // followText: "",
-      // created_by: this.$props.created_by,
-      // createAt: getLocalTime(this.$props.created_at),
-      // title: this.$props.title,
-      // author: this.$props.author,
     };
   },
 
   computed: {
     likeColor: function () {
-      return this.like ? "#0084ff" : "#747b8b";
+      return this.isLike ? "#0084ff" : "#747b8b";
     },
 
     collectType: function () {
-      return this.collect ? "ios-heart" : "ios-heart-outline";
+      return this.isCollect ? "ios-heart" : "ios-heart-outline";
     },
 
     collectColor: function () {
-      return this.collect ? "#fb7299" : "default";
-    },
-
-    citeStyle: function () {
-      return this.cite ? "margin-left:100px;" : "";
-    },
-
-    citeMessage: function () {
-      return this.cited ? "取消" : this.citeMessageInit;
-    },
-
-    popId: function () {
-      return "pop" + this.$props.id;
+      return this.isCollect ? "#fb7299" : "default";
     },
   },
 
   methods: {
     onLike: function () {
-      this.like = !this.like;
-      if (this.like) {
-        this.totalLike += 1;
+      this.isLike = !this.isLike;
+      if (this.isLike) {
+        this.likeNumber += 1;
       } else {
-        this.totalLike -= 1;
+        this.likeNumber -= 1;
       }
-      likeMicroKnowledge("post", this.$props.id)
+      likeInterpretation("get", this.$props.id)
         .then((res) => {
-          const info = this.like ? "成功点赞" : "成功取消点赞";
+          const info = this.isLike ? "成功点赞" : "成功取消点赞";
           this.$Message.info(info);
         })
         .catch((error) => {
@@ -276,19 +250,19 @@ export default {
     },
 
     onCollect: function () {
-      this.collect = !this.collect;
-      if (this.collect) {
-        this.totalFavor += 1;
+      this.isCollect = !this.isCollect;
+      if (this.isCollect) {
+        this.favorNumber += 1;
       } else {
-        this.totalFavor -= 1;
+        this.favorNumber -= 1;
       }
-      favorMicroKnowledge(
+      collectInterpretation(
         "post",
         this.$props.id,
-        this.collect ? "favor" : "unfavor"
+        this.isCollect ? "favor" : "unfavor"
       )
         .then((res) => {
-          const info = this.collect ? "成功收藏" : "成功取消收藏";
+          const info = this.isCollect ? "成功收藏" : "成功取消收藏";
           this.$Message.info(info);
         })
         .catch((error) => {
@@ -299,30 +273,6 @@ export default {
     onComment: async function () {
       await this.getComments();
       this.showComment = !this.showComment;
-    },
-
-    onCite: function () {
-      this.cited = !this.cited;
-      this.$emit("cite-event", {
-        id: this.id,
-        content: this.content,
-        cited: this.cited,
-      });
-    },
-
-    showDetail: function () {
-      if (this.evidences.length === 0) {
-        microKnowledgeIdReq(this.id, this.kind, "get")
-          .then((res) => {
-            this.evidences = res.data.evidences;
-            this.detailController = true;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        this.detailController = true;
-      }
     },
 
     convertComments: function (comments) {

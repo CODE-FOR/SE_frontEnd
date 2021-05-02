@@ -2,9 +2,7 @@
   <div>
     <template v-if="isInDetail === 0">
       <div class="ivu-card-head">
-        <!-- <template v-if="kind === 1"> -->
         <h2>{{ title }}</h2>
-        <!-- </template> -->
       </div>
     </template>
     <card :bordered="false" dis-hover :style="citeStyle">
@@ -77,20 +75,15 @@
           </Row>
         </Modal>
       </div>
-      <!-- <p slot="extra">{{ kind === 0 ? '微证据' : '微猜想' }}发布于: {{ createAt }}</p> -->
 
-      <p slot="extra">
-        {{ kind === 0 ? "论文" : "论文解读" }}发布于: {{ createAt }}
-      </p>
+      <p slot="extra">论文发布于: {{ createAt }}</p>
       <Row v-html="content"></Row>
       <!-- <Row>{{ content }}</Row> -->
       <br />
-      <template v-if="kind === 0">
-        <Row>
-          论文链接: <a :href="source"> {{ source }} </a> ( {{ publishedYear }} )
-        </Row>
-        <br />
-      </template>
+      <Row>
+        论文链接: <a :href="source"> {{ source }} </a> ( {{ publishedYear }} )
+      </Row>
+      <br />
       <Modal v-model="detailController" :footer-hide="true">
         <Divider />
         <Row v-for="item in evidences" :key="item.id">
@@ -135,18 +128,12 @@
           <ButtonGroup>
             <i-button @click="onLike" style="font-size: 14px">
               <Icon type="md-thumbs-up" :color="likeColor" />
-              点赞 {{ totalLike }}
+              点赞 {{ likeNumber }}
             </i-button>
             <i-button @click="onCollect" style="font-size: 14px">
               <Icon :type="collectType" :color="collectColor" />
-              收藏 {{ totalFavor }}
+              收藏 {{ favorNumber }}
             </i-button>
-            <template v-if="isInDetail === 1">
-              <i-button @click="onComment" style="font-size: 14px">
-                <Icon type="ios-chatbubbles" />
-                评论
-              </i-button>
-            </template>
             <template v-if="isInDetail === 0">
               <i-button @click="handleJumpPaper" style="font-size: 14px">
                 <Icon type="ios-more" />
@@ -155,19 +142,7 @@
             </template>
           </ButtonGroup>
         </i-col>
-        <i-col v-if="kind === 1" offset="9" span="3" style="padding-top: 7px">
-          <a href="#" @click.prevent="showDetail"> 查看参考 </a>
-        </i-col>
       </Row>
-      <Card v-if="showComment" style="margin-top: 10px">
-        <comment v-bind="comments"></comment>
-      </Card>
-      <!-- </template> -->
-      <template v-else-if="displayType === 1">
-        <Button class="cite" @click="onCite" type="primary">{{
-          citeMessage
-        }}</Button>
-      </template>
     </card>
     <Divider />
   </div>
@@ -182,14 +157,10 @@ import {
 } from "@/api/microknowledge.js";
 import { follow, unfollow, getUserInfo } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
-import comment from "@/components/comment/comment.vue";
+import {likePaper, collectPaper, likeInterpretaion, collectInterpretation} from '@/api/microknowledge'
 export default {
   name: "KnowledgeCard",
-  components: {
-    comment,
-  },
   props: {
-    //TODO: others is_in_detail
     isInDetail: {
       type: Number,
       default: 0,
@@ -210,17 +181,6 @@ export default {
       },
     },
 
-    kind: {
-      // 0: 微证据, 1: 微猜想
-      type: Number,
-      default: 0,
-    },
-
-    // citeMessageInit: {
-    //   type: String,
-    //   default: '引用'
-    // },
-
     createAt: {
       type: String,
       default: "年/月/日",
@@ -238,53 +198,35 @@ export default {
       },
     },
 
-    // isLike: {
-    //   type: Boolean,
-    //   default: false
-    // },
+    isLike: {
+      type: Boolean,
+      default: false
+    },
 
-    // isCollect: {
-    //   type: Boolean,
-    //   default: false
-    // },
+    isCollect: {
+      type: Boolean,
+      default: false
+    },
 
-    // likeNumber: {
-    //   type: Number,
-    //   default: 0
-    // },
+    likeNumber: {
+      type: Number,
+      default: 0
+    },
 
-    // favorNumber: {
-    //   type: Number,
-    //   default: 0
-    // },
-
-    // displayType: {
-    //   type: Number,
-    //   default: 0
-    // },
+    favorNumber: {
+      type: Number,
+      default: 0
+    },
 
     source: {
-      // 微证据专用
       type: String,
       default: "",
     },
-
-    // citation: { // 微证据专用
-    //   type: String,
-    //   default: ''
-    // },
 
     publishedYear: {
       type: Number,
       default: 0,
     },
-
-    // evidences: {
-    //   type: Array,
-    //   default: () => {
-    //     return []
-    //   }
-    // },
 
     title: {
       type: String,
@@ -301,35 +243,23 @@ export default {
 
   data() {
     return {
-      // id: this.$props.id,
-      // like: this.$props.isLike,
-      // totalLike: this.$props.likeNumber,
-      // totalFavor: this.$props.favorNumber,
-      // collect: this.$props.isCollect,
-      cited: false,
-      showComment: false,
-      comments: [],
-      detailController: false,
       showUserControl: false,
       userInfo: {},
       followText: "",
-      // TODO:
-      // title: this.$props.title,
-      // author: this.$props.author,
     };
   },
 
   computed: {
     likeColor: function () {
-      return this.like ? "#0084ff" : "#747b8b";
+      return this.isLike ? "#0084ff" : "#747b8b";
     },
 
     collectType: function () {
-      return this.collect ? "ios-heart" : "ios-heart-outline";
+      return this.isCollect ? "ios-heart" : "ios-heart-outline";
     },
 
     collectColor: function () {
-      return this.collect ? "#fb7299" : "default";
+      return this.isCollect ? "#fb7299" : "default";
     },
 
     citeStyle: function () {
@@ -341,21 +271,21 @@ export default {
     },
 
     popId: function () {
-      return "pop" + this.$props.id;
+      return "pop" + this.id;
     },
   },
 
   methods: {
     onLike: function () {
-      this.like = !this.like;
-      if (this.like) {
-        this.totalLike += 1;
+      this.isLike = !this.isLike;
+      if (this.isLike) {
+        this.likeNumber += 1;
       } else {
-        this.totalLike -= 1;
+        this.likeNumber -= 1;
       }
-      likeMicroKnowledge("post", this.$props.id)
+      likePaper("post", this.id)
         .then((res) => {
-          const info = this.like ? "成功点赞" : "成功取消点赞";
+          const info = this.isLike ? "成功点赞" : "成功取消点赞";
           this.$Message.info(info);
         })
         .catch((error) => {
@@ -364,19 +294,18 @@ export default {
     },
 
     onCollect: function () {
-      this.collect = !this.collect;
-      if (this.collect) {
-        this.totalFavor += 1;
+      this.isCollect = !this.isCollect;
+      if (this.isCollect) {
+        this.favorNumber += 1;
       } else {
-        this.totalFavor -= 1;
+        this.favorNumber -= 1;
       }
-      favorMicroKnowledge(
-        "post",
-        this.$props.id,
-        this.collect ? "favor" : "unfavor"
+      collectPaper(
+        "get",
+        this.id
       )
         .then((res) => {
-          const info = this.collect ? "成功收藏" : "成功取消收藏";
+          const info = this.isCollect ? "成功收藏" : "成功取消收藏";
           this.$Message.info(info);
         })
         .catch((error) => {
@@ -384,102 +313,8 @@ export default {
         });
     },
 
-    onComment: async function () {
-      await this.getComments();
-      this.showComment = !this.showComment;
-    },
-
-    onCite: function () {
-      this.cited = !this.cited;
-      this.$emit("cite-event", {
-        id: this.id,
-        content: this.content,
-        cited: this.cited,
-      });
-    },
-
-    showDetail: function () {
-      if (this.evidences.length === 0) {
-        microKnowledgeIdReq(this.id, this.kind, "get")
-          .then((res) => {
-            this.evidences = res.data.evidences;
-            this.detailController = true;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        this.detailController = true;
-      }
-    },
-
-    convertComments: function (comments) {
-      comments = comments.map((x) => ({
-        commentId: x.id,
-        name: x.username,
-        time: getLocalTime(x.created_at),
-        id: x.user_id,
-        comment: x.text,
-        to: x.to_user ? x.to_user.username : 0,
-        toId: x.to_user ? x.to_user.id : "",
-        inputShow: false,
-        headImg:
-          "https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png",
-        parent_comment_id: x.parent_comment_id,
-        reply: [],
-      }));
-      let father_comments_map = {};
-      comments
-        .filter((x) => x.parent_comment_id === undefined)
-        .forEach((x) => {
-          father_comments_map[x.commentId] = x;
-        });
-      comments.forEach((x) => {
-        if (x.parent_comment_id !== undefined) {
-          father_comments_map[x.parent_comment_id].reply.push(x);
-        }
-      });
-      return Object.values(father_comments_map);
-    },
-
-    getComments: async function () {
-      let username = "";
-      let userid = "";
-      await getUserInfo()
-        .then((res) => {
-          userid = res.data.id;
-          username = res.data.username;
-        })
-        .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
-        });
-      let header = {
-        myName: username,
-        micro_knowledge_id: this.id,
-        myHeader:
-          "https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png",
-        myId: userid,
-      };
-      await getMicroknowledgeComments("get", {
-        micro_knowledge_id: this.id,
-        pindex: 1,
-        psize: 20,
-      })
-        .then((res) => {
-          this.comments = {
-            ...header,
-            comments_init: this.convertComments(res.data.comment_list),
-          };
-          console.log(this.comments);
-        })
-        .catch((err) => {
-          console.log(err);
-          this.comments = header;
-        });
-    },
-
     showUser: function () {
-      getUserInfo(this.$props.creator.id)
+      getUserInfo(this.creator.id)
         .then((res) => {
           this.showUserControl = true;
           this.userInfo = res.data;

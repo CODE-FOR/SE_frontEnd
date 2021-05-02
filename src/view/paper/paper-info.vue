@@ -17,6 +17,8 @@
               :publishedYear="publishedYear"
               :author="author"
               :isInDetail="1"
+              isLike=true
+              likeNumber=1
             />
           </TabPane>
           <TabPane label="论文解读列表" name="interpretationList">

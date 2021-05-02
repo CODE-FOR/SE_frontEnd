@@ -44,6 +44,26 @@ export const likeMicroKnowledge = (method, id) => {
   return getRequest(url, method)
 }
 
+export const likePaper = (method, id) => {
+  const url = `/api/paper/${id}/like`
+  return getRequest(url, method)
+}
+
+export const collectPaper = (method, id) => {
+  const url = `/api/paper/${id}/collect`
+  return getRequest(url, method)
+}
+
+export const likeInterpretation = (method, id) => {
+  const url = `/api/interpretation/${id}/like`
+  return getRequest(url, method)
+}
+
+export const collectInterpretation = (method, id) => {
+  const url = `/api/interpretation/${id}/collect`
+  return getRequest(url, method)
+}
+
 export const addComment = (method, params) => {
   const url = '/api/comment/create'
   return getRequest(url, method, params)
