@@ -87,12 +87,6 @@ export const microKnowledgeIdReq = (id, type, method, params) => {
   return getRequest(url, method, params)
 }
 
-// TODO: need backend api
-export const getPaperInterpretations = (method, params) => {
-  const url = '/api/interpretation'
-  return getRequest(url, method, params)
-}
-
 export const getPaperList = (pageIndex, params) => {
   const url = `api/paper/page/${parseInt(pageIndex)}`
   return getRequest(url, 'get', params)
@@ -113,6 +107,11 @@ export const getTags = (method, params) => {
   return getRequest(url, method, params)
 }
 export const favorKnowledgeList = (params) => {
+  const url = `/api/favorites/page/${params.pindex}`
+  return getRequest(url, 'get', params)
+}
+
+export const favorList = (params) => {
   const url = `/api/favorites/page/${params.pindex}`
   return getRequest(url, 'get', params)
 }

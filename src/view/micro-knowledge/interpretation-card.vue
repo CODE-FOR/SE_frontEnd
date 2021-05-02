@@ -9,7 +9,7 @@
       <div slot="title">
         发布者:
         <a @click.prevent="showUser" :id="id">{{
-          created_by["username"] === "" ? "未知用户" : created_by["username"]
+          creator["username"] === "" ? "未知用户" : creator["username"]
         }}</a>
         <Modal v-model="showUserControl" footer-hide>
           <Row>
@@ -75,7 +75,7 @@
           </Row>
         </Modal>
       </div>
-      <p slot="extra">论文解读发布于: {{ created_at }}</p>
+      <p slot="extra">论文解读发布于: {{ createAt }}</p>
       <Row v-html="content"></Row>
       <br />
       <Row>
@@ -166,7 +166,7 @@ export default {
       },
     },
 
-    created_by: {
+    creator: {
       type: Object,
       default: () => {
         return {
@@ -176,7 +176,7 @@ export default {
       },
     },
 
-    created_at: {
+    createAt: {
       type: String,
       default: "年/月/日",
     },
@@ -341,7 +341,7 @@ export default {
     },
 
     showUser: function () {
-      getUserInfo(this.$props.created_by.id)
+      getUserInfo(this.$props.creator.id)
         .then((res) => {
           this.showUserControl = true;
           this.userInfo = res.data;
@@ -353,7 +353,7 @@ export default {
 
     handleFollow: function () {
       if (this.userInfo.is_following) {
-        unfollow(this.created_by.id)
+        unfollow(this.creator.id)
           .then((res) => {
             this.userInfo.is_following = false;
             this.userInfo.total_fan -= 1;
@@ -363,7 +363,7 @@ export default {
             this.$Modal.error(getErrModalOptions(error));
           });
       } else {
-        follow(this.created_by.id)
+        follow(this.creator.id)
           .then((res) => {
             this.userInfo.is_following = true;
             this.userInfo.total_fan += 1;

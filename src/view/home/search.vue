@@ -194,18 +194,17 @@ export default {
                     "..."
                   : item.abstract.replace(/<[^>]+>/g, ""),
               tags: item.tags,
-              // isLike: 0,
-              // isCollect: 0,
-              // likeNumber: 0,
-              // favorNumber: 0,
-              // displayType: 0,
+              isLike: item.is_like,
+              isCollect: item.is_collect,
+              likeNumber: item.like_num,
+              favorNumber: item.favor_num,
               source: item.source,
               author: item.author,
               title: item.title,
             };
           });
           this.items.push(...mapData);
-          this.load = false;
+          this.loading = false;
         } else {
           const mapData = res.data.res.map((item) => {
             return {
@@ -216,13 +215,17 @@ export default {
                   ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) +
                     "..."
                   : item.content.replace(/<[^>]+>/g, ""),
-              created_by: item.created_by,
-              created_at: getLocalTime(item.created_at),
+              creator: item.created_by,
+              createAt: getLocalTime(item.created_at),
               tags: item.tags,
+              isLike: item.is_like,
+              isCollect: item.is_collect,
+              likeNumber: item.like_num,
+              favorNumber: item.favor_num,
             };
           });
           this.items.push(...mapData);
-          this.load = false;
+          this.loading = false;
         }
       });
     },

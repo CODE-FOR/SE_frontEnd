@@ -22,9 +22,13 @@
                 :content="content"
                 :title="title"
                 :tags="tags"
-                :created_by="creator"
-                :created_at="createdAt"
+                :creator="creator"
+                :createAt="createAt"
                 :isInDetail="1"
+                :isLike="isLike"
+                :isCollect="isCollect"
+                :likeNumber="likeNumber"
+                :favorNumber="favorNumber"
               />
             </template>
           </TabPane>
@@ -38,7 +42,6 @@
 </template>
 
 <script>
-// TODO: URL confirmation!!!
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 import { getTags, recommend, getInterpretation } from "@/api/microknowledge";
 import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
@@ -54,8 +57,12 @@ export default {
       content: "456",
       paperId: 0,
       creator: {},
-      createdAt: "",
+      createAt: "",
       loading: true,
+      likeNumber: 0,
+      isLike: false,
+      isCollect: false,
+      favorNumber: 0
     };
   },
 
@@ -73,8 +80,12 @@ export default {
           this.content = res.data.content;
           this.paperId = parseInt(res.data.paper.id);
           this.creator = res.data.created_by;
-          this.createdAt = getLocalTime(res.data.created_at);
+          this.createAt = getLocalTime(res.data.created_at);
           this.title = res.data.title;
+          this.likeNumber = res.data.like_num;
+          this.isLike = res.data.is_like;
+          this.isCollect = res.data.is_collect;
+          this.favorNumber = res.data.favor_num;
           this.loading = false;
         })
         .catch((error) => {

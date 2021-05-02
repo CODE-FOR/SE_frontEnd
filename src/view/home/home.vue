@@ -149,6 +149,7 @@ export default {
           this.hasNextPage = res.data.has_next;
           const mapData = res.data.papers.map((item) => {
             return {
+              type: 0,
               id: item.id,
               creator: item.created_by,
               createAt: getLocalTime(item.created_at),
@@ -158,11 +159,10 @@ export default {
                   ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
                   : item.abstract.replace(/<[^>]+>/g, ""),
               tags: item.tags,
-              // isLike: 0,
-              // isCollect: 0,
-              // likeNumber: 0,
-              // favorNumber: 0,
-              // displayType: 0,
+              isLike: item.is_like,
+              isCollect: item.is_collect,
+              likeNumber: item.like_num,
+              favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
               title: item.title,
@@ -202,7 +202,6 @@ export default {
               isCollect: item.is_favor,
               likeNumber: item.like_num,
               favorNumber: item.favor_num,
-              displayType: 0,
               source: item.source,
               citation: item.citation,
               evidences: item.evidences,
@@ -215,28 +214,6 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
-    },
-
-    selectType: function (value) {
-      this.knowledgeType = value;
-      // reset
-      this.pageIndex = 1;
-      this.items = [];
-      this.idList = [];
-      this.loadData();
-    },
-
-    changeTag: function (tags) {
-      this.selectTagList = tags;
-      this.tagSearch = "";
-      tags.forEach((item) => {
-        this.tagSearch += item + " ";
-      });
-      this.tagSearch = this.tagSearch.trim();
-      this.pageIndex = 1;
-      this.items = [];
-      this.idList = [];
-      this.loadData();
     },
 
     changeTab: function (name) {

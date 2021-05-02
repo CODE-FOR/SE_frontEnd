@@ -17,8 +17,10 @@
               :publishedYear="publishedYear"
               :author="author"
               :isInDetail="1"
-              isLike=true
-              likeNumber=1
+              :isLike="isLike"
+              :likeNumber="likeNumber"
+              :isCollect="isCollect"
+              :favorNumber="favorNumber"
             />
           </TabPane>
           <TabPane label="论文解读列表" name="interpretationList">
@@ -94,7 +96,7 @@ export default {
       loading: true,
       pageComponent: {
         pageIndex: 1,
-        pageSize: 1,
+        pageSize: 5,
         items: [],
       },
     };
@@ -117,14 +119,24 @@ export default {
           this.tags = res.data.tags;
           this.author = res.data.author;
           this.source = res.data.source;
-          let i;
-          for (i in res.data.interpretations) {
-            res.data.interpretations[i].content = res.data.interpretations[i].content.replace(/<[^>]+>/g, "").length > 100
-                  ? res.data.interpretations[i].content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
-                  : res.data.interpretations[i].content.replace(/<[^>]+>/g, "")
-            res.data.interpretations[i].created_at = getLocalTime(res.data.interpretations[i].created_at)
-          }
-          this.items = res.data.interpretations;
+          const mapData = res.data.interpretations.map((item) => {
+            return {
+              id: item.id,
+              content: item.content.replace(/<[^>]+>/g, "").length > 100
+                  ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
+                  : item.content.replace(/<[^>]+>/g, ""),
+              title: item.title,
+              tags: item.tags,
+              creator: item.created_by,
+              createAt: getLocalTime(item.created_at),
+              isLike: item.is_like,
+              isCollect: item.is_favor,
+              likeNumber: item.like_num,
+              favorNumber: item.favor_num,
+            }
+          })
+          this.items = []
+          this.items.push(...mapData)
           this.pageComponent.items = this.items.slice(
             (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
             Math.min(
