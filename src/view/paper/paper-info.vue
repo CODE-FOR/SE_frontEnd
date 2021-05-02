@@ -118,6 +118,7 @@ export default {
           this.publishedYear = res.data.publishedYear;
           this.tags = res.data.tags;
           this.author = res.data.author;
+          console.log(this.author)
           this.source = res.data.source;
           const mapData = res.data.interpretations.map((item) => {
             return {

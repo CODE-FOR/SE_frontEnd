@@ -11,14 +11,29 @@
                 v-bind="item"
               />
             </template>
+            <Row v-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
           </TabPane>
           <TabPane label="关注" name="favorite">
             <template v-if="items.length !== 0">
-              <KnowledgeCard
-                v-for="item in items"
-                :key="item.id"
-                v-bind="item"
-              />
+              <template v-for="item in pageComponent.items">
+                <template v-if="item.type === 0">
+                  <KnowledgeCard :key="item.id" v-bind="item" />
+                </template>
+                <template v-else>
+                  <InterpretationCard :key="item.id" v-bind="item" />
+                </template>
+              </template>
               <Row v-if="loading">
                 <i-col class="demo-spin-col" offset="8" span="8">
                   <Spin fix>
@@ -31,37 +46,6 @@
                   </Spin>
                 </i-col>
               </Row>
-              <Row v-else-if="hasNextPage">
-                <i-col style="text-align: center">
-                  <a @click.prevent="loadMoreData"> 加载更多 </a>
-                </i-col>
-              </Row>
-              <Row v-else>
-                <i-col style="text-align: center"> 暂无更多微知识 </i-col>
-              </Row>
-            </template>
-            <template v-else>
-              <Row v-if="loading">
-                <i-col class="demo-spin-col" offset="8" span="8">
-                  <Spin fix>
-                    <Icon
-                      type="ios-loading"
-                      size="18"
-                      class="demo-spin-icon-load"
-                    ></Icon>
-                    <div>Loading</div>
-                  </Spin>
-                </i-col>
-              </Row>
-              <div style="text-align: center; font-size: 20px" v-else>
-                <br />
-                <br />
-                <br />
-                暂无关注用户动态
-                <br />
-                <br />
-                <br />
-              </div>
             </template>
           </TabPane>
         </Tabs>
@@ -81,14 +65,16 @@
 
 <script>
 import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
+import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
 import { recentKnowledge } from "@/api/user";
+import { recentFavor } from "@/api/user";
 import { getTags, recommend, microKnowledgeIdReq } from "@/api/microknowledge";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 import { getPaperList } from "@/api/microknowledge";
 export default {
   name: "home",
 
-  components: { KnowledgeCard },
+  components: { KnowledgeCard, InterpretationCard },
 
   data() {
     return {
@@ -100,7 +86,42 @@ export default {
       tagList: [],
       pageIndex: 1,
       hasNextPage: true,
-      items: [],
+      items: [
+        {
+          type: 0,
+          id: 1,
+          creator: {
+            username: "lzw_super",
+            id: 3,
+          },
+          createAt: "2021-4-29 20:30:01",
+          content: "content",
+          tags: [{ name: "test", id: 1 }],
+          isLike: false,
+          isCollect: false,
+          likeNumber: 0,
+          favorNumber: 0,
+          source: "http://www.google.com",
+          author: ["吕云帆"],
+          title: "abcde",
+        },
+        {
+          type: 1,
+          id: 1,
+          tags: [{ name: "test", id: 1 }],
+          isLike: false,
+          isCollect: false,
+          likeNumber: 0,
+          favorNumber: 0,
+          title: "fghij",
+          content: "content",
+          creator: {
+            username: "lzw_super",
+            id: 3,
+          },
+          createAt: "2021-4-29 20:30:00",
+        },
+      ],
       loading: true,
       pageComponent: {
         pageSize: 5,
@@ -142,7 +163,6 @@ export default {
 
     loadData: function () {
       this.loading = true;
-      this.pageComponent.items = [];
       getPaperList(this.pageComponent.pageIndex)
         .then((res) => {
           this.pageComponent.pageNum = res.data.page_num;
@@ -156,7 +176,8 @@ export default {
               publishedYear: item.published_year,
               content:
                 item.abstract.replace(/<[^>]+>/g, "").length > 100
-                  ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
+                  ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
                   : item.abstract.replace(/<[^>]+>/g, ""),
               tags: item.tags,
               isLike: item.is_like,
@@ -180,47 +201,90 @@ export default {
       console.log(this.pageComponent.items);
     },
 
+    // loadFavor: function () {
+    //   this.loading = true;
+    //   recentKnowledge({
+    //     pindex: this.pageIndex,
+    //     num_per_page: this.pageSize,
+    //     micro_evidence: true,
+    //     micro_conjecture: true,
+    //   })
+    //     .then((res) => {
+    //       const mapData = res.data.page.map((item) => {
+    //         return {
+    //           id: item.id,
+    //           creator: item.created_by,
+    //           kind: item.type - 1,
+    //           createAt: getLocalTime(item.created_at),
+    //           publishedYear: item.published_year,
+    //           content: item.content,
+    //           tags: item.tags,
+    //           isLike: item.is_like,
+    //           isCollect: item.is_favor,
+    //           likeNumber: item.like_num,
+    //           favorNumber: item.favor_num,
+    //           source: item.source,
+    //           citation: item.citation,
+    //           evidences: item.evidences,
+    //         };
+    //       });
+    //       this.items.push(...mapData);
+    //       this.hasNextPage = res.data.has_next;
+    //       this.loading = false;
+    //     })
+    //     .catch((error) => {
+    //       this.$Modal.error(getErrModalOptions(error));
+    //     });
+    // },
+
+    // TODO:
     loadFavor: function () {
       this.loading = true;
-      recentKnowledge({
-        pindex: this.pageIndex,
-        num_per_page: this.pageSize,
-        micro_evidence: true,
-        micro_conjecture: true,
-      })
-        .then((res) => {
-          const mapData = res.data.page.map((item) => {
+      recentFavor({
+        pindx: pageComponent.pageIndex,
+      }).then((res) => {
+        this.pageComponent.pageNum = res.data.pageNum;
+        const mapData = res.data.recentFavor.map((item) => {
+          if (item.type === 0) {
             return {
+              type: item.type,
               id: item.id,
               creator: item.created_by,
-              kind: item.type - 1,
               createAt: getLocalTime(item.created_at),
-              publishedYear: item.published_year,
-              content: item.content,
+              content: item.abstract,
               tags: item.tags,
               isLike: item.is_like,
-              isCollect: item.is_favor,
-              likeNumber: item.like_num,
-              favorNumber: item.favor_num,
+              isCollect: item.is_collect,
+              totalLike: item.like_num,
+              totalCollect: item.collect_num,
               source: item.source,
-              citation: item.citation,
-              evidences: item.evidences,
+              author: item.author,
+              title: item.title,
             };
-          });
-          this.items.push(...mapData);
-          this.hasNextPage = res.data.has_next;
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
+          } else {
+            return {
+              type: item.type,
+              id: item.id,
+              creator: item.created_by,
+              createAt: getLocalTime(item.created_at),
+              tags: item.tags,
+              isLike: item.is_like,
+              isCollect: item.is_collect,
+              totalLike: item.like_num,
+              totalCollect: item.collect_num,
+              content: item.content,
+            };
+          }
         });
+        this.pageComponent.items.push(...mapData);
+        this.loading = false;
+      });
     },
 
     changeTab: function (name) {
       this.activeTab = name;
       this.pageIndex = 1;
-      this.items = [];
-      this.idList = [];
+      this.pageComponent.items = []
       if (this.activeTab === "favorite") {
         this.loadFavor();
       } else {
