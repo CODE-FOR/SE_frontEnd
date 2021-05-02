@@ -96,8 +96,8 @@
           @on-change="changeTag"
           filterable
         >
-          <Option v-for="item in tagList" :value="item.value" :key="item.value">
-            {{ item.label }}
+          <Option v-for="item in tagList" :value="item.id" :key="item.id">
+            {{ item.value }}
           </Option>
         </i-select>
       </Card>
@@ -152,6 +152,7 @@ export default {
         this.tagList = res.data.page.map((tag) => ({
           value: tag.name,
           label: tag.name,
+          id: tag.id,
         }));
       })
       .catch((err) => {

@@ -28,3 +28,5 @@ yarn-error.log*
 build/env.js
 vue.config.js
 git_log.txt
+search-api.js
+like_collect.js

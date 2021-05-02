@@ -80,8 +80,9 @@ export const recentKnowledge = (params) => {
   return getRequest(url, 'get', params)
 }
 
-export const recentFavo = (parmas) => {
-  const url = `/api/recent/page/${parmas.pindex}`
+export const recentFavor = (params) => {
+  const url = `/api/recent/page/${params.pindex}`
+  return getRequest(url, 'get', params)
 }
 
 export const uploadAvatar = (params) => {

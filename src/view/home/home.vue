@@ -241,10 +241,10 @@ export default {
     loadFavor: function () {
       this.loading = true;
       recentFavor({
-        pindx: pageComponent.pageIndex,
+        pindx: this.pageComponent.pageIndex,
       }).then((res) => {
         this.pageComponent.pageNum = res.data.pageNum;
-        const mapData = res.data.recentFavor.map((item) => {
+        const mapData = res.data.recent.map((item) => {
           if (item.type === 0) {
             return {
               type: item.type,
