@@ -1,87 +1,94 @@
 <template>
   <Row>
-    <i-col
-      offset="2"
-      span="15"
-    >
+    <i-col offset="2" span="15">
       <Card>
-        <template v-if="items.length !== 0">
-          <KnowledgeCard
-            v-for="item in items"
-            :key="item.key"
-            v-bind='item'
-          />
-          <Row v-if="loading">
-            <i-col class="demo-spin-col" offset="8" span="8">
-              <Spin fix>
-                <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-                <div>Loading</div>
-              </Spin>
-            </i-col>
-          </Row>
-          <Row v-else-if="hasNextPage">
-            <i-col style="text-align: center">
-              <a @click.prevent="loadMoreData"> 加载更多 </a>
-            </i-col>
-          </Row>
-          <Row v-else>
-            <i-col style="text-align: center">
-              暂无更多微知识
-            </i-col>
-          </Row>
-        </template>
-        <template v-else>
-          <Row v-if="loading">
-            <i-col class="demo-spin-col" offset="8" span="8">
-              <Spin fix>
-                <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-                <div>Loading</div>
-              </Spin>
-            </i-col>
-          </Row>
-          <div style="text-align: center; font-size: 20px;" v-else>
-            <br>
-            <br>
-            <br>
+        <template v-if="knowledgeType === 'paper'">
+          <template v-if="items.length !== 0">
+            <KnowledgeCard
+              v-for="item in items"
+              :key="item.key"
+              v-bind="item"
+            />
+            <Row v-if="loading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </Row>
+          </template>
+          <div style="text-align: center; font-size: 20px" v-else>
+            <br />
+            <br />
+            <br />
             暂无相关搜索结果
-            <br>
-            <br>
-            <br>
+            <br />
+            <br />
+            <br />
           </div>
         </template>
+        <template v-else>
+          <template v-if="items.length !== 0">
+            <InterpretationCard
+              v-for="item in items"
+              :key="item.key"
+              v-bind="item"
+            />
+            <Row if="loading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </Row>
+          </template>
+          <div style="text-align: center; font-size: 20px" v-else>
+            <br />
+            <br />
+            <br />
+            暂无相关搜索结果
+            <br />
+            <br />
+            <br />
+          </div>
+        </template>
+        <Page
+          :total="totalData"
+          :current="pageIndex"
+          :page-size="pageSize"
+          prev-text="上一页"
+          next-text="下一页"
+          show-elevator
+          @on-change="changeIndexPage"
+        ></Page>
       </Card>
     </i-col>
-    <i-col
-      offset="1"
-      span="6"
-    >
+
+    <i-col offset="1" span="6">
       <Card>
-        <p slot="title" style="font-size: 18px">
-          筛选器
-        </p>
-        <p class="type-selector">
-          微知识类型：
-        </p>
+        <p slot="title" style="font-size: 18px">筛选器</p>
+        <p class="type-selector">论文/论文解读：</p>
         <i-select
           v-model="knowledgeType"
           @on-change="selectType"
           style="width: 80%"
         >
-          <Option value="all">
-            全部
-          </Option>
-          <Option value="micro-evidence">
-            论文
-          </Option>
-          <Option value="micro-suppose">
-            论文解读
-          </Option>
+          <Option value="paper"> 论文 </Option>
+          <Option value="interpretation"> 论文解读 </Option>
         </i-select>
-        <br>
-        <br>
-        <p class="type-selector">
-          标签：
-        </p>
+        <br />
+        <br />
+        <p class="type-selector">标签：</p>
         <i-select
           v-model="selectTagList"
           style="width: 80%"
@@ -89,11 +96,7 @@
           @on-change="changeTag"
           filterable
         >
-          <Option
-            v-for="item in tagList"
-            :value="item.value"
-            :key="item.value"
-          >
+          <Option v-for="item in tagList" :value="item.value" :key="item.value">
             {{ item.label }}
           </Option>
         </i-select>
@@ -103,137 +106,204 @@
 </template>
 
 <script>
-import KnowledgeCard from '@/view/micro-knowledge/knowledge-card'
-import { getKnowledgePage, getTags } from '@/api/microknowledge'
-import { getErrModalOptions, getLocalTime } from '@/libs/util.js'
+import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
+import InterpretationCard from "@/view/micro-knowledge/knowledge-card";
+import { getKnowledgePage, getTags } from "@/api/microknowledge";
+import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
+import { getSearchResult } from "../../api/microknowledge";
 export default {
-  name: 'Search',
+  name: "Search",
 
-  components: { KnowledgeCard },
+  components: { KnowledgeCard, InterpretationCard },
 
-  data () {
+  data() {
     return {
-      activeTab: 'recommend',
-      knowledgeType: 'all',
+      knowledgeType: "paper",
       selectTagList: [],
-      tagSearch: '',
+      tagSearch: "",
       tagList: [],
       pageIndex: 1,
-      hasNextPage: true,
+      totalData: 0,
+      pageSize: 5,
       items: [],
-      pageSize: 15,
       query: this.$route.params.query,
-      searchEvidence: true,
-      searchConjecture: true,
-      loading: true
-    }
+      searchPaper: true,
+      searchInterpretation: false,
+      loading: true,
+    };
   },
 
   watch: {
-    '$route' (to, from) {
-      this.query = this.$route.params.query
-      this.pageIndex = 1
-      this.items = []
-      this.loadData()
-    }
+    $route(to, from) {
+      this.query = this.$route.params.query;
+      this.pageIndex = 1;
+      this.items = [];
+      this.loadData();
+    },
   },
 
-  mounted () {
-    getTags('get', {
+  mounted() {
+    getTags("get", {
       pindx: 1,
       num_per_page: 99,
-      presupposed: true
-    }).then(res => {
-      this.tagList = res.data.page.map(tag => ({ value: tag.name, label: tag.name }))
-    }).catch(err => {
-      console.log(err)
+      presupposed: true,
     })
-    this.loadData()
+      .then((res) => {
+        this.tagList = res.data.page.map((tag) => ({
+          value: tag.name,
+          label: tag.name,
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.loadData();
   },
 
   methods: {
-    loadData: function () {
-      this.loading = true
-      getKnowledgePage('get', {
-        pindx: this.pageIndex,
-        num_per_page: this.pageSize,
-        tags: this.tagSearch === '' ? null : this.tagSearch,
-        keywords: this.$route.params.query,
-        micro_evidence: this.searchEvidence,
-        micro_conjecture: this.searchConjecture
-      }).then(res => {
-        const mapData = res.data.page.map(item => {
-          return {
-            id: item.id,
-            creator: item.created_by,
-            kind: item.type - 1,
-            createAt: getLocalTime(item.created_at),
-            publishedYear: item.published_year,
-            content: item.content,
-            tags: item.tags,
-            isLike: item.is_like,
-            isCollect: item.is_favor,
-            likeNumber: item.like_num,
-            favorNumber: item.favor_num,
-            displayType: 0,
-            source: item.source,
-            citation: item.citation,
-            evidences: item.evidences,
-            key: `${item.type}-${item.id}`
-          }
-        })
-        this.items.push(...mapData)
-        this.loading = false
-        this.hasNextPage = res.data.has_next
-      }).catch(error => {
-        this.$Modal.error(getErrModalOptions(error))
-      })
+    changeIndexPage: function () {
+      setTimeout(() => {
+        document
+          .getElementsByClassName("content-wrapper ivu-layout-content")[0]
+          .scroll(0, 0);
+      }, 400);
+      this.pageIndex = i;
+      this.loadData();
     },
 
+    loadData: function () {
+      this.loading = true;
+      getSearchResult({
+        pindx: this.pageIndex,
+        tags: (this.tagSearch = "" ? null : this.tagSearch),
+        keywords: this.$route.params.query,
+        paper: this.searchPaper,
+        interpertation: this.searchInterpretation,
+      }).then((res) => {
+        this.totalData = res.data.total_res;
+        if (paper) {
+          const mapData = res.data.res.map((item) => {
+            return {
+              id: item.id,
+              creator: item.created_by,
+              createAt: getLocalTime(item.created_at),
+              publishedYear: item.published_year,
+              content:
+                item.abstract.replace(/<[^>]+>/g, "").length > 100
+                  ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
+                  : item.abstract.replace(/<[^>]+>/g, ""),
+              tags: item.tags,
+              // isLike: 0,
+              // isCollect: 0,
+              // likeNumber: 0,
+              // favorNumber: 0,
+              // displayType: 0,
+              source: item.source,
+              author: item.author,
+              title: item.title,
+            };
+          });
+          this.items.push(...mapData);
+          this.load = false;
+        } else {
+          const mapData = res.data.res.map((item) => {
+            return {
+              id: item.id,
+              title: item.title,
+              content:
+                item.content.replace(/<[^>]+>/g, "").length > 100
+                  ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
+                  : item.content.replace(/<[^>]+>/g, ""),
+              created_by: item.created_by,
+              created_at: getLocalTime(item.created_at),
+              tags: item.tags,
+            };
+          });
+          this.items.push(...mapData);
+          this.load = false;
+        }
+      });
+    },
+    // loadData: function () {
+    //   this.loading = true;
+    //   getKnowledgePage("get", {
+    //     pindx: this.pageIndex,
+    //     num_per_page: this.pageSize,
+    //     tags: this.tagSearch === "" ? null : this.tagSearch,
+    //     keywords: this.$route.params.query,
+    //     micro_evidence: this.searchEvidence,
+    //     micro_conjecture: this.searchConjecture,
+    //   })
+    //     .then((res) => {
+    //       const mapData = res.data.page.map((item) => {
+    //         return {
+    //           id: item.id,
+    //           creator: item.created_by,
+    //           kind: item.type - 1,
+    //           createAt: getLocalTime(item.created_at),
+    //           publishedYear: item.published_year,
+    //           content: item.content,
+    //           tags: item.tags,
+    //           isLike: item.is_like,
+    //           isCollect: item.is_favor,
+    //           likeNumber: item.like_num,
+    //           favorNumber: item.favor_num,
+    //           displayType: 0,
+    //           source: item.source,
+    //           citation: item.citation,
+    //           evidences: item.evidences,
+    //           key: `${item.type}-${item.id}`,
+    //         };
+    //       });
+    //       this.items.push(...mapData);
+    //       this.loading = false;
+    //       this.hasNextPage = res.data.has_next;
+    //     })
+    //     .catch((error) => {
+    //       this.$Modal.error(getErrModalOptions(error));
+    //     });
+    // },
+
     selectType: function (value) {
-      this.knowledgeType = value
-      if (value === 'all') {
-        this.searchEvidence = true
-        this.searchConjecture = true
-      } else if (value === 'micro-evidence') {
-        this.searchEvidence = true
-        this.searchConjecture = false
+      this.knowledgeType = value;
+      if (value === "paper") {
+        this.searchPaper = true;
+        this.searchInterpretation = false;
       } else {
-        this.searchEvidence = false
-        this.searchConjecture = true
+        this.searchPaper = false;
+        this.searchInterpretation = true;
       }
       // reset
-      this.pageIndex = 1
-      this.items = []
-      this.loadData()
+      this.pageIndex = 1;
+      this.items = [];
+      this.loadData();
     },
 
     changeTag: function (tags) {
-      this.selectTagList = tags
-      this.tagSearch = ''
-      tags.forEach(item => {
-        this.tagSearch += item + ' '
-      })
-      this.tagSearch = this.tagSearch.trim()
-      this.pageIndex = 1
-      this.items = []
-      this.loadData()
+      this.selectTagList = tags;
+      this.tagSearch = "";
+      tags.forEach((item) => {
+        this.tagSearch += item + " ";
+      });
+      this.tagSearch = this.tagSearch.trim();
+      this.pageIndex = 1;
+      this.items = [];
+      this.loadData();
     },
-
-    loadMoreData: function () {
-      this.pageIndex += 1
-      this.loadData()
-    }
-  }
-}
+  },
+};
 </script>
 
 <style lang="less">
-.ivu-tabs-tab{
+.ivu-tabs-tab {
   font-size: 20px;
-  font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC,
+    Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei,
+    sans-serif;
 }
-.type-selector{
+.type-selector {
   font-size: 16px;
   font-weight: bold;
   padding-bottom: 5px;

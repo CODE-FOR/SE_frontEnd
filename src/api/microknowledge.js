@@ -27,6 +27,12 @@ export const getKnowledgePage = (method, params) => {
   return getRequest(url, method, params)
 }
 
+// TODO: backend url
+export const getSearchResult = (params) => {
+  const url = `/api/search/page/${params.pindx}`
+  return getRequest(url, 'get', params)
+}
+
 export const favorMicroKnowledge = (method, id, type) => {
   // type 取值为 "favor" or "unfavor"
   const url = `/api/micro-knowledge/${id}/${type}`
