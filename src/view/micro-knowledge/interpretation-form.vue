@@ -191,13 +191,10 @@ export default {
         );
       }
     }
-
-    window.addEventListener("beforeunload", () => {
-      sessionStorage.setItem(
-        "paperId",
-        this.$store.state.paperIdWhileWritingInterpretation
-      );
-    });
+    sessionStorage.setItem(
+      "paperId",
+      this.$store.state.paperIdWhileWritingInterpretation
+    );
     if (!this.$store.state.user.id) {
       await getUserInfo()
         .then((res) => {
