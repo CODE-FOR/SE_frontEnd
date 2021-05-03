@@ -7,8 +7,8 @@ export const createPaper = (method, params) => {
   return getRequest(url, method, params)
 }
 
-export const createConjecture = (method, params) => {
-  const url = '/api/micro-conjecture'
+export const createInterpretation = (method, params) => {
+  const url = '/api/interpretation/create'
   return getRequest(url, method, params)
 }
 

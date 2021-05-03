@@ -75,7 +75,7 @@ import TEditor from "@/components/TEditor.vue";
 import KnowledgeCard from "./knowledge-card.vue";
 import {
   favorKnowledgeList,
-  createConjecture,
+  createInterpretation,
   getTags,
 } from "@/api/microknowledge.js";
 import { getUserInfo } from "@/api/user";
@@ -127,7 +127,7 @@ export default {
       interpretation_id: -1,
       interpretationTitle: "",
       form: {
-        topic: [], // tags
+        tags: [], // tags
         content: "",
         // tags: '',
         paperCitation: "",
@@ -138,7 +138,7 @@ export default {
       },
       paperInfo: {
         //TODO: confirmation with backend
-        id: 20,
+        id: -1,
         title: "default title",
         content: "<b>default content</b>",
         creator: "default interpreter",
@@ -210,7 +210,7 @@ export default {
 
   methods: {
     loadData: function () {
-      this.loading = false;
+      this.loading = true;
       microKnowledgeIdReq(
         parseInt(this.$store.state.paperIdWhileWritingInterpretation),
         0,
@@ -218,6 +218,7 @@ export default {
       )
         .then((res) => {
           this.paperCitationTitle = res.data.title;
+          this.paperInfo.id = parseInt(this.$store.state.paperIdWhileWritingInterpretation);
           this.paperInfo.title = res.data.title;
           this.paperInfo.content = res.data.abstract;
           this.paperInfo.creator = res.data.created_by;
@@ -232,26 +233,27 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      this.paperInfo.id = parseInt(this.$store.state.paperIdWhileWritingInterpretation);
     },
 
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          const tags = this.form.topic
-            .map((tag) => {
-              return { name: tag, type: 0 };
-            })
-            .concat(
-              this.form.tags.split(" ").map((tag) => {
-                return { name: tag, type: 1 };
-              })
-            );
-          createConjecture("post", {
-            // content: this.form.content,
+
+          const tags = this.form.tags.split(' ')
+            .map(tag => { return { name: tag, type: 1 } });
+
+          const data = {
+
+            title: this.form.interpretationTitle,
             content: tinymce.activeEditor.getContent(),
             tags: tags,
-            paper_id: this.form.papaerId1,
-          })
+            paper_id: this.paperInfo.id
+          };
+
+          alert(tags.toString());
+
+          createInterpretation('post', data)
             .then((res) => {
               this.$Message.success("发布成功!请等待审核！");
             })

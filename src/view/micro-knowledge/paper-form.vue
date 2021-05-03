@@ -81,7 +81,7 @@ export default {
     // const validateAuthor = (rule, value, callback) => {
     //   if (value === '' {
     //     callback(new Error('请输入论文的作者'))
-    //   }) else if 
+    //   }) else if
     // }
 
     const validateTags = (rule, value, callback) => {
@@ -207,7 +207,7 @@ export default {
       // console.log(name)
       this.$refs[name].validate(valid => {
         if (valid) {
-          const tags = this.form.topic.map(tag => { return { name: tag, type: 0 } }).concat(this.form.tags.split(' ').map(tag => { return { name: tag, type: 1 } }))
+          const tags = this.form.topic.map(tag => { return { name: tag, type: 0 } }).concat(this.form.tags.split(' ').map(tag => { return { name: tag, type: 1 } }));
           const data = {
             abstract: tinymce.activeEditor.getContent(),
             tags: tags,
@@ -217,8 +217,8 @@ export default {
             source: this.form.paperLink,
             title: this.form.title,
             author: this.form.author.split(',')
-          }
-          console.log(data)
+          };
+          console.log(data);
           createPaper('post', data).then(res => {
             this.$Message.success('发布成功!请等待审核！')
           }).catch(
@@ -227,7 +227,7 @@ export default {
         } else {
           this.$Message.error('发布失败!')
         }
-      })
+      });
     },
     getTopicList () {
       getTags('get', {
