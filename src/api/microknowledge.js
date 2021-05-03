@@ -118,7 +118,6 @@ export const favorList = (params) => {
 
 // TODO: 与后端协商图片传输的路由
 export const teditorImg = (params) => {
-  alert('get in')
   const url = `/api/todo/url`
   return getRequest(url, 'post', params)
 }

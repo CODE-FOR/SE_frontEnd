@@ -288,7 +288,6 @@ export default {
 
   methods: {
     writeInterpretation: function() {
-      alert(this.id)
       this.$store.commit('getPaperId', this.id)
       this.$router.push({
         name: 'publish_interpretation',

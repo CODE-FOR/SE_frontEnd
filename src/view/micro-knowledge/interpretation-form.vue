@@ -183,13 +183,20 @@ export default {
   },
 
   async mounted() {
-    console.log(this.$store);
-    if (sessionStorage.getItem("paperId")) {
-      this.$store.commit('getPaperId', parseInt(sessionStorage.getItem("paperId")))
+    if (this.$store.state.paperIdWhileWritingInterpretation === 0) {
+      if (sessionStorage.getItem("paperId")) {
+        this.$store.commit(
+          "getPaperId",
+          parseInt(sessionStorage.getItem("paperId"))
+        );
+      }
     }
 
     window.addEventListener("beforeunload", () => {
-      sessionStorage.setItem("paperId", this.$store.state.paperIdWhileWritingInterpretation);
+      sessionStorage.setItem(
+        "paperId",
+        this.$store.state.paperIdWhileWritingInterpretation
+      );
     });
     if (!this.$store.state.user.id) {
       await getUserInfo()
@@ -206,11 +213,12 @@ export default {
 
   methods: {
     loadData: function () {
-      alert('get in')
       this.loading = false;
-      // TODO: 粘过来的，还没改完
-      // paper id: 20 -> Attention is all you need
-      microKnowledgeIdReq(parseInt(this.$store.state.paperIdWhileWritingInterpretation), 0, "get")
+      microKnowledgeIdReq(
+        parseInt(this.$store.state.paperIdWhileWritingInterpretation),
+        0,
+        "get"
+      )
         .then((res) => {
           this.paperCitationTitle = res.data.title;
           this.paperInfo.title = res.data.title;
@@ -222,16 +230,14 @@ export default {
           this.paperInfo.author = res.data.author;
           this.paperInfo.source = res.data.source;
           this.loading = false;
-          console.log(this.paperInfo)
+          console.log(this.paperInfo);
         })
         .catch((error) => {
           console.log(error);
         });
-      alert(this.paperInfo.title);
     },
 
     handleSubmit(name) {
-      alert();
       this.$refs[name].validate((valid) => {
         if (valid) {
           const tags = this.form.topic

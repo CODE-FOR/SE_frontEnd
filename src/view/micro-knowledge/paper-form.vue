@@ -49,7 +49,6 @@ export default {
 
     const validateSummary = (rule, value, callback) => {
       value = tinymce.activeEditor.getContent()
-      // alert(value)
       if (value === '') {
         callback(new Error('请输入微证据内容(不超过5000字)'))
       } else if (value.length > 5000) {
