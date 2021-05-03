@@ -9,6 +9,7 @@
           <TabPane label="论文详情" name="paperAbstract">
             <KnowledgeCard
               :key="id"
+              :id="id"
               :content="content"
               :creator="creator"
               :createAt="createAt"

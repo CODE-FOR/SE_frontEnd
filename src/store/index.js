@@ -8,10 +8,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    //
+    paperIdWhileWritingInterpretation: 0
   },
   mutations: {
-    //
+    getPaperId(state, paperId) {
+      state.paperIdWhileWritingInterpretation = paperId;
+    }
   },
   actions: {
     //

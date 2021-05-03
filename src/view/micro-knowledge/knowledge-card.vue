@@ -140,6 +140,12 @@
                 查看详细内容
               </i-button>
             </template>
+            <template v-else>
+              <i-button @click="writeInterpretation" style="font-size: 14px">
+                <Icon type="ios-paper-plane" />
+                写解读
+              </i-button>
+            </template>
           </ButtonGroup>
         </i-col>
       </Row>
@@ -157,7 +163,12 @@ import {
 } from "@/api/microknowledge.js";
 import { follow, unfollow, getUserInfo } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
-import {likePaper, collectPaper, likeInterpretaion, collectInterpretation} from '@/api/microknowledge'
+import {
+  likePaper,
+  collectPaper,
+  likeInterpretaion,
+  collectInterpretation,
+} from "@/api/microknowledge";
 export default {
   name: "KnowledgeCard",
   props: {
@@ -200,22 +211,22 @@ export default {
 
     isLike: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     isCollect: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     likeNumber: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     favorNumber: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     source: {
@@ -276,6 +287,17 @@ export default {
   },
 
   methods: {
+    writeInterpretation: function() {
+      alert(this.id)
+      this.$store.commit('getPaperId', this.id)
+      this.$router.push({
+        name: 'publish_interpretation',
+        params: {
+          id: this.id,
+        }
+      })
+    },
+
     onLike: function () {
       this.isLike = !this.isLike;
       if (this.isLike) {
@@ -300,10 +322,7 @@ export default {
       } else {
         this.favorNumber -= 1;
       }
-      collectPaper(
-        "get",
-        this.id
-      )
+      collectPaper("get", this.id)
         .then((res) => {
           const info = this.isCollect ? "成功收藏" : "成功取消收藏";
           this.$Message.info(info);
