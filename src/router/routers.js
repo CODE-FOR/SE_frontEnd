@@ -1,7 +1,7 @@
 import Main from '@/components/main'
 import UserRoute from './user-routers'
 import { paperRoute } from './paper-routers'
-import { interpretationRoute} from './interpretation-routers'
+import { interpretationRoute } from './interpretation-routers'
 // import parentView from '@/components/parent-view'
 
 /**
@@ -146,9 +146,6 @@ export default [
   {
     path: '/verify',
     name: 'verify',
-    meta: {
-      hideInBread: true
-    },
     component: Main,
     children: [{
       path: 'verify_knowledge',
@@ -159,6 +156,44 @@ export default [
       },
       component: () => import('@/view/micro-knowledge/knowledge-verify.vue')
     }]
+  },
+  {
+    path: '/manage',
+    name: 'manage',
+    meta: {
+      icon: 'logo-buffer',
+      title: '管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'manage_paper',
+        name: 'manage_paper',
+        meta: {
+          icon: 'md-book',
+          title: '管理1'
+        },
+        component: () => import('@/view/micro-knowledge/paper-form.vue')
+      },
+      {
+        path: 'manage_interpretation',
+        name: 'manage_interpretation',
+        meta: {
+          icon: 'md-book',
+          title: '管理2'
+        },
+        component: () => import('@/view/micro-knowledge/paper-form.vue')
+      },
+      {
+        path: 'manage_user',
+        name: 'manage_user',
+        meta: {
+          icon: 'md-book',
+          title: '管理3'
+        },
+        component: () => import('@/view/micro-knowledge/paper-form.vue')
+      }
+    ]
   },
   {
     path: '/sponsor_project', // 这个路径到时候写的时候再改吧

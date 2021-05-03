@@ -152,6 +152,7 @@ export default {
 
   methods: {
     changeIndexPage: function (i) {
+      this.pageComponent.items = []
       setTimeout(() => {
         document
           .getElementsByClassName("content-wrapper ivu-layout-content")[0]
