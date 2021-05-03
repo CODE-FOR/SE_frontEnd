@@ -53,6 +53,7 @@ export default {
   publish_interpretation: '发布论文解读',
   interpretation: '论文解读',
   all_projects: '受赞助的项目',
+  manage: '管理',
   user: '用户相关',
   user_info: '个人主页',
   verify_knowledge: '审核',

@@ -53,24 +53,6 @@ export default [
       },
       paperRoute,
       interpretationRoute,
-      // {
-      //   path: '/paper/:id',
-      //   name: 'paper',
-      //   component: () => import('@/view/paper/paper-info'),
-      //   meta: {
-      //     title: '论文相关',
-      //     hideInMenu: true
-      //   }
-      // },
-      // {
-      //   path: '/paper/:id/interpretation',
-      //   name: 'interpretation',
-      //   component: () => import('@/view/interpretation/interpretation-list'),
-      //   meta: {
-      //     title: '论文解读',
-      //     icon: 'ios-person'
-      //   }
-      // },
       {
         path: 'search/:query',
         name: 'search',
@@ -132,36 +114,36 @@ export default [
         },
         component: () => import('@/view/micro-knowledge/interpretation-form.vue')
       },
-      {
-        path: 'create_project',
-        name: 'create_project',
-        meta: {
-          icon: 'ios-pricetag',
-          title: '发布赞助项目'
-        },
-        component: () => import('@/view/sponsor-project/project-form.vue')
-      }
+      // {
+      //   path: 'create_project',
+      //   name: 'create_project',
+      //   meta: {
+      //     icon: 'ios-pricetag',
+      //     title: '发布赞助项目'
+      //   },
+      //   component: () => import('@/view/sponsor-project/project-form.vue')
+      // }
     ]
   },
-  {
-    path: '/verify',
-    name: 'verify',
-    component: Main,
-    children: [{
-      path: 'verify_knowledge',
-      name: 'verify_knowledge',
-      meta: {
-        icon: 'md-book',
-        title: '审核'
-      },
-      component: () => import('@/view/micro-knowledge/knowledge-verify.vue')
-    }]
-  },
+  // {
+  //   path: '/verify',
+  //   name: 'verify',
+  //   component: Main,
+  //   children: [{
+  //     path: 'verify_knowledge',
+  //     name: 'verify_knowledge',
+  //     meta: {
+  //       icon: 'md-book',
+  //       title: '审核'
+  //     },
+  //     component: () => import('@/view/micro-knowledge/knowledge-verify.vue')
+  //   }]
+  // },
   {
     path: '/manage',
     name: 'manage',
     meta: {
-      icon: 'logo-buffer',
+      icon: 'ios-hammer',
       title: '管理'
     },
     component: Main,
@@ -170,59 +152,59 @@ export default [
         path: 'manage_paper',
         name: 'manage_paper',
         meta: {
-          icon: 'md-book',
+          icon: 'ios-paper',
           title: '管理1'
         },
-        component: () => import('@/view/micro-knowledge/paper-form.vue')
+        component: () => import('@/view/administrator/admin-paperlist')
       },
       {
         path: 'manage_interpretation',
         name: 'manage_interpretation',
         meta: {
-          icon: 'md-book',
+          icon: 'ios-paper-plane',
           title: '管理2'
         },
-        component: () => import('@/view/micro-knowledge/paper-form.vue')
+        component: () => import('@/view/administrator/admin-interpretationlist.vue')
       },
       {
         path: 'manage_user',
         name: 'manage_user',
         meta: {
-          icon: 'md-book',
+          icon: 'ios-people',
           title: '管理3'
         },
-        component: () => import('@/view/micro-knowledge/paper-form.vue')
+        component: () => import('@/view/administrator/admin-userlist.vue')
       }
     ]
   },
-  {
-    path: '/sponsor_project', // 这个路径到时候写的时候再改吧
-    name: 'sponsor_project',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'all_projects',
-        name: 'all_projects',
-        meta: {
-          icon: 'md-planet',
-          title: '赞助商信息'
-        },
-        component: () => import('@/view/sponsor-project/sponsor-project-all.vue')
-      }, {
-        path: 'home/:project_id',
-        name: 'project_home',
-        meta: {
-          icon: 'md-planet',
-          title: '项目',
-          hideInMenu: true
-        },
-        component: () => import('@/view/sponsor-project/sponsor-project-home.vue')
-      }
-    ]
-  },
+  // {
+  //   path: '/sponsor_project', // 这个路径到时候写的时候再改吧
+  //   name: 'sponsor_project',
+  //   meta: {
+  //     hideInBread: true
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'all_projects',
+  //       name: 'all_projects',
+  //       meta: {
+  //         icon: 'md-planet',
+  //         title: '赞助商信息'
+  //       },
+  //       component: () => import('@/view/sponsor-project/sponsor-project-all.vue')
+  //     }, {
+  //       path: 'home/:project_id',
+  //       name: 'project_home',
+  //       meta: {
+  //         icon: 'md-planet',
+  //         title: '项目',
+  //         hideInMenu: true
+  //       },
+  //       component: () => import('@/view/sponsor-project/sponsor-project-home.vue')
+  //     }
+  //   ]
+  // },
   UserRoute,
   {
     path: '/401',

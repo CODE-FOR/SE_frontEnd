@@ -155,6 +155,11 @@ export default {
     },
 
     changeIndexPage: function (i) {
+      setTimeout(() => {
+        document
+          .getElementsByClassName("content-wrapper ivu-layout-content")[0]
+          .scroll(0, 0);
+      }, 400);
       this.pageComponent.pageIndex = i;
       this.pageComponent.items = this.items.slice(
         (i - 1) * this.pageComponent.pageSize,

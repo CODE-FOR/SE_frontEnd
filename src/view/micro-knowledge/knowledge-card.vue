@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="isInDetail === 0">
+    <template v-if="isInDetail === 0 && isInPublishInterpretaion === false">
       <div class="ivu-card-head">
         <h2>{{ title }}</h2>
       </div>
@@ -126,25 +126,27 @@
       <Row>
         <i-col span="12">
           <ButtonGroup>
-            <i-button @click="onLike" style="font-size: 14px">
-              <Icon type="md-thumbs-up" :color="likeColor" />
-              点赞 {{ likeNumber }}
-            </i-button>
-            <i-button @click="onCollect" style="font-size: 14px">
-              <Icon :type="collectType" :color="collectColor" />
-              收藏 {{ favorNumber }}
-            </i-button>
-            <template v-if="isInDetail === 0">
-              <i-button @click="handleJumpPaper" style="font-size: 14px">
-                <Icon type="ios-more" />
-                查看详细内容
+            <template v-if="isInPublishInterpretaion === false">
+              <i-button @click="onLike" style="font-size: 14px">
+                <Icon type="md-thumbs-up" :color="likeColor" />
+                点赞 {{ likeNumber }}
               </i-button>
-            </template>
-            <template v-else>
-              <i-button @click="writeInterpretation" style="font-size: 14px">
-                <Icon type="ios-paper-plane" />
-                写解读
+              <i-button @click="onCollect" style="font-size: 14px">
+                <Icon :type="collectType" :color="collectColor" />
+                收藏 {{ favorNumber }}
               </i-button>
+              <template v-if="isInDetail === 0">
+                <i-button @click="handleJumpPaper" style="font-size: 14px">
+                  <Icon type="ios-more" />
+                  查看详细内容
+                </i-button>
+              </template>
+              <template v-else>
+                <i-button @click="writeInterpretation" style="font-size: 14px">
+                  <Icon type="ios-paper-plane" />
+                  写解读
+                </i-button>
+              </template>
             </template>
           </ButtonGroup>
         </i-col>
@@ -207,6 +209,11 @@ export default {
       default: () => {
         return [];
       },
+    },
+
+    isInPublishInterpretaion: {
+      type: Boolean,
+      default: false,
     },
 
     isLike: {
@@ -287,14 +294,14 @@ export default {
   },
 
   methods: {
-    writeInterpretation: function() {
-      this.$store.commit('getPaperId', this.id)
+    writeInterpretation: function () {
+      this.$store.commit("getPaperId", this.id);
       this.$router.push({
-        name: 'publish_interpretation',
+        name: "publish_interpretation",
         params: {
           id: this.id,
-        }
-      })
+        },
+      });
     },
 
     onLike: function () {

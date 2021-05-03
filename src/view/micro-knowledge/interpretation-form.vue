@@ -1,6 +1,6 @@
 <template>
   <Row>
-    <i-col offset="1" span="7">
+    <i-col offset="1" span="9">
       <Row v-if="loading">
         <i-col class="demo-spin-col" offset="8" span="8">
           <Spin fix>
@@ -21,7 +21,7 @@
         />
       </Row>
     </i-col>
-    <i-col offset="1" span="14">
+    <i-col offset="1" span="12">
       <Card>
         <Form
           ref="form"
@@ -54,7 +54,7 @@
               placeholder="请输入至少三个标签(以空格分隔)"
               v-model="form.tags"
           /></Form-item>
-          <i-col offset="5">
+          <i-col offset="3">
             <Button
               type="primary"
               @click="handleSubmit('form')"
@@ -148,11 +148,7 @@ export default {
         author: ["default author"],
         source: "default source",
         items: [],
-        pageComponent: {
-          pageIndex: 1,
-          pageSize: 1,
-          items: [],
-        },
+        isInPublishInterpretaion: true
       },
       ruleCustom: {
         interpretationTitle: [
