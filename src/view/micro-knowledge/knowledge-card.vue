@@ -6,11 +6,12 @@
       </div>
     </template>
     <card :bordered="false" dis-hover :style="citeStyle">
-      <div slot="title">
+      <div slot="title" align="left">
         发布者:
         <a @click.prevent="showUser" :id="id">{{
           creator["username"] === "" ? "未知用户" : creator["username"]
         }}</a>
+        <!-- 发布者信息框 -->
         <Modal v-model="showUserControl" footer-hide>
           <Row>
             <i-col span="4">
@@ -77,12 +78,12 @@
       </div>
 
       <p slot="extra">论文发布于: {{ createAt }}</p>
-      <Row v-html="content"></Row>
+      <div align="left" v-html="content"></div>
       <!-- <Row>{{ content }}</Row> -->
       <br />
-      <Row>
+      <div align="left">
         论文链接: <a :href="source"> {{ source }} </a> ( {{ publishedYear }} )
-      </Row>
+      </div>
       <br />
       <Modal v-model="detailController" :footer-hide="true">
         <Divider />
@@ -104,23 +105,22 @@
           <Divider />
         </Row>
       </Modal>
-      <Row>
+      <div align="left">
         <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
           tag.name
         }}</Tag>
-      </Row>
+      </div>
       <br />
-      作者:
+      <div align="left">作者:</div>
       <br />
-      <br />
-      <Row>
+      <div align="left">
         <Tag
           v-for="(au, indexForAuthor) in author"
           :key="indexForAuthor"
           class="sysTopics"
           >{{ au.toString() }}</Tag
         >
-      </Row>
+      </div>
       <br />
       <!-- <template v-if="displayType === 0"> -->
       <Row>
