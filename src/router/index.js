@@ -13,6 +13,7 @@ const router = new Router({
   mode: 'history'
 })
 const LOGIN_PAGE_NAME = 'login'
+const WRITE_INTERPRETATION_PAGE = 'publish_interpretation'
 
 // const turnTo = (to, access, next) => {
 //   if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
@@ -37,7 +38,14 @@ router.beforeEach((to, from, next) => {
       name: homeName // 跳转到homeName页
     })
     // next()
-  } else {
+  } else if (token && to.name === WRITE_INTERPRETATION_PAGE) {
+    if (!sessionStorage.getItem("paperId")) {
+      alert('您还没有选择一篇要解读的论文')
+    } else {
+      next()
+    }
+  }
+  else {
     next()
     // 暂时不做这个权限
     // if (store.state.user.hasGetInfo) {
