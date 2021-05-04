@@ -104,6 +104,7 @@ export default {
   },
 
   mounted() {
+    this.pageComponent.pageIndex = this.$store.state.paperInfo.page;
     this.loadData();
   },
 
@@ -155,6 +156,7 @@ export default {
     },
 
     changeIndexPage: function (i) {
+      this.$store.commit("setPaperInfoPage", i);
       setTimeout(() => {
         document
           .getElementsByClassName("content-wrapper ivu-layout-content")[0]

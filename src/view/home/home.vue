@@ -12,17 +12,17 @@
               />
             </template>
             <Row v-if="loading">
-                <i-col class="demo-spin-col" offset="8" span="8">
-                  <Spin fix>
-                    <Icon
-                      type="ios-loading"
-                      size="18"
-                      class="demo-spin-icon-load"
-                    ></Icon>
-                    <div>Loading</div>
-                  </Spin>
-                </i-col>
-              </Row>
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </Row>
           </TabPane>
           <TabPane label="关注" name="favorite">
             <template v-if="items.length !== 0">
@@ -147,12 +147,14 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+    this.pageComponent.pageIndex = this.$store.state.home.page;
     this.loadData();
   },
 
   methods: {
     changeIndexPage: function (i) {
-      this.pageComponent.items = []
+      this.$store.commit("setHomePage", i);
+      this.pageComponent.items = [];
       setTimeout(() => {
         document
           .getElementsByClassName("content-wrapper ivu-layout-content")[0]
@@ -284,8 +286,9 @@ export default {
 
     changeTab: function (name) {
       this.activeTab = name;
-      this.pageIndex = 1;
-      this.pageComponent.items = []
+      this.pageComponent.pageIndex = 1;
+      this.$store.commit("setHomePage", 1);
+      this.pageComponent.items = [];
       if (this.activeTab === "favorite") {
         this.loadFavor();
       } else {

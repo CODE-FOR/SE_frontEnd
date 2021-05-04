@@ -100,8 +100,9 @@ export default {
       value = tinymce.activeEditor.getContent();
       if (value === "") {
         callback(new Error("请输入论文解读内容(不超过3000字)"));
-      } else if (value.length > 3000) {
-        callback(new Error("内容不得超过3000字"));
+      } else if (value.length > 200000) {
+        alert(value.length)
+        callback(new Error("内容不得超过30000字"));
       } else {
         callback();
       }

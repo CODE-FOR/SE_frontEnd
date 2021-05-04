@@ -158,11 +158,13 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+    this.pageIndex = this.$store.state.search.page;
     this.loadData();
   },
 
   methods: {
-    changeIndexPage: function () {
+    changeIndexPage: function (i) {
+      this.$store.commit("setSearchPage", i);
       setTimeout(() => {
         document
           .getElementsByClassName("content-wrapper ivu-layout-content")[0]
@@ -173,6 +175,7 @@ export default {
     },
 
     loadData: function () {
+      this.items = []
       this.loading = true;
       getSearchResult({
         pindx: this.pageIndex,
@@ -280,7 +283,7 @@ export default {
         this.searchInterpretation = true;
       }
       // reset
-      this.pageIndex = 1;
+      changeIndexPage(1);
       this.items = [];
       this.loadData();
     },
@@ -292,7 +295,7 @@ export default {
         this.tagSearch += item + " ";
       });
       this.tagSearch = this.tagSearch.trim();
-      this.pageIndex = 1;
+      changeIndexPage(1);
       this.items = [];
       this.loadData();
     },
