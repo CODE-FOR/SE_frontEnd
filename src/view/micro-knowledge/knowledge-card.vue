@@ -311,7 +311,7 @@ export default {
       } else {
         this.likeNumber -= 1;
       }
-      likePaper("post", this.id)
+      likePaper("get", this.id)
         .then((res) => {
           const info = this.isLike ? "成功点赞" : "成功取消点赞";
           this.$Message.info(info);

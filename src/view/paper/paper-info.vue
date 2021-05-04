@@ -95,6 +95,10 @@ export default {
       author: "author",
       items: [],
       loading: true,
+      likeNumber: 0,
+      favorNumber: 0,
+      isLike: false,
+      isCollect: false,
       pageComponent: {
         pageIndex: 1,
         pageSize: 5,
@@ -120,8 +124,11 @@ export default {
           this.publishedYear = res.data.publishedYear;
           this.tags = res.data.tags;
           this.author = res.data.author;
-          console.log(this.author)
           this.source = res.data.source;
+          this.isLike = res.data.is_like;
+          this.isCollect = res.data.is_collect;
+          this.favorNumber = res.data.collect_num;
+          this.likeNumber = res.data.like_num;
           const mapData = res.data.interpretations.map((item) => {
             return {
               id: item.id,
@@ -133,9 +140,9 @@ export default {
               creator: item.created_by,
               createAt: getLocalTime(item.created_at),
               isLike: item.is_like,
-              isCollect: item.is_favor,
+              isCollect: item.is_collect,
               likeNumber: item.like_num,
-              favorNumber: item.favor_num,
+              favorNumber: item.collect_num,
             }
           })
           this.items = []

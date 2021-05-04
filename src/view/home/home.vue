@@ -204,42 +204,6 @@ export default {
       console.log(this.pageComponent.items);
     },
 
-    // loadFavor: function () {
-    //   this.loading = true;
-    //   recentKnowledge({
-    //     pindex: this.pageIndex,
-    //     num_per_page: this.pageSize,
-    //     micro_evidence: true,
-    //     micro_conjecture: true,
-    //   })
-    //     .then((res) => {
-    //       const mapData = res.data.page.map((item) => {
-    //         return {
-    //           id: item.id,
-    //           creator: item.created_by,
-    //           kind: item.type - 1,
-    //           createAt: getLocalTime(item.created_at),
-    //           publishedYear: item.published_year,
-    //           content: item.content,
-    //           tags: item.tags,
-    //           isLike: item.is_like,
-    //           isCollect: item.is_favor,
-    //           likeNumber: item.like_num,
-    //           favorNumber: item.favor_num,
-    //           source: item.source,
-    //           citation: item.citation,
-    //           evidences: item.evidences,
-    //         };
-    //       });
-    //       this.items.push(...mapData);
-    //       this.hasNextPage = res.data.has_next;
-    //       this.loading = false;
-    //     })
-    //     .catch((error) => {
-    //       this.$Modal.error(getErrModalOptions(error));
-    //     });
-    // },
-
     // TODO:
     loadFavor: function () {
       this.loading = true;

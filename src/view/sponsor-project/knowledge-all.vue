@@ -65,9 +65,9 @@ export default {
           content: item.content,
           tags: item.tags,
           isLike: item.is_like,
-          isCollect: item.is_favor,
+          isCollect: item.is_collect,
           likeNumber: item.like_num,
-          favorNumber: item.favor_num,
+          favorNumber: item.collect_num,
           displayType: 0
         }
         // console.log(commonProps)

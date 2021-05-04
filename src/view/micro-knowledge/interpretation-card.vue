@@ -257,9 +257,8 @@ export default {
         this.favorNumber -= 1;
       }
       collectInterpretation(
-        "post",
+        "get",
         this.$props.id,
-        this.isCollect ? "favor" : "unfavor"
       )
         .then((res) => {
           const info = this.isCollect ? "成功收藏" : "成功取消收藏";

@@ -116,6 +116,11 @@ export const favorList = (params) => {
   return getRequest(url, 'get', params)
 }
 
+export const myPostList = (params) => {
+  const url = `/api/post/${params.pindx}`
+  return getRequest(url, 'get', params)
+}
+
 // TODO: 与后端协商图片传输的路由
 export const teditorImg = (params) => {
   const url = `/api/todo/url`

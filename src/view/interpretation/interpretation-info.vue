@@ -85,7 +85,7 @@ export default {
           this.likeNumber = res.data.like_num;
           this.isLike = res.data.is_like;
           this.isCollect = res.data.is_collect;
-          this.favorNumber = res.data.favor_num;
+          this.favorNumber = res.data.collect_num;
           this.loading = false;
         })
         .catch((error) => {

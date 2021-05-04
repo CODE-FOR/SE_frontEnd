@@ -177,7 +177,6 @@ export default {
     loadData: function () {
       this.items = []
       this.loading = true;
-      alert('get in')
       getSearchResult({
         pindx: this.pageIndex,
         tags: (this.tagSearch = "" ? null : this.tagSearch),
@@ -203,7 +202,7 @@ export default {
               isLike: item.is_like,
               isCollect: item.is_collect,
               likeNumber: item.like_num,
-              favorNumber: item.favor_num,
+              favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
               title: item.title,
@@ -227,7 +226,7 @@ export default {
               isLike: item.is_like,
               isCollect: item.is_collect,
               likeNumber: item.like_num,
-              favorNumber: item.favor_num,
+              favorNumber: item.collect_num,
             };
           });
           this.items.push(...mapData);
@@ -235,45 +234,6 @@ export default {
         }
       });
     },
-    // loadData: function () {
-    //   this.loading = true;
-    //   getKnowledgePage("get", {
-    //     pindx: this.pageIndex,
-    //     num_per_page: this.pageSize,
-    //     tags: this.tagSearch === "" ? null : this.tagSearch,
-    //     keywords: this.$route.params.query,
-    //     micro_evidence: this.searchEvidence,
-    //     micro_conjecture: this.searchConjecture,
-    //   })
-    //     .then((res) => {
-    //       const mapData = res.data.page.map((item) => {
-    //         return {
-    //           id: item.id,
-    //           creator: item.created_by,
-    //           kind: item.type - 1,
-    //           createAt: getLocalTime(item.created_at),
-    //           publishedYear: item.published_year,
-    //           content: item.content,
-    //           tags: item.tags,
-    //           isLike: item.is_like,
-    //           isCollect: item.is_favor,
-    //           likeNumber: item.like_num,
-    //           favorNumber: item.favor_num,
-    //           displayType: 0,
-    //           source: item.source,
-    //           citation: item.citation,
-    //           evidences: item.evidences,
-    //           key: `${item.type}-${item.id}`,
-    //         };
-    //       });
-    //       this.items.push(...mapData);
-    //       this.loading = false;
-    //       this.hasNextPage = res.data.has_next;
-    //     })
-    //     .catch((error) => {
-    //       this.$Modal.error(getErrModalOptions(error));
-    //     });
-    // },
 
     selectType: function (value) {
       this.knowledgeType = value;

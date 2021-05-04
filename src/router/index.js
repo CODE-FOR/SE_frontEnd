@@ -5,6 +5,8 @@ import routes from './routers'
 import iView from 'iview'
 import { getToken, setTitle } from '@/libs/util' // setToken canTurnTo
 import config from '@/config'
+import store from '../store'
+import { Message } from 'iview'
 const { homeName } = config
 
 Vue.use(Router)
@@ -41,10 +43,13 @@ router.beforeEach((to, from, next) => {
     // next()
   } else if (from.name !== CHOSE_PAPER_PAGE && token && to.name === WRITE_INTERPRETATION_PAGE) {
     if (!sessionStorage.getItem("paperId")) {
-      alert('您还没有选择一篇要解读的论文')
+      Message.warning('您还没有选择一篇要解读的论文')
     } else {
       next()
     }
+  } else if (from.name === CHOSE_PAPER_PAGE && token && to.name === WRITE_INTERPRETATION_PAGE) {
+    store.commit('getPaperId', parseInt(from.params.id))
+    next()
   }
   else {
     next()

@@ -101,7 +101,6 @@ export default {
       if (value === "") {
         callback(new Error("请输入论文解读内容(不超过3000字)"));
       } else if (value.length > 200000) {
-        alert(value.length)
         callback(new Error("内容不得超过30000字"));
       } else {
         callback();
@@ -248,8 +247,6 @@ export default {
             paper_id: this.paperInfo.id
           };
 
-          alert(tags.toString());
-
           createInterpretation('post', data)
             .then((res) => {
               this.$Message.success("发布成功!请等待审核！");
@@ -309,9 +306,9 @@ export default {
           content: item.content,
           tags: item.tags,
           isLike: item.is_like,
-          isCollect: item.is_favor,
+          isCollect: item.is_collect,
           likeNumber: item.like_num,
-          favorNumber: item.favor_num,
+          favorNumber: item.collect_num,
           displayType: 1,
           source: item.source,
           citation: item.citation,
