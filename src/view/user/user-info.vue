@@ -14,7 +14,6 @@
                 {{ nickName===''? userName:nickName }}
               </div>
               <p style="margin-top: 5px"> 邮箱: {{ userEmail }} </p>
-              <p> 所属组织: {{ userCompany }} </p>
             </i-col>
             <i-col offset="10" span="2" style="height: 40px;text-align: center">
               <p class="data-title"> 总发布数 </p>
@@ -412,7 +411,6 @@ export default {
     return {
       loading: true,
       userEmail: 'xxxxxxxxx@qq.com',
-      userCompany: 'xxx研究所',
       userName: 'xxx',
       isSponsor: false,
       nickName: '',
@@ -542,7 +540,6 @@ export default {
         // this.avatarUrl = this.$store.state.user.icon
         this.userName = this.$store.state.user.userName
         this.nick_name = this.$store.state.user.nick_Name
-        this.userCompany = this.$store.state.user.userInstitution || '暂无组织'
         this.userEmail = this.$store.state.user.userEmail
         this.totalLike = this.$store.state.user.userTotalLike
         this.totalFollow = this.$store.state.user.userTotalFan

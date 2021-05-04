@@ -177,6 +177,7 @@ export default {
     loadData: function () {
       this.items = []
       this.loading = true;
+      alert('get in')
       getSearchResult({
         pindx: this.pageIndex,
         tags: (this.tagSearch = "" ? null : this.tagSearch),
@@ -184,8 +185,9 @@ export default {
         paper: this.searchPaper,
         interpertation: this.searchInterpretation,
       }).then((res) => {
+        console.log(res)
         this.totalData = res.data.total_res;
-        if (paper) {
+        if (this.searchPaper) {
           const mapData = res.data.res.map((item) => {
             return {
               id: item.id,
@@ -283,9 +285,10 @@ export default {
         this.searchInterpretation = true;
       }
       // reset
-      changeIndexPage(1);
+      
       this.items = [];
       this.loadData();
+      changeIndexPage(1);
     },
 
     changeTag: function (tags) {
@@ -295,9 +298,10 @@ export default {
         this.tagSearch += item + " ";
       });
       this.tagSearch = this.tagSearch.trim();
-      changeIndexPage(1);
+      
       this.items = [];
       this.loadData();
+      changeIndexPage(1);
     },
   },
 };
