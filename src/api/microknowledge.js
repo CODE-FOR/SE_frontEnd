@@ -116,8 +116,8 @@ export const favorList = (params) => {
   return getRequest(url, 'get', params)
 }
 
-export const myPostList = (params) => {
-  const url = `/api/post/${params.pindx}`
+export const myPostList = (id, params) => {
+  const url = `/api/post/${id}`
   return getRequest(url, 'get', params)
 }
 

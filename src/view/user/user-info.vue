@@ -62,7 +62,7 @@
                     </Spin>
                   </i-col>
                 </Row>
-                <div v-else v-for="item in data1" :key="item.id">
+                <div v-else v-for="(item, index) in data1" :key="index">
                   <Row>
                     <i-col span="4">
                       <!-- {{ item.type === 0 ? '微证据' : '微猜想' }}: -->
@@ -120,68 +120,14 @@
                   />
                 </div>
                 <Modal v-model="showDetail" footer-hide width="720">
-                  <KnowledgeCard v-if="showDetail" v-bind="post" />
-                </Modal>
-                <Modal
-                  v-model="showModify"
-                  title="修改"
-                  @on-ok="
-                    handleSubmit(
-                      postType === 0 ? 'evidenceForm' : 'conjectureForm'
-                    )
-                  "
-                >
-                  <i-form
-                    v-if="postType === 0"
-                    ref="evidenceForm"
-                    :rules="evidenceRule"
-                    :model="post"
-                    :label-width="120"
-                  >
-                    <form-item prop="content" label="内容">
-                      <i-input
-                        type="textarea"
-                        v-model="post.content"
-                        placeholder="内容不超过200字"
-                        :maxlength="200"
-                        :rows="4"
-                      />
-                    </form-item>
-                    <form-item label="参考文献" prop="citation">
-                      <i-input
-                        type="text"
-                        v-model="post.citation"
-                        placeholder="请输入参考文献(GB7714格式)"
-                      />
-                    </form-item>
-                    <form-item label="参考文献链接(可选)" prop="source">
-                      <i-input
-                        type="text"
-                        placeholder="请输入参考文献链接(可选)"
-                        v-model="post.source"
-                      />
-                    </form-item>
-                    <form-item label="参考文献年份" prop="published_year">
-                      <input type="number" v-model="post.published_year" />
-                    </form-item>
-                  </i-form>
-                  <i-form
-                    v-else
-                    ref="conjectureForm"
-                    :rules="conjectureRule"
-                    :model="post"
-                    :label-width="120"
-                  >
-                    <form-item label="内容" prop="content">
-                      <i-input
-                        type="textarea"
-                        placeholder="内容不超过200字"
-                        :maxlength="200"
-                        :rows="4"
-                        v-model="post.content"
-                      />
-                    </form-item>
-                  </i-form>
+                  <KnowledgeCard
+                    v-if="showDetail && post.type === 0"
+                    v-bind="post"
+                  />
+                  <InterpretationCard
+                    v-if="showDetail && post.type === 1"
+                    v-bind="post"
+                  />
                 </Modal>
               </template>
               <Row v-else-if="loading">
@@ -521,16 +467,22 @@ import {
   uploadAvatar,
 } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
-import { microKnowledgeIdReq, favorKnowledgeList, myPostList } from "@/api/microknowledge";
+import {
+  microKnowledgeIdReq,
+  favorKnowledgeList,
+  myPostList,
+} from "@/api/microknowledge";
 import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
 import AvatarCutter from "@/components/avatar-cutter/avatar-cutter";
-import { favorList } from "@/api/microknowledge.js"
+import { favorList, getInterpretation } from "@/api/microknowledge.js";
+import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
 export default {
   name: "UserInfo",
 
   components: {
     KnowledgeCard,
     AvatarCutter,
+    InterpretationCard,
   },
 
   data() {
@@ -583,9 +535,10 @@ export default {
         ],
       },
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 5,
       data: [],
-      data1: [{
+      data1: [
+        {
           type: 0,
           id: 1,
           creator: {
@@ -618,7 +571,8 @@ export default {
             id: 3,
           },
           createAt: "2021-4-29 20:30:00",
-        },],
+        },
+      ],
       totalCnt: 1,
       showCutter: false,
       post: {},
@@ -755,20 +709,41 @@ export default {
 
     loadPost: function () {
       this.loading = true;
-      myKnowledge(this.$route.params.id, {
-        page: this.pageIndex,
-        page_size: this.pageSize,
+      myPostList(this.$route.params.id, {
+        pageIndex: this.pageIndex,
       })
         .then((res) => {
-          this.data = res.data.models.map((item) => {
-            return {
-              content: item.content,
-              collect_num: item.collect_num,
-              like_num: item.like_num,
-              judge_status: item.judge_status,
-              id: item.id,
-              type: item.microconjecture === null ? 0 : 1,
-            };
+          this.data = res.data.page.map((item) => {
+            if (item.type === 0) {
+              return {
+                type: item.type,
+                id: item.id,
+                creator: item.created_by,
+                createAt: getLocalTime(item.created_at),
+                content: item.abstract,
+                tags: item.tags,
+                isLike: item.is_like,
+                isCollect: item.is_collect,
+                totalLike: item.like_num,
+                totalCollect: item.collect_num,
+                source: item.source,
+                author: item.author,
+                title: item.title,
+              };
+            } else {
+              return {
+                type: item.type,
+                id: item.id,
+                creator: item.created_by,
+                createAt: getLocalTime(item.created_at),
+                tags: item.tags,
+                isLike: item.is_like,
+                isCollect: item.is_collect,
+                totalLike: item.like_num,
+                totalCollect: item.collect_num,
+                content: item.content,
+              };
+            }
           });
           this.totalCnt = res.data.total_count;
           this.loading = false;
@@ -778,85 +753,52 @@ export default {
         });
     },
 
-    loadFavor: function() {
+    loadFavor: function () {
       this.loading = true;
       favorList({
         pindx: this.pageIndex,
-        user_id: this.$route.params.id
-      }).then((res) => {
-        this.data = res.data.page.map((item) => {
-          if (item.type === 0) {
-            return {
-              type: item.type,
-              id: item.id,
-              creator: item.created_by,
-              createAt: getLocalTime(item.created_at),
-              content: item.abstract,
-              tags: item.tags,
-              isLike: item.is_like,
-              isCollect: item.is_collect,
-              totalLike: item.like_num,
-              totalCollect: item.collect_num,
-              source: item.source,
-              author: item.author,
-              title: item.title,
-            };
-          } else {
-            return {
-              type: item.type,
-              id: item.id,
-              creator: item.created_by,
-              createAt: getLocalTime(item.created_at),
-              tags: item.tags,
-              isLike: item.is_like,
-              isCollect: item.is_collect,
-              totalLike: item.like_num,
-              totalCollect: item.collect_num,
-              content: item.content,
-            };
-          }
+        user_id: this.$route.params.id,
+      })
+        .then((res) => {
+          this.data = res.data.page.map((item) => {
+            if (item.type === 0) {
+              return {
+                type: item.type,
+                id: item.id,
+                creator: item.created_by,
+                createAt: getLocalTime(item.created_at),
+                content: item.abstract,
+                tags: item.tags,
+                isLike: item.is_like,
+                isCollect: item.is_collect,
+                totalLike: item.like_num,
+                totalCollect: item.collect_num,
+                source: item.source,
+                author: item.author,
+                title: item.title,
+              };
+            } else {
+              return {
+                type: item.type,
+                id: item.id,
+                creator: item.created_by,
+                createAt: getLocalTime(item.created_at),
+                tags: item.tags,
+                isLike: item.is_like,
+                isCollect: item.is_collect,
+                totalLike: item.like_num,
+                totalCollect: item.collect_num,
+                content: item.content,
+              };
+            }
+          });
+          this.totalCnt = res.data.total_count;
+          this.loading = false;
         })
-      }).catch((error) => {
+        .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
     },
-
-    // loadFavor: function () {
-    //   this.loading = true;
-    //   favorKnowledgeList({
-    //     num_per_page: this.pageSize,
-    //     pindex: this.pageIndex,
-    //     user_id: this.$route.params.id,
-    //     micro_evidence: true,
-    //     micro_conjecture: true,
-    //   })
-    //     .then((res) => {
-    //       this.data = res.data.page.map((item) => {
-    //         return {
-    //           id: item.id,
-    //           creator: item.created_by,
-    //           kind: item.type - 1,
-    //           createAt: getLocalTime(item.created_at),
-    //           publishedYear: item.published_year,
-    //           content: item.content,
-    //           tags: item.tags,
-    //           isLike: item.is_like,
-    //           isCollect: item.is_collect,
-    //           likeNumber: item.like_num,
-    //           favorNumber: item.collect_num,
-    //           displayType: 0,
-    //           source: item.source,
-    //           citation: item.citation,
-    //           evidences: item.evidences,
-    //         };
-    //       });
-    //       this.loading = false;
-    //       this.totalCnt = res.data.page_num * this.pageSize; // 这个不是真的总数
-    //     })
-    //     .catch((error) => {
-    //       this.$Modal.error(getErrModalOptions(error));
-    //     });
-    // },
 
     validtePassWord: function (rule, value, callback) {
       if (value === "") {
@@ -919,6 +861,7 @@ export default {
       });
     },
 
+    // TODO: use vuex to remeber the page num
     changePage: function (page) {
       this.pageIndex = page;
       if (this.tabName === "followBack") {
@@ -930,6 +873,11 @@ export default {
       } else if (this.tabName === "myFavor") {
         this.loadFavor();
       }
+      setTimeout(() => {
+        document
+          .getElementsByClassName("content-wrapper ivu-layout-content")[0]
+          .scroll(0, 0);
+      }, 400);
     },
 
     handleUnFollow: function (id) {
@@ -944,6 +892,7 @@ export default {
         });
     },
 
+    // TODO: clear the page in vuex
     changeTab: function (name) {
       this.tabName = name;
       this.pageIndex = 1;
@@ -959,10 +908,7 @@ export default {
       }
     },
 
-    calTagColor: function (status) {
-      return status === 0 ? "yellow" : status === 1 ? "green" : "red";
-    },
-
+    // TODO:
     handleModifyPost: function (id, type) {
       microKnowledgeIdReq(id, type, "get")
         .then((res) => {
@@ -975,6 +921,7 @@ export default {
         });
     },
 
+    // TODO:
     handleDelete: function (id, type) {
       const vm = this;
       this.$Modal.confirm({
@@ -995,28 +942,53 @@ export default {
     },
 
     handleShow: function (id, type) {
-      microKnowledgeIdReq(id, type, "get")
-        .then((res) => {
-          this.post = {
-            id: res.data.id,
-            creator: res.data.created_by,
-            kind: type,
-            createAt: getLocalTime(res.data.created_at),
-            content: res.data.content,
-            tags: res.data.tags,
-            isLike: res.data.is_like,
-            isCollect: res.data.is_collect,
-            likeNumber: res.data.like_num,
-            favorNumber: res.data.collect_num,
-            displayType: res.data.judge_status !== 1 ? 2 : 0,
-            evidences: res.data.evidences,
-          };
-          this.postType = type;
-          this.showDetail = true;
-        })
-        .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
-        });
+      if (type === 0) {
+        microKnowledgeIdReq(id, type, "get")
+          .then((res) => {
+            this.post = {
+              id: res.data.id,
+              creator: res.data.created_by,
+              type: type,
+              createAt: getLocalTime(res.data.created_at),
+              content: res.data.abstract,
+              tags: res.data.tags,
+              isLike: res.data.is_like,
+              isCollect: res.data.is_collect,
+              likeNumber: res.data.like_num,
+              favorNumber: res.data.collect_num,
+              title: res.data.title,
+              source: res.data.source,
+              author: res.data.author,
+            };
+            this.postType = type;
+            this.showDetail = true;
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      } else {
+        getInterpretation(id)
+          .then((res) => {
+            this.post = {
+              id: res.data.id,
+              creator: res.data.created_by,
+              type: 1,
+              createAt: getLocalTime(res.data.created_at),
+              content: res.data.content,
+              tags: res.data.tags,
+              isLike: res.data.is_like,
+              isCollect: res.data.is_collect,
+              likeNumber: res.data.like_num,
+              favorNumber: res.data.collect_num,
+              title: res.data.title,
+            };
+            this.postType = type;
+            this.showDetail = true;
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      }
     },
 
     jumpUserInfo: function (id) {
@@ -1027,6 +999,8 @@ export default {
         },
       });
     },
+
+    // TODO:
     handleUploadAvatar(file) {
       const data = {
         icon: file,
