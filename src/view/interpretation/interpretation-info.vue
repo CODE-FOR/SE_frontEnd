@@ -32,9 +32,6 @@
               />
             </template>
           </TabPane>
-          <TabPane label="评论列表" name="commentList">
-            // TODO: show comments
-          </TabPane>
         </Tabs>
       </Card>
     </i-col>
