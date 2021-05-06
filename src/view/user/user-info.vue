@@ -710,7 +710,7 @@ export default {
     loadPost: function () {
       this.loading = true;
       myPostList(this.$route.params.id, {
-        pageIndex: this.pageIndex,
+        pindx: this.pageIndex,
       })
         .then((res) => {
           this.data = res.data.posts.map((item) => {
@@ -759,7 +759,7 @@ export default {
         pindx: this.pageIndex,
       })
         .then((res) => {
-          this.data = res.data.page.map((item) => {
+          this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
               return {
                 type: item.type,
