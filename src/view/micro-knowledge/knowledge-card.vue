@@ -125,30 +125,37 @@
       <!-- <template v-if="displayType === 0"> -->
       <Row>
         <i-col span="12">
-          <ButtonGroup>
-            <template v-if="isInPublishInterpretaion === false">
-              <i-button @click="onLike" style="font-size: 14px">
-                <Icon type="md-thumbs-up" :color="likeColor" />
-                点赞 {{ likeNumber }}
-              </i-button>
-              <i-button @click="onCollect" style="font-size: 14px">
-                <Icon :type="collectType" :color="collectColor" />
-                收藏 {{ favorNumber }}
-              </i-button>
-              <template v-if="isInDetail === 0">
-                <i-button @click="handleJumpPaper" style="font-size: 14px">
-                  <Icon type="ios-more" />
-                  查看详细内容
+          <template v-if="isAdmin === 0">
+            <ButtonGroup>
+              <template v-if="isInPublishInterpretaion === false">
+                <i-button @click="onLike" style="font-size: 14px">
+                  <Icon type="md-thumbs-up" :color="likeColor" />
+                  点赞 {{ likeNumber }}
                 </i-button>
-              </template>
-              <template v-else>
-                <i-button @click="writeInterpretation" style="font-size: 14px">
-                  <Icon type="ios-paper-plane" />
-                  写解读
+                <i-button @click="onCollect" style="font-size: 14px">
+                  <Icon :type="collectType" :color="collectColor" />
+                  收藏 {{ favorNumber }}
                 </i-button>
+                <template v-if="isInDetail === 0">
+                  <i-button @click="handleJumpPaper" style="font-size: 14px">
+                    <Icon type="ios-more" />
+                    查看详细内容
+                  </i-button>
+                </template>
+                <template v-else>
+                  <i-button @click="writeInterpretation" style="font-size: 14px">
+                    <Icon type="ios-paper-plane" />
+                    写解读
+                  </i-button>
+                </template>
               </template>
-            </template>
-          </ButtonGroup>
+            </ButtonGroup>
+          </template>
+          <template v-else>
+            <i-button @click="deletePaper" style="font-size: 14px">
+              删除
+            </i-button>
+          </template>
         </i-col>
       </Row>
     </card>
@@ -174,6 +181,11 @@ import {
 export default {
   name: "KnowledgeCard",
   props: {
+    isAdmin: {
+      type: Number,
+      default: 0,
+    },
+
     isInDetail: {
       type: Number,
       default: 0,
@@ -294,6 +306,11 @@ export default {
   },
 
   methods: {
+    // TODO: need to be finished!!! -> administrator delete
+    deletePaper: function() {
+
+    },
+
     writeInterpretation: function () {
       this.$store.commit("getPaperId", this.id);
       this.$router.push({

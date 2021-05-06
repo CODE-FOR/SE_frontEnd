@@ -155,7 +155,7 @@ export default [
           icon: 'ios-paper',
           title: '管理1'
         },
-        component: () => import('@/view/administrator/admin-paperlist')
+        component: () => import('@/view/administrator/admin-paperlist.vue')
       },
       {
         path: 'manage_interpretation',

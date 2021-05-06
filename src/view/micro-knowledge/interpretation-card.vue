@@ -86,31 +86,38 @@
       <br />
       <Row>
         <i-col span="12">
-          <ButtonGroup>
-            <i-button @click="onLike" style="font-size: 14px">
-              <Icon type="md-thumbs-up" :color="likeColor" />
-              点赞 {{ likeNumber }}
-            </i-button>
-            <i-button @click="onCollect" style="font-size: 14px">
-              <Icon :type="collectType" :color="collectColor" />
-              收藏 {{ favorNumber }}
-            </i-button>
-            <template v-if="isInDetail === 1">
-              <i-button @click="onComment" style="font-size: 14px">
-                <Icon type="ios-chatbubbles" />
-                评论
+          <template v-if="isAdmin === 0">
+            <ButtonGroup>
+              <i-button @click="onLike" style="font-size: 14px">
+                <Icon type="md-thumbs-up" :color="likeColor" />
+                点赞 {{ likeNumber }}
               </i-button>
-            </template>
-            <template v-if="isInDetail === 0">
-              <i-button
-                @click="handleJumpInterpretation"
-                style="font-size: 14px"
-              >
-                <Icon type="ios-more" />
-                查看详细内容
+              <i-button @click="onCollect" style="font-size: 14px">
+                <Icon :type="collectType" :color="collectColor" />
+                收藏 {{ favorNumber }}
               </i-button>
-            </template>
-          </ButtonGroup>
+              <template v-if="isInDetail === 1">
+                <i-button @click="onComment" style="font-size: 14px">
+                  <Icon type="ios-chatbubbles" />
+                  评论
+                </i-button>
+              </template>
+              <template v-if="isInDetail === 0">
+                <i-button
+                  @click="handleJumpInterpretation"
+                  style="font-size: 14px"
+                >
+                  <Icon type="ios-more" />
+                  查看详细内容
+                </i-button>
+              </template>
+            </ButtonGroup>
+          </template>
+          <template v-else>
+            <i-button @click="deleteInterpretation" style="font-size: 14px">
+              删除
+            </i-button>
+          </template>
         </i-col>
       </Row>
       <Card v-if="showComment" style="margin-top: 10px">
@@ -144,6 +151,11 @@ export default {
     comment,
   },
   props: {
+    isAdmin: {
+      type: Number,
+      default: 0,
+    },
+
     isInDetail: {
       type: Number,
       default: 0,
@@ -232,6 +244,11 @@ export default {
   },
 
   methods: {
+    // TODO: need to be finished!!! -> administrator delete
+    deleteInterpretation: function() {
+
+    },
+
     onLike: function () {
       this.isLike = !this.isLike;
       if (this.isLike) {

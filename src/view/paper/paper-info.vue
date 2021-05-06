@@ -91,7 +91,6 @@ export default {
       tags: [],
       source: "source",
       publishedYear: 2000,
-      title: "title",
       author: "author",
       items: [],
       loading: true,
