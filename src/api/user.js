@@ -61,6 +61,15 @@ export const fanList = (id, params) => {
   return getRequest(url, 'get', params)
 }
 
+export const getUserList = (pindx, params) => {
+  const url = `/api/user/page/${pindx}`
+  return getRequest(url, 'get', params)
+}
+
+export const prison = (id, params) => {
+  const url = `/api/user/${id}/prison`
+}
+
 export const myKnowledge = (id, params) => {
   const url = `/api/post/${id}`
   return getRequest(url, 'get', params)
