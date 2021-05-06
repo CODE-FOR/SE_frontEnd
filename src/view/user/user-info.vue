@@ -160,12 +160,22 @@
                     </Spin>
                   </i-col>
                 </Row>
-                <KnowledgeCard
+                <!-- <KnowledgeCard
                   v-else
                   v-for="item in data"
                   :key="item.id"
                   v-bind="item"
-                />
+                /> -->
+                <template v-else>
+                  <template v-for="item in data">
+                    <template v-if="item.type === 0">
+                      <KnowledgeCard :key="item.id" v-bind="item" />
+                    </template>
+                    <template v-else>
+                      <InterpretationCard :key="item.id" v-bind="item" />
+                    </template>
+                  </template>
+                </template>
                 <div style="float: right">
                   <Page
                     :total="totalCnt"
@@ -706,6 +716,7 @@ export default {
                 totalLike: item.like_num,
                 totalCollect: item.collect_num,
                 content: item.content,
+                title: item.title,
               };
             }
           });
@@ -725,7 +736,7 @@ export default {
         .then((res) => {
           this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
-              console.log(item)
+              console.log(item);
               return {
                 type: item.type,
                 id: item.id,
@@ -753,11 +764,12 @@ export default {
                 likeNumber: item.like_num,
                 favorNumber: item.collect_num,
                 content: item.content,
+                title: item.title,
               };
             }
           });
-          console.log('data')
-          console.log(this.data)
+          console.log("data");
+          console.log(this.data);
           this.totalCnt = res.data.total_count;
           this.loading = false;
         })
