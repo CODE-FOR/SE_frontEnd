@@ -210,7 +210,7 @@ export default {
       recentFavor({
         pindx: this.pageComponent.pageIndex,
       }).then((res) => {
-        this.pageComponent.pageNum = res.data.pageNum;
+        this.pageComponent.pageNum = res.data.page_num;
         const mapData = res.data.recent.map((item) => {
           if (item.type === 0) {
             return {

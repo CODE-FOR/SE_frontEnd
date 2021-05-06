@@ -111,8 +111,8 @@ export const favorKnowledgeList = (params) => {
   return getRequest(url, 'get', params)
 }
 
-export const favorList = (params) => {
-  const url = `/api/favorites/page/${params.pindex}`
+export const favorList = (id, params) => {
+  const url = `/api/favorites/${id}`
   return getRequest(url, 'get', params)
 }
 

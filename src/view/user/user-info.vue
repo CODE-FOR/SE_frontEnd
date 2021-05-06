@@ -47,7 +47,7 @@
     <Row>
       <i-col offset="4" span="16">
         <Card>
-          <Tabs v-model="tabName" @on-click="changeTab">
+          <Tabs v-model="tabName" @on-click="changeTab" :animated="false">
             <TabPane :label="postText" name="myPost">
               <template v-if="data1.length !== 0">
                 <Row v-if="loading">
@@ -713,7 +713,7 @@ export default {
         pageIndex: this.pageIndex,
       })
         .then((res) => {
-          this.data = res.data.page.map((item) => {
+          this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
               return {
                 type: item.type,
@@ -755,9 +755,8 @@ export default {
 
     loadFavor: function () {
       this.loading = true;
-      favorList({
+      favorList(this.$route.params.id, {
         pindx: this.pageIndex,
-        user_id: this.$route.params.id,
       })
         .then((res) => {
           this.data = res.data.page.map((item) => {

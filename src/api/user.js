@@ -81,7 +81,7 @@ export const recentKnowledge = (params) => {
 }
 
 export const recentFavor = (params) => {
-  const url = `/api/recent/page/${params.pindex}`
+  const url = `/api/recent/page/${params.pindx}`
   return getRequest(url, 'get', params)
 }
 
