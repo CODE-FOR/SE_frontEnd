@@ -49,7 +49,7 @@
         <Card>
           <Tabs v-model="tabName" @on-click="changeTab" :animated="false">
             <TabPane :label="postText" name="myPost">
-              <template v-if="data1.length !== 0">
+              <template v-if="data.length !== 0">
                 <Row v-if="loading">
                   <i-col class="demo-spin-col" offset="8" span="8">
                     <Spin fix>
@@ -62,7 +62,7 @@
                     </Spin>
                   </i-col>
                 </Row>
-                <div v-else v-for="(item, index) in data1" :key="index">
+                <div v-else v-for="(item, index) in data" :key="index">
                   <Row>
                     <i-col span="4">
                       <!-- {{ item.type === 0 ? '微证据' : '微猜想' }}: -->
@@ -537,42 +537,6 @@ export default {
       pageIndex: 1,
       pageSize: 5,
       data: [],
-      data1: [
-        {
-          type: 0,
-          id: 1,
-          creator: {
-            username: "lzw_super",
-            id: 3,
-          },
-          createAt: "2021-4-29 20:30:01",
-          content: "content",
-          tags: [{ name: "test", id: 1 }],
-          isLike: false,
-          isCollect: false,
-          likeNumber: 0,
-          favorNumber: 0,
-          source: "http://www.google.com",
-          author: ["吕云帆"],
-          title: "abcde",
-        },
-        {
-          type: 1,
-          id: 1,
-          tags: [{ name: "test", id: 1 }],
-          isLike: false,
-          isCollect: false,
-          likeNumber: 0,
-          favorNumber: 0,
-          title: "fghij",
-          content: "content",
-          creator: {
-            username: "lzw_super",
-            id: 3,
-          },
-          createAt: "2021-4-29 20:30:00",
-        },
-      ],
       totalCnt: 1,
       showCutter: false,
       post: {},
@@ -761,6 +725,7 @@ export default {
         .then((res) => {
           this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
+              console.log(item)
               return {
                 type: item.type,
                 id: item.id,
@@ -770,8 +735,8 @@ export default {
                 tags: item.tags,
                 isLike: item.is_like,
                 isCollect: item.is_collect,
-                totalLike: item.like_num,
-                totalCollect: item.collect_num,
+                likeNumber: item.like_num,
+                favorNumber: item.collect_num,
                 source: item.source,
                 author: item.author,
                 title: item.title,
@@ -785,12 +750,14 @@ export default {
                 tags: item.tags,
                 isLike: item.is_like,
                 isCollect: item.is_collect,
-                totalLike: item.like_num,
-                totalCollect: item.collect_num,
+                likeNumber: item.like_num,
+                favorNumber: item.collect_num,
                 content: item.content,
               };
             }
           });
+          console.log('data')
+          console.log(this.data)
           this.totalCnt = res.data.total_count;
           this.loading = false;
         })
