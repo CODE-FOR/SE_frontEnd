@@ -2,36 +2,74 @@
   <Row>
     <i-col offset="4" span="15">
       <Card>
-        <template v-if="pageComponent.items.length !== 0">
-          <KnowledgeCard
-            v-for="item in pageComponent.items"
-            :key="item.id"
-            v-bind="item"
-            :isInDetial="0"
-            :isAdmin="1"
-          />
-        </template>
-        <Row v-if="loading">
-          <i-col class="demo-spin-col" offset="8" span="8">
-            <Spin fix>
-              <Icon
-                type="ios-loading"
-                size="18"
-                class="demo-spin-icon-load"
-              ></Icon>
-              <div>Loading</div>
-            </Spin>
-          </i-col>
-        </Row>
-        <Page
-          :total="pageComponent.pageNum * 5"
-          :current="pageComponent.pageIndex"
-          :page-size="pageComponent.pageSize"
-          prev-text="上一页"
-          next-text="下一页"
-          show-elevator
-          @on-change="changeIndexPage"
-        ></Page>
+        <Tabs value="paperReport">
+          <TabPane label="举报论文列表" name="paperReport">
+            <template v-if="pageReport.items.length !== 0">
+              <KnowledgeCard
+                v-for="item in pageReport.items"
+                :key="item.id"
+                v-bind="item"
+                :isInDetial="0"
+                :isAdmin="1"
+                :isReport="0"
+              />
+            </template>
+            <Row v-if="reportLoading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </Row>
+            <Page
+              :total="pageReport.pageNum * 5"
+              :current="pageReport.pageIndex"
+              :page-size="pageReport.pageSize"
+              prev-text="上一页"
+              next-text="下一页"
+              show-elevator
+              @on-change="changeReportPage"
+            ></Page>
+          </TabPane>
+          <TabPane label="全部论文" name="paperAll">
+            <template v-if="pageComponent.items.length !== 0">
+              <KnowledgeCard
+                v-for="item in pageComponent.items"
+                :key="item.id"
+                v-bind="item"
+                :isInDetial="0"
+                :isAdmin="1"
+                :isReport="0"
+              />
+            </template>
+            <Row v-if="loading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </Row>
+            <Page
+              :total="pageComponent.pageNum * 5"
+              :current="pageComponent.pageIndex"
+              :page-size="pageComponent.pageSize"
+              prev-text="上一页"
+              next-text="下一页"
+              show-elevator
+              @on-change="changeIndexPage"
+            ></Page>
+          </TabPane>
+        </Tabs>
       </Card>
     </i-col>
   </Row>
@@ -44,7 +82,7 @@
   import { recentFavor } from "@/api/user";
   import { getTags, recommend, microKnowledgeIdReq } from "@/api/microknowledge";
   import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
-  import { getPaperList } from "@/api/microknowledge";
+  import { getPaperList, getReportPaperList } from "@/api/microknowledge";
   export default {
     name: "admin-paperlist",
 
@@ -96,14 +134,22 @@
             createAt: "2021-4-29 20:30:00",
           },
         ],
-        // loading: true,
-        loading: false,
+        loading: true,
+        reportLoading: true,
+        // all papers
         pageComponent: {
           pageSize: 5,
           pageIndex: 1,
           items: [],
           pageNum: 0,
         },
+        // papers reported
+        pageReport: {
+          pageSize: 5,
+          pageIndex: 1,
+          items: [],
+          pageNum: 0,
+        }
       };
     },
 
@@ -122,6 +168,7 @@
         .catch((err) => {
           console.log(err);
         });
+      this.loadReportData();
       this.loadData();
     },
 
@@ -135,6 +182,17 @@
         }, 400);
         this.pageComponent.pageIndex = i;
         this.loadData();
+      },
+
+      changeReportPage: function (i) {
+        this.pageReport.items = [];
+        setTimeout(() => {
+          document
+            .getElementsByClassName("content-wrapper ivu-layout-content")[0]
+            .scroll(0, 0);
+        }, 400);
+        this.pageReport.pageIndex = i;
+        this.loadReportData();
       },
 
       loadData: function () {
@@ -174,8 +232,47 @@
               this.hasNextPage = false;
             }
           });
-
         console.log(this.pageComponent.items);
+      },
+
+      loadReportData: function() {
+        this.reportLoading = true;
+        getReportPaperList(this.pageReport.pageIndex)
+          .then((res) => {
+            this.pageReport.pageNum = res.data.page_num;
+            this.hasNextPage = res.data.has_next;
+            const mapData = res.data.papers.map((item) => {
+              return {
+                type: 0,
+                id: item.id,
+                creator: item.created_by,
+                createAt: getLocalTime(item.created_at),
+                publishedYear: item.published_year,
+                content:
+                  item.abstract.replace(/<[^>]+>/g, "").length > 100
+                    ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
+                    : item.abstract.replace(/<[^>]+>/g, ""),
+                tags: item.tags,
+                isLike: item.is_like,
+                isCollect: item.is_collect,
+                likeNumber: item.like_num,
+                favorNumber: item.collect_num,
+                source: item.source,
+                author: item.author,
+                title: item.title
+              };
+            });
+            this.pageReport.items.push(...mapData.filter((x) => x));
+            this.reportLoading = false;
+          })
+          .catch((error) => {
+            console.log(error.response.status);
+            if (error.response.status === 400) {
+              this.hasNextPage = false;
+            }
+          });
+        console.log(this.pageReport.items);
       },
 
       // TODO:

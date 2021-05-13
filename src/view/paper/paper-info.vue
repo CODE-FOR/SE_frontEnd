@@ -22,6 +22,7 @@
               :likeNumber="likeNumber"
               :isCollect="isCollect"
               :favorNumber="favorNumber"
+              :isReport="administrator"
             />
           </TabPane>
           <TabPane label="论文解读列表" name="interpretationList">
@@ -84,6 +85,7 @@ export default {
   data() {
     return {
       id: parseInt(this.$route.params.id),
+      administrator: parseInt(this.$route.params.administrator),
       title: "title",
       content: "abstract",
       creator: {},

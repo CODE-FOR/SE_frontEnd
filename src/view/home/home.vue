@@ -8,6 +8,7 @@
               <KnowledgeCard
                 v-for="item in pageComponent.items"
                 :key="item.id"
+                :isReport="0"
                 v-bind="item"
               />
             </template>

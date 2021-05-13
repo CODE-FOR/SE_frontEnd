@@ -125,7 +125,7 @@
       <!-- <template v-if="displayType === 0"> -->
       <Row>
         <i-col span="12">
-          <template v-if="isAdmin === 0">
+          <template v-if="isReport === 0">
             <ButtonGroup>
               <template v-if="isInPublishInterpretaion === false">
                 <i-button @click="onLike" style="font-size: 14px">
@@ -143,6 +143,9 @@
                   </i-button>
                 </template>
                 <template v-else>
+                  <i-button @click="onReport" style="font-size: 14px">
+                    举报
+                  </i-button>
                   <i-button @click="writeInterpretation" style="font-size: 14px">
                     <Icon type="ios-paper-plane" />
                     写解读
@@ -152,9 +155,19 @@
             </ButtonGroup>
           </template>
           <template v-else>
-            <i-button @click="deletePaper" style="font-size: 14px">
-              删除
-            </i-button>
+            <ButtonGroup>
+              <i-button @click="deletePaper" style="font-size: 14px">
+                删除
+              </i-button>
+              <i-button @click="cancelReport" style="font-size: 14px">
+                撤销举报
+              </i-button>
+            </ButtonGroup>
+            <br>
+            <br>
+            <Form ref="reportHandle" :model="reportHandle" :rules="ruleCustom" :label-width="60">
+              <Form-item label="说明：" prop="explanation"><Input type="text" v-model="reportHandle.explanation" placeholder="请输入" /></Form-item>
+            </Form>
           </template>
         </i-col>
       </Row>
@@ -175,12 +188,20 @@ import { getErrModalOptions, getLocalTime } from "@/libs/util";
 import {
   likePaper,
   collectPaper,
+  reportPaper,
   likeInterpretaion,
   collectInterpretation,
 } from "@/api/microknowledge";
+
+
 export default {
   name: "KnowledgeCard",
   props: {
+    isReport: {
+      type: Number,
+      default: 0,
+    },
+
     isAdmin: {
       type: Number,
       default: 0,
@@ -228,12 +249,20 @@ export default {
       default: false,
     },
 
+    // 点赞
     isLike: {
       type: Boolean,
       default: false,
     },
 
+    // 收藏
     isCollect: {
+      type: Boolean,
+      default: false,
+    },
+
+    // 举报
+    isReport: {
       type: Boolean,
       default: false,
     },
@@ -271,11 +300,33 @@ export default {
     },
   },
 
+
+
   data() {
+
+    const validateExp = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入（不可为空）'))
+      } else {
+        callback()
+      }
+    };
+
     return {
       showUserControl: false,
       userInfo: {},
       followText: "",
+      explanatnion: "",
+      reportHandle: {
+        explanation: ""
+      },
+      ruleCustom: {
+        explanation: [{
+          required: true,
+          validator: validateExp,
+          trigger: 'blur'
+        }]
+      }
     };
   },
 
@@ -290,6 +341,10 @@ export default {
 
     collectColor: function () {
       return this.isCollect ? "#fb7299" : "default";
+    },
+
+    reportColor: function () {
+      return this.isReport ? "#fb0316" : "#747b8b";
     },
 
     citeStyle: function () {
@@ -308,6 +363,11 @@ export default {
   methods: {
     // TODO: need to be finished!!! -> administrator delete
     deletePaper: function() {
+
+    },
+
+    // TODO: need to be finished!!! -> administrator delete
+    cancelReport: function() {
 
     },
 
@@ -353,6 +413,22 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
+    },
+
+    onReport: function () {
+      this.isReport = false;
+      /*
+      this.isReport = !this.isReport;
+      reportPaper("get", this.id)
+        .then((res) => {
+          const info = this.isReport ? "已举报" : "已取消举报";
+          this.$Message.info(info);
+        })
+        .catch((error) => {
+          this.$Modal.error(getErrModalOptions(error));
+        });
+
+       */
     },
 
     showUser: function () {
@@ -408,7 +484,8 @@ export default {
         name: "paper",
         params: {
           id: this.id,
-        },
+          administrator: this.isAdmin
+        }
       });
     },
   },

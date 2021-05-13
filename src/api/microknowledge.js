@@ -92,6 +92,11 @@ export const getPaperList = (pageIndex, params) => {
   return getRequest(url, 'get', params)
 }
 
+export const getReportPaperList = (pageIndex, params) => {
+  const url = `/api/paper/page/${parseInt(pageIndex)}`
+  return getRequest(url, 'get', params)
+}
+
 export const recommend = (params) => {
   const url = '/api/recommend'
   return getRequest(url, 'get', params)
