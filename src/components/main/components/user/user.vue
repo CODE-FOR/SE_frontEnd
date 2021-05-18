@@ -9,6 +9,9 @@
         <DropdownItem name="message">
           消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
         </DropdownItem>
+        <DropdownItem name="chat">
+          聊天列表
+        </DropdownItem>
         <DropdownItem name="modify">个人中心</DropdownItem>
         <DropdownItem name="logout">退出登录</DropdownItem>
       </DropdownMenu>
@@ -55,6 +58,11 @@ export default {
         }
       })
     },
+    chat () {
+      this.$router.push({
+        name: 'chat'
+      })
+    },
     handleClick (name) {
       switch (name) {
         case 'logout': this.logout()
@@ -63,6 +71,7 @@ export default {
           break
         case 'modify': this.modify()
           break
+        case 'chat': this.chat()
       }
     }
   }

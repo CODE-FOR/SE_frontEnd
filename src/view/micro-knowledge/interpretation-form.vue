@@ -250,6 +250,12 @@ export default {
           createInterpretation('post', data)
             .then((res) => {
               this.$Message.success("发布成功!请等待审核！");
+              this.$router.push({
+                name: 'paper',
+                params: {
+                  id: this.paperInfo.id
+                }
+              })
             })
             .catch((err) => {
               this.$Modal.error(getErrModalOptions(err));

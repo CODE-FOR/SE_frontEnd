@@ -221,6 +221,9 @@ export default {
           console.log(data);
           createPaper('post', data).then(res => {
             this.$Message.success('发布成功!请等待审核！')
+            this.$router.push({
+              name: 'home'
+            })
           }).catch(
             this.$Modal.error(getErrModalOptions(err))
           )

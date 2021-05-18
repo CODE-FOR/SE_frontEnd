@@ -63,9 +63,18 @@ export default [
           icon: 'md-search'
         },
         component: () => import('@/view/home/search')
+      },
+      {
+        path: 'chat',
+        name: 'chat',
+        component: () => import('@/view/user/chat'),
+        meta: {
+          hideInBread: true,
+          hideInMenu: true
+        }
       }
     ]
-  },
+  }, 
   {
     path: '/message',
     name: 'message',
@@ -201,7 +210,7 @@ export default [
   //         title: '项目',
   //         hideInMenu: true
   //       },
-  //       component: () => import('@/view/sponsor-project/sponsor-project-home.vue')
+//       component: () => import('@/view/sponsor-project/sponsor-project-home.vue')
   //     }
   //   ]
   // },
