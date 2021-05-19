@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="layout-content">
-      <Col span="4" style="width: 300px">
+    <!-- <div class="layout-content"> -->
+      <Col span="4" style="width: 300px; overflow:auto">
         <Card>
           <p slot="title" style="text-align: center; font-size: 20px">联系人</p>
           <div v-for="item in chatUserList" :key="item.id">
@@ -68,16 +68,16 @@
                 </div>
               </div>
             </div>
-            <From>
+            <From style="position: relative;bottom">
               <From-item key="message">
-                <Input type="content" placeholder="请输入论文标题" />
+                <Input type="content" placeholder="" />
               </From-item>
             </From>
           </Card>
         </div>
       </Col>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -85,13 +85,14 @@ import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 export default {
   data() {
     return {
-      nowChatUser: 1,
+      // TODO: use vuex to remember the last chat member
+      nowChatUser: 2,
       nowChatUserName: "Captain America",
       showChatUserMessages: [],
       chatUserList: [
         {
           id: 2,
-          name: "Captain Amercia",
+          name: "Captain America",
           email: "love3000@love.com",
           lastMessage: "That is American Ass",
         },
@@ -173,17 +174,24 @@ export default {
           },
         ],
       },
+      socket: null
     };
   },
 
   created() {
     let _this = this;
+    this.socket = new WebSocket('ws://localhost:8080/chat/')
+    this.socket.onopen = this.open
+    this.socket.onerror = this.error
+    this.socket.onmessage = this.getMessage
     window.addEventListener("scroll", this.handleScroll, true);
+    window.addEventListener("resize", this.handleResize, true);
   },
 
   destroyed() {
     let _this = this;
     window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("resize", this.handleResize)
   },
 
   mounted() {
@@ -192,15 +200,39 @@ export default {
   },
 
   methods: {
+    open: function () {
+      console.log('connet successfully')
+      this.getMsgPost()
+    },
+
+    error: function () {
+      console.log('error')
+    },
+
+    getMessage: function (msg) {
+      console.log(msg.data)
+    },
+
+    getMsgPost: function () {
+      let sendMsg = {
+        code: 100,
+        // msg: Cookies.get('token')
+        msg: 'fuck u'
+      }
+      this.socket.send(JSON.stringify(sendMsg))
+    },
+
     handleScroll: function () {
-      console.log("get in");
       var sl = Math.max(
         document.body.scrollLeft,
         document.documentElement.scrollLeft
       );
-      console.log(sl);
       document.getElementById("fix-content").style.left = 600 - sl + "px";
-      console.log(document.getElementById("fix-content").style);
+    },
+
+    handleResize: function () {
+      var he = document.documentElement.clientHeight;
+      document.getElementById("chat-content").style.height = he - 262 + 'px';
     },
 
     loadChatUser: function () {},
@@ -215,12 +247,7 @@ export default {
       this.showChatUserMessages = this.chatMessages[this.nowChatUser];
       this.$nextTick(function () {
         var div = document.getElementById("chat-content");
-        console.log(div);
-        console.log("fuck off");
-        console.log(div.scrollTop);
-        console.log(div.scrollHeight);
         div.scrollTop = div.scrollHeight;
-        console.log(div.scrollTop);
       });
     },
   },
