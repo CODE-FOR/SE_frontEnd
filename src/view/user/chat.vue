@@ -70,8 +70,12 @@
             </div>
             <From style="position: relative;bottom">
               <From-item key="message">
-                <Input type="content" placeholder="" />
+                <Input type="content" placeholder="输入聊天内容" @keyup.enter="sendMessage" v-model="sendMes" />
+                <br/>
+                <br/>
+                <Button type = "success" @click="sendMessage">发送</Button>
               </From-item>
+              
             </From>
           </Card>
         </div>
@@ -89,6 +93,7 @@ export default {
       nowChatUser: 2,
       nowChatUserName: "Captain America",
       showChatUserMessages: [],
+      sendMes: "",
       chatUserList: [
         {
           id: 2,
@@ -200,6 +205,16 @@ export default {
   },
 
   methods: {
+    // TODO: code manage
+    sendMessage: function () {
+      let sendmes = {
+        message: this.sendMes,
+        code: 600,
+        send_to: this.nowChatUser
+      }
+      this.socket.send(JSON.stringify(sendmes))
+    },
+
     open: function () {
       console.log('connet successfully')
       this.getMsgPost()
@@ -209,20 +224,31 @@ export default {
       console.log('error')
     },
 
+    // code:
+    //        610:  get_msg
     getMessage: function (msg) {
-      console.log(msg.data)
-    },
-
-    getMsgPost: function () {
-      let sendMsg = {
-        code: 100,
-        // msg: Cookies.get('token')
-        msg: 'fuck u'
+      let msgData = JSON.parse(msg.data)
+      let code = msgData.code
+      let senderid = msgData.sender_id
+      let receiverid =  msgData.receiver_id
+      let destid = senderid
+      console.log(this.currentUserId)
+      if (destid === this.currentUserId) {
+        destid = receiverid
       }
-      this.socket.send(JSON.stringify(sendMsg))
+      console.log(msgData)
+      console.log(code)
+      switch (code) {
+        case 610:
+          console.log(destid)
+          this.chatMessages[destid].push(msgData.msg)
+          this.loadChatMessage()
+          console.log(msg)
+          break;
+      }
     },
 
-    handleScroll: function () {
+    handleScroll: function() {
       var sl = Math.max(
         document.body.scrollLeft,
         document.documentElement.scrollLeft
@@ -230,7 +256,7 @@ export default {
       document.getElementById("fix-content").style.left = 600 - sl + "px";
     },
 
-    handleResize: function () {
+    handleResize: function() {
       var he = document.documentElement.clientHeight;
       document.getElementById("chat-content").style.height = he - 262 + 'px';
     },
@@ -250,10 +276,18 @@ export default {
         div.scrollTop = div.scrollHeight;
       });
     },
+
+    scrollToBottom: function () {
+      this.$nextTick(function () {
+        alert('get in')
+        var div = document.getElementById("chat-content");
+        div.scrollTop = div.scrollHeight;
+      });
+    }
   },
 
   watch: {
-    // showChatUserMessages: "scroolToBottom",
+    showChatUserMessages: "scroolToBottom",
   },
 };
 </script>
