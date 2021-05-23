@@ -93,56 +93,56 @@ export default {
     return {
       // TODO: use vuex to remember the last chat member
       nowChatUser: 2,
-      nowChatUserName: "Captain America",
+      nowChatUserName: "xxx",
       showChatUserMessages: [],
       sendMes: "",
       chatUserList: {
-        2: {
-          id: 2,
+        3: {
+          id: 3,
           name: "Captain America",
           email: "love3000@love.com",
           lastMessage: "That is American Ass",
         },
-        3: {
-          id: 3,
-          name: "Spider Man",
-          email: "wow@beauty.com",
-          lastMessage: "",
-        },
-        5: {
-          id: 5,
-          name: "Iron Man",
-          email: "love3000@love.com",
-          lastMessage: "",
-        },
-        6: {
-          id: 6,
-          name: "Thor",
-          email: "wow@beauty.com",
-          lastMessage: "",
-        },
-        7: {
-          id: 7,
-          name: "Ant Man",
-          email: "wow@beauty.com",
-          lastMessage: "",
-        },
-        8: {
-          id: 8,
-          name: "Hulk",
-          email: "wow@beauty.com",
-          lastMessage: "",
-        },
-        9: {
-          id: 9,
-          name: "Hawk Eye",
-          email: "wow@beauty.com",
-          lastMessage: "",
-        },
+        // 3: {
+        //   id: 3,
+        //   name: "Spider Man",
+        //   email: "wow@beauty.com",
+        //   lastMessage: "",
+        // },
+        // 5: {
+        //   id: 5,
+        //   name: "Iron Man",
+        //   email: "love3000@love.com",
+        //   lastMessage: "",
+        // },
+        // 6: {
+        //   id: 6,
+        //   name: "Thor",
+        //   email: "wow@beauty.com",
+        //   lastMessage: "",
+        // },
+        // 7: {
+        //   id: 7,
+        //   name: "Ant Man",
+        //   email: "wow@beauty.com",
+        //   lastMessage: "",
+        // },
+        // 8: {
+        //   id: 8,
+        //   name: "Hulk",
+        //   email: "wow@beauty.com",
+        //   lastMessage: "",
+        // },
+        // 9: {
+        //   id: 9,
+        //   name: "Hawk Eye",
+        //   email: "wow@beauty.com",
+        //   lastMessage: "",
+        // },
       },
       currentUserId: this.$store.state.user.userId,
       chatMessages: {
-        2: [
+        3: [
           {
             time: "2021-5-18",
             message: "I can do this all day",
@@ -180,8 +180,9 @@ export default {
             send_id: 3,
           },
         ],
-        3: [],
-        9: [],
+        // 3: [],
+        // 9: [],
+        // 7: [],
       },
       socket: null,
     };
@@ -190,6 +191,7 @@ export default {
   created() {
     let _this = this;
     this.socket = new WebSocket("ws://localhost:8080/chat/");
+    // this.socket = new WebSocket("ws://114.115.156.182:8080/chat/");
     this.socket.onopen = this.open;
     this.socket.onerror = this.error;
     this.socket.onmessage = this.getMessage;
@@ -208,7 +210,7 @@ export default {
       await getUserInfo()
         .then((res) => {
           this.$store.commit("setUserProfile", res.data);
-          this.currentUserId = this.$store.state.user.userId
+          this.currentUserId = this.$store.state.user.userId;
           this.loadChatUser();
           this.loadChatMessage(this.nowChatUser);
         })
@@ -221,7 +223,6 @@ export default {
   },
 
   methods: {
-    // TODO: code manage
     sendMessage: function () {
       let sendmes = {
         msg: {
@@ -241,15 +242,9 @@ export default {
     },
 
     createUserGroup: function () {
-      let chatList = [];
-      let user;
-      for (user in this.chatUserList) {
-        chatList.push(this.chatUserList[user].id);
-      }
       let sendmes = {
         code: 700,
         user_id: this.currentUserId,
-        chat_list: chatList,
       };
       this.socket.send(JSON.stringify(sendmes));
     },
@@ -259,13 +254,12 @@ export default {
     },
 
     /** code:
-      *   610:  get_msg
-      *   810:  add_new_chat_user
-      *         必须判断newUserId是不是currentUserId
-      *         因为在后端暂时把发送请求的channel也加入到了userId的group中
-      *         因此发送请求的channel也会得到自己的userId，
-      *         如果是自己，则不需要做任何处理.
-    */
+     *   610: @description 接收到新消息
+     *                     判断sender是否为自己，
+     *                     为自己，将msg添加到receiver_id的chatMessage中。
+     *                     否则判断sender_id是否存在于chatList中，
+     *                     不存在要添加。
+     */
     getMessage: function (msg) {
       let msgData = JSON.parse(msg.data);
       msgData = msgData.message;
@@ -278,42 +272,28 @@ export default {
           if (destid === this.currentUserId) {
             destid = receiverid;
           }
+          let userId;
+          let find = false;
+          for (userId in this.chatUserList) {
+            if (userId == destid) {
+              find = true;
+              break;
+            }
+          }
+          if (!find) {
+            // TODO: load User message
+            this.$set(this.chatUserList, destid, {
+              id: destid,
+              name: "fuck me",
+              email: "fuck_me@pornhub.com",
+              lastMessage: "do you want to fuck me?",
+            });
+            // TODO: load chat message about this newUser
+            this.chatMessages[destid] = [];
+          }
           this.chatMessages[destid].push(msgData.msg);
           this.loadChatMessage(destid);
           break;
-        case 810:
-          let newUserId = msgData.user_id;
-          console.log(newUserId)
-          if (newUserId !== this.currentUserId) {
-            let userId
-            let find = false
-            for (userId in this.chatUserList) {
-              if (userId == newUserId) {
-                find = true;
-                break;
-              }
-            }
-            if (!find) {
-              console.log('get in find')
-              // TODO: load User message
-              this.$set(this.chatUserList, newUserId,  {
-                id: newUserId,
-                name: 'fuck me',
-                email: 'fuck_me@pornhub.com',
-                lastMessage: 'do you want to fuck me?'
-              })
-              // this.chatUserList[newUserId] =  {
-              //   id: newUserId,
-              //   name: 'fuck me',
-              //   email: 'fuck_me@pornhub.com',
-              //   lastMessage: 'do you want to fuck me?'
-              // }
-              console.log(this.chatUserList[2])
-              console.log(this.chatUserList[16])
-              // TODO: load chat message about this newUser
-              this.chatMessages[newUserId] = []
-            }
-          }
       }
     },
 
@@ -334,20 +314,11 @@ export default {
 
     /**
      * @description 切换聊天用户
-     *    在切换用户之后，需要发送切换到的用户信息
-     *    对应后端的接口add_new_chat_user.
-     *    防止对方的前端的聊天列表中不包含自己.
      */
     changeChatUser: function (userId, name) {
       this.nowChatUser = userId;
       this.nowChatUserName = name;
       this.loadChatMessage(userId);
-      this.socket.send(
-        JSON.stringify({
-          code: 800,
-          user_id: 16,
-        })
-      );
     },
 
     loadChatMessage: function (userId) {
