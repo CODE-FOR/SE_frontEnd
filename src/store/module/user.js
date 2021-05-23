@@ -117,6 +117,7 @@ export default {
           const data = res.data
           commit('setToken', data.access_token)
           commit('setRefreshToken', data.refresh_token)
+          commit('setAccess', userName)
           getUserInfo().then(res => {
             commit('setUserProfile', res.data)
           }).catch(error => {
@@ -126,7 +127,7 @@ export default {
         }).catch(err => {
           reject(err)
         })
-      })
+      });
     },
     // 退出登录
     handleLogOut ({ state, commit }) {
