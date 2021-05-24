@@ -147,7 +147,7 @@
               </template>
             </TabPane>
             <TabPane :label="favorText" name="myFavor">
-              <template v-if="data.length !== 0">
+              <!-- <template v-if="data.length !== 0">
                 <Row v-if="loading">
                   <i-col class="demo-spin-col" offset="8" span="8">
                     <Spin fix>
@@ -159,14 +159,14 @@
                       <div>Loading</div>
                     </Spin>
                   </i-col>
-                </Row>
+                </Row> -->
                 <!-- <KnowledgeCard
                   v-else
                   v-for="item in data"
                   :key="item.id"
                   v-bind="item"
                 /> -->
-                <template v-else>
+                <!-- <template v-else>
                   <template v-for="item in data">
                     <template v-if="item.type === 0">
                       <KnowledgeCard :key="item.id" v-bind="item" />
@@ -184,6 +184,102 @@
                     @on-change="changePage"
                   />
                 </div>
+              </template>
+              <Row v-else-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
+              <template v-else>
+                <div style="text-align: center; font-size: 20px">暂无收藏</div>
+              </template> -->
+              <template v-if="data.length !== 0">
+                <Row v-if="loading">
+                  <i-col class="demo-spin-col" offset="8" span="8">
+                    <Spin fix>
+                      <Icon
+                        type="ios-loading"
+                        size="18"
+                        class="demo-spin-icon-load"
+                      ></Icon>
+                      <div>Loading</div>
+                    </Spin>
+                  </i-col>
+                </Row>
+                <div v-else v-for="(item, index) in data" :key="index">
+                  <Row>
+                    <i-col span="4">
+                      <!-- {{ item.type === 0 ? '微证据' : '微猜想' }}: -->
+                      {{ item.type === 0 ? "论文" : "论文解读" }}
+                    </i-col>
+                    <i-col span="7" class="post-content">
+                      <!-- TODO -->
+                      <div v-html="item.title"></div>
+                      <!-- <span>{{ item.content }}</span> -->
+                    </i-col>
+                    <i-col offset="6" span="7" v-if="!isOther">
+                      <i-button
+                        type="info"
+                        style="width: 70px"
+                        @click="handleShow(item.id, item.type)"
+                      >
+                        查看
+                      </i-button>
+                      &nbsp;
+                      <i-button
+                        type="info"
+                        style="width: 70px"
+                        @click="handleModifyPost(item.id, item.type)"
+                      >
+                        修改
+                      </i-button>
+                      &nbsp;
+                      <i-button
+                        type="info"
+                        style="width: 70px"
+                        @click="handleDelete(item.id, item.type)"
+                      >
+                        删除
+                      </i-button>
+                    </i-col>
+                    <i-col offset="5" span="2" v-else>
+                      <i-button
+                        type="info"
+                        style="width: 70px"
+                        @click="handleShow(item.id, item.type)"
+                      >
+                        查看
+                      </i-button>
+                    </i-col>
+                  </Row>
+                  <Divider />
+                </div>
+                <div style="float: right">
+                  <Page
+                    :total="totalCnt"
+                    :page-size="pageSize"
+                    :current="pageIndex"
+                    @on-change="changePage"
+                    show-total
+                  />
+                </div>
+                <Modal v-model="showDetail" footer-hide width="720">
+                  <KnowledgeCard
+                    v-if="showDetail && post.type === 0"
+                    v-bind="post"
+                  />
+                  <InterpretationCard
+                    v-if="showDetail && post.type === 1"
+                    v-bind="post"
+                  />
+                </Modal>
               </template>
               <Row v-else-if="loading">
                 <i-col class="demo-spin-col" offset="8" span="8">
@@ -232,7 +328,6 @@
                       <p style="margin-top: 5px">
                         邮箱: {{ item.email || "暂无邮箱信息" }}
                       </p>
-                      >
                     </i-col>
                     <i-col offset="13" span="3" v-if="isOther">
                       <i-button
