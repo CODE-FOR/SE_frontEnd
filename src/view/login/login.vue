@@ -63,7 +63,7 @@ export default {
       type: 1,
       register_error: '',
       modifypass_error: '',
-      login_error: ''
+      login_error: '',
     }
   },
   components: {

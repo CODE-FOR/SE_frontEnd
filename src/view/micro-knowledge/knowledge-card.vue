@@ -143,7 +143,7 @@
                   </i-button>
                 </template>
                 <template v-else>
-                  <i-button @click="onReport" style="font-size: 14px">
+                  <i-button @click="setReport" style="font-size: 14px">
                     举报
                   </i-button>
                   <i-button @click="writeInterpretation" style="font-size: 14px">
@@ -153,6 +153,18 @@
                 </template>
               </template>
             </ButtonGroup>
+            <br>
+            <br>
+            <template v-if="isReported === true">
+              <Form ref="reportHandle" :model="reportHandle" :rules="ruleCustom" :label-width="100">
+                <Form-item label="举报理由：" prop="explanation"><Input type="text" v-model="reportHandle.explanation" placeholder="请输入" /></Form-item>
+              </Form>
+              <div align="center">
+                <i-button @click="onReport" style="font-size: 14px">
+                  确认举报
+                </i-button>
+              </div>
+            </template>
           </template>
           <template v-else>
             <ButtonGroup>
@@ -189,6 +201,7 @@ import {
   likePaper,
   collectPaper,
   reportPaper,
+  deletePaper,
   likeInterpretaion,
   collectInterpretation,
 } from "@/api/microknowledge";
@@ -197,10 +210,12 @@ import {
 export default {
   name: "KnowledgeCard",
   props: {
+
     isReport: {
       type: Number,
       default: 0,
     },
+
 
     isAdmin: {
       type: Number,
@@ -262,7 +277,7 @@ export default {
     },
 
     // 举报
-    isReport: {
+    isReported: {
       type: Boolean,
       default: false,
     },
@@ -344,7 +359,7 @@ export default {
     },
 
     reportColor: function () {
-      return this.isReport ? "#fb0316" : "#747b8b";
+      return this.isReported ? "#fb0316" : "#747b8b";
     },
 
     citeStyle: function () {
@@ -363,7 +378,23 @@ export default {
   methods: {
     // TODO: need to be finished!!! -> administrator delete
     deletePaper: function() {
+      if (confirm("确定要删除该论文吗？")) {
+        const data = {
+          paperId: this.id,
+          reason: this.reportHandle.explanation
+        };
+        deletePaper("post", data)
+          .then((res) => {
+            this.$Message.success("已删除该论文")
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      }
+    },
 
+    setReport: function() {
+      this.isReported = true;
     },
 
     // TODO: need to be finished!!! -> administrator delete
@@ -416,19 +447,14 @@ export default {
     },
 
     onReport: function () {
-      this.isReport = false;
-      /*
-      this.isReport = !this.isReport;
+      this.isReported = true;
       reportPaper("get", this.id)
         .then((res) => {
-          const info = this.isReport ? "已举报" : "已取消举报";
-          this.$Message.info(info);
+          this.$Message.info("已举报，等待管理员审核……");
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
-
-       */
     },
 
     showUser: function () {

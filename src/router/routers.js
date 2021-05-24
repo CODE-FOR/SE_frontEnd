@@ -74,7 +74,7 @@ export default [
         }
       }
     ]
-  }, 
+  },
   {
     path: '/message',
     name: 'message',
@@ -153,7 +153,8 @@ export default [
     name: 'manage',
     meta: {
       icon: 'ios-hammer',
-      title: '管理'
+      title: '管理',
+      access: ['zcx2021', 'lzw_super']
     },
     component: Main,
     children: [
