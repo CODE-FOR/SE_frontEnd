@@ -73,7 +73,7 @@
                       <div v-html="item.title"></div>
                       <!-- <span>{{ item.content }}</span> -->
                     </i-col>
-                    <i-col offset="6" span="7" v-if="!isOther">
+                    <i-col offset="9" span="3" v-if="!isOther">
                       <i-button
                         type="info"
                         style="width: 70px"
@@ -82,14 +82,15 @@
                         查看
                       </i-button>
                       &nbsp;
-                      <i-button
+                      <!-- TODO: may do it later -->
+                      <!-- <i-button
                         type="info"
                         style="width: 70px"
                         @click="handleModifyPost(item.id, item.type)"
                       >
                         修改
                       </i-button>
-                      &nbsp;
+                      &nbsp; -->
                       <i-button
                         type="info"
                         style="width: 70px"
@@ -98,7 +99,7 @@
                         删除
                       </i-button>
                     </i-col>
-                    <i-col offset="5" span="2" v-else>
+                    <i-col offset="11" span="1" v-else>
                       <i-button
                         type="info"
                         style="width: 70px"
@@ -160,13 +161,13 @@
                     </Spin>
                   </i-col>
                 </Row> -->
-                <!-- <KnowledgeCard
+              <!-- <KnowledgeCard
                   v-else
                   v-for="item in data"
                   :key="item.id"
                   v-bind="item"
                 /> -->
-                <!-- <template v-else>
+              <!-- <template v-else>
                   <template v-for="item in data">
                     <template v-if="item.type === 0">
                       <KnowledgeCard :key="item.id" v-bind="item" />
@@ -224,32 +225,7 @@
                       <div v-html="item.title"></div>
                       <!-- <span>{{ item.content }}</span> -->
                     </i-col>
-                    <i-col offset="6" span="7" v-if="!isOther">
-                      <i-button
-                        type="info"
-                        style="width: 70px"
-                        @click="handleShow(item.id, item.type)"
-                      >
-                        查看
-                      </i-button>
-                      &nbsp;
-                      <i-button
-                        type="info"
-                        style="width: 70px"
-                        @click="handleModifyPost(item.id, item.type)"
-                      >
-                        修改
-                      </i-button>
-                      &nbsp;
-                      <i-button
-                        type="info"
-                        style="width: 70px"
-                        @click="handleDelete(item.id, item.type)"
-                      >
-                        删除
-                      </i-button>
-                    </i-col>
-                    <i-col offset="5" span="2" v-else>
+                    <i-col offset="11" span="1">
                       <i-button
                         type="info"
                         style="width: 70px"
@@ -782,6 +758,7 @@ export default {
         pindx: this.pageIndex,
       })
         .then((res) => {
+          console.log(res);
           this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
               return {

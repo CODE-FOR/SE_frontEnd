@@ -182,7 +182,7 @@ export default {
         tags: (this.tagSearch = "" ? null : this.tagSearch),
         keywords: this.$route.params.query,
         paper: this.searchPaper,
-        interpertation: this.searchInterpretation,
+        interpretation: this.searchInterpretation,
       }).then((res) => {
         console.log(res)
         this.totalData = res.data.total_res;
