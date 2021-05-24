@@ -4,26 +4,56 @@
     <Col span="4" style="width: 300px; overflow: auto">
       <Card>
         <p slot="title" style="text-align: center; font-size: 20px">联系人</p>
-        <div v-for="item in chatUserList" :key="item.id">
-          <Card
-            style="padding: 0px; height: 100px"
-            @click.native="changeChatUser(item.id, item.name)"
-          >
-            <i-col span="2" style="type: flex">
-              <Avatar
-                src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                style="width: 300%; height: 300%"
-              />
-            </i-col>
-            <i-col offset="7" style="type: flex">
-              <br />
-              <p style="font-size: 20px">{{ item.name }}</p>
-              <!-- TODO: last message -->
-              <div style="color: grey">
-                <p>{{ item.lastMessage }}</p>
-              </div>
-            </i-col>
-          </Card>
+        <Form @submit.native.prevent inline>
+          <FormItem prop="user">
+            <Input
+              type="text"
+              placeholder="联系人姓名"
+              @keyup.enter.native="handleFindMember"
+              v-model="findMemberName"
+            >
+              <Icon type="ios-person-outline" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
+          <FormItem>
+            <Button type="primary" @click="handleFindMember">
+              <Icon type="ios-search-outline" />
+            </Button>
+          </FormItem>
+        </Form>
+        <div v-for="item in chatUserIdList" :key="item">
+          <div :ref="chatUserList[item].name" :id="item">
+            <Card
+              style="padding: 0px; height: 100px"
+              @click.native="
+                changeChatUser(chatUserList[item].id, chatUserList[item].name)
+              "
+            >
+              <i-col span="2" style="type: flex">
+                <Avatar
+                  src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
+                  style="width: 300%; height: 300%"
+                />
+              </i-col>
+              <i-col offset="7" style="type: flex">
+                <Badge :count="chatUserList[item].unreadMessageNum" style="margin-left:150px">
+                  <a href="#" class="demo-badge"></a>
+                </Badge>
+                <br />
+                <p
+                  style="font-size: 20px"
+                  :ref="`member${chatUserList[item].id}`"
+                  class="member-card"
+                >
+                  {{ chatUserList[item].name }}
+                </p>
+                <!-- TODO: last message -->
+                <div style="color: grey">
+                  <p>{{ chatUserList[item].lastMessage }}</p>
+                </div>
+              </i-col>
+            </Card>
+          </div>
         </div>
       </Card>
     </Col>
@@ -65,8 +95,8 @@
               </div>
             </div>
           </div>
-          <From style="position: relative;bottom">
-            <From-item key="message">
+          <Form style="position: relative;bottom" @submit.native.prevent>
+            <FormItem key="message">
               <Input
                 type="content"
                 placeholder="输入聊天内容"
@@ -76,8 +106,8 @@
               <br />
               <br />
               <Button type="success" @click="sendMessage">发送</Button>
-            </From-item>
-          </From>
+            </FormItem>
+          </Form>
         </Card>
       </div>
     </Col>
@@ -92,53 +122,29 @@ export default {
   data() {
     return {
       // TODO: use vuex to remember the last chat member
-      nowChatUser: 2,
-      nowChatUserName: "xxx",
+      nowChatUser: 3,
+      findMemberName: "",
+      nowChatUserName: "Captain America",
       showChatUserMessages: [],
       sendMes: "",
+      chatUserIdList: [3, 4],
       chatUserList: {
         3: {
           id: 3,
           name: "Captain America",
           email: "love3000@love.com",
           lastMessage: "That is American Ass",
+          haveUnreadMessage: true,
+          unreadMessageNum: 2,
         },
-        // 3: {
-        //   id: 3,
-        //   name: "Spider Man",
-        //   email: "wow@beauty.com",
-        //   lastMessage: "",
-        // },
-        // 5: {
-        //   id: 5,
-        //   name: "Iron Man",
-        //   email: "love3000@love.com",
-        //   lastMessage: "",
-        // },
-        // 6: {
-        //   id: 6,
-        //   name: "Thor",
-        //   email: "wow@beauty.com",
-        //   lastMessage: "",
-        // },
-        // 7: {
-        //   id: 7,
-        //   name: "Ant Man",
-        //   email: "wow@beauty.com",
-        //   lastMessage: "",
-        // },
-        // 8: {
-        //   id: 8,
-        //   name: "Hulk",
-        //   email: "wow@beauty.com",
-        //   lastMessage: "",
-        // },
-        // 9: {
-        //   id: 9,
-        //   name: "Hawk Eye",
-        //   email: "wow@beauty.com",
-        //   lastMessage: "",
-        // },
+        4: {
+          id: 4,
+          name: "Cap",
+          email: "love3000@love.com",
+          lastMessage: "That is American Ass",
+          haveUnreadMessage: false,
+          unreadMessageNum: 0,
+        },
       },
       currentUserId: this.$store.state.user.userId,
       chatMessages: {
@@ -148,41 +154,16 @@ export default {
             message: "I can do this all day",
             to_id: 3,
             send_id: 2,
+            readed: false,
           },
           {
             time: "2021-5-18",
             message: "yeah, I know",
             to_id: 2,
             send_id: 3,
-          },
-          {
-            time: "2021-5-18",
-            message: "Bucky is Alive",
-            to_id: 2,
-            send_id: 3,
-          },
-          {
-            time: "2021-5-18",
-            message: "what?",
-            to_id: 3,
-            send_id: 2,
-          },
-          {
-            time: "2021-5-18",
-            message: "That is American Ass",
-            to_id: 2,
-            send_id: 3,
-          },
-          {
-            time: "2021-5-18",
-            message: "Hail Hydra",
-            to_id: 2,
-            send_id: 3,
+            readed: false,
           },
         ],
-        // 3: [],
-        // 9: [],
-        // 7: [],
       },
       socket: null,
     };
@@ -213,6 +194,7 @@ export default {
           this.currentUserId = this.$store.state.user.userId;
           this.loadChatUser();
           this.loadChatMessage(this.nowChatUser);
+          this.changeChatUser(this.nowChatUser, this.nowChatUserName);
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
@@ -234,6 +216,17 @@ export default {
         sender_id: this.currentUserId,
       };
       this.socket.send(JSON.stringify(sendmes));
+    },
+
+    handleFindMember: function () {
+      if (this.$refs[this.findMemberName] == undefined) {
+        this.$Message.warning("抱歉，未找到该联系人");
+      } else {
+        console.log(this.$refs[this.findMemberName][0]);
+        let userId = this.$refs[this.findMemberName][0].id;
+        console.log(userId);
+        this.changeChatUser(userId, this.chatUserList[userId].name);
+      }
     },
 
     open: function () {
@@ -282,6 +275,12 @@ export default {
           }
           if (!find) {
             // TODO: load User message
+            this.$set(
+              this.chatUserIdList,
+              this.chatUserIdList.length,
+              this.chatUserIdList[0]
+            );
+            this.$set(this.chatUserIdList, 0, destid);
             this.$set(this.chatUserList, destid, {
               id: destid,
               name: "fuck me",
@@ -290,6 +289,16 @@ export default {
             });
             // TODO: load chat message about this newUser
             this.chatMessages[destid] = [];
+          } else {
+            let i;
+            for (i = 0; i < this.chatUserIdList.length; i++) {
+              if (this.chatUserIdList[i] == userId) {
+                break;
+              }
+            }
+            let tmp = this.chatUserIdList[i];
+            this.chatUserIdList[i] = this.chatUserIdList[0];
+            this.chatUserIdList[0] = tmp;
           }
           this.chatMessages[destid].push(msgData.msg);
           this.loadChatMessage(destid);
@@ -316,8 +325,19 @@ export default {
      * @description 切换聊天用户
      */
     changeChatUser: function (userId, name) {
+      let i;
+      for (i = 0; i < this.chatUserIdList.length; i++) {
+        if (this.chatUserIdList[i] == userId) {
+          break;
+        }
+      }
+      let tmp = this.chatUserIdList[i];
+      this.chatUserIdList[i] = this.chatUserIdList[0];
+      this.chatUserIdList[0] = tmp;
+      this.$refs[`member${this.nowChatUser}`][0].style.color = "darkgrey";
       this.nowChatUser = userId;
       this.nowChatUserName = name;
+      this.$refs[`member${userId}`][0].style.color = "black";
       this.loadChatMessage(userId);
     },
 
@@ -330,7 +350,6 @@ export default {
         this.chatUserList[userId].lastMessage = this.chatMessages[userId].slice(
           -1
         )[0].message;
-        console.log(this.chatUserList[userId].lastMessage);
       }
       this.$nextTick(function () {
         var div = document.getElementById("chat-content");
@@ -340,7 +359,6 @@ export default {
 
     scrollToBottom: function () {
       this.$nextTick(function () {
-        alert("get in");
         var div = document.getElementById("chat-content");
         div.scrollTop = div.scrollHeight;
       });
@@ -359,6 +377,9 @@ body {
 }
 #app {
   min-width: 1500px;
+}
+.member-card {
+  color: darkgray;
 }
 .chat-content {
   margin-top: 10px;
