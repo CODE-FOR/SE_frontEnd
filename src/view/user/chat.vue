@@ -36,7 +36,10 @@
                 />
               </i-col>
               <i-col offset="7" style="type: flex">
-                <Badge :count="chatUserList[item].unreadMessageNum" style="margin-left:150px">
+                <Badge
+                  :count="chatUserList[item].unreadMessageNum"
+                  style="margin-left: 150px"
+                >
                   <a href="#" class="demo-badge"></a>
                 </Badge>
                 <br />
@@ -118,10 +121,16 @@
 <script>
 import { getUserInfo } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
+import {
+  getChatUserList,
+  addUsrToChatList,
+  clearUnread,
+  getChatUser,
+  getChatMessages
+} from "@/api/chat.js";
 export default {
   data() {
     return {
-      // TODO: use vuex to remember the last chat member
       nowChatUser: 3,
       findMemberName: "",
       nowChatUserName: "Captain America",
@@ -154,14 +163,12 @@ export default {
             message: "I can do this all day",
             to_id: 3,
             send_id: 2,
-            readed: false,
           },
           {
             time: "2021-5-18",
             message: "yeah, I know",
             to_id: 2,
             send_id: 3,
-            readed: false,
           },
         ],
       },
@@ -181,7 +188,7 @@ export default {
   },
 
   destroyed() {
-    let _this = this;
+    this.clearUnreadMessage(this.nowChatUser);
     window.removeEventListener("scroll", this.handleScroll);
     window.removeEventListener("resize", this.handleResize);
   },
@@ -192,8 +199,10 @@ export default {
         .then((res) => {
           this.$store.commit("setUserProfile", res.data);
           this.currentUserId = this.$store.state.user.userId;
-          this.loadChatUser();
-          this.loadChatMessage(this.nowChatUser);
+          this.loadChatUserList();
+          this.loadChatMessageList();
+          this.nowChatUser = this.chatUserIdList.length > 0 ? this.chatUserIdList[0] : 0;
+          this.nowChatUserName = this.chatUserList[this.nowChatUser].name;
           this.changeChatUser(this.nowChatUser, this.nowChatUserName);
         })
         .catch((error) => {
@@ -274,20 +283,18 @@ export default {
             }
           }
           if (!find) {
-            // TODO: load User message
-            this.$set(
-              this.chatUserIdList,
-              this.chatUserIdList.length,
-              this.chatUserIdList[0]
-            );
+            // TODO: load User message, in then use setUnreadMessage
+            this.chatUserIdList.splice(0, 0, destid);
             this.$set(this.chatUserIdList, 0, destid);
             this.$set(this.chatUserList, destid, {
               id: destid,
-              name: "fuck me",
-              email: "fuck_me@pornhub.com",
-              lastMessage: "do you want to fuck me?",
+              name: "loading...",
+              email: "loading...",
+              lastMessage: "loading...",
+              haveUnreadMessage: false,
+              unreadMessageNum: 0,
             });
-            // TODO: load chat message about this newUser
+            this.getNewChatUserMessage(destid)
             this.chatMessages[destid] = [];
           } else {
             let i;
@@ -302,7 +309,15 @@ export default {
           }
           this.chatMessages[destid].push(msgData.msg);
           this.loadChatMessage(destid);
+          this.setUnreadMessage(destid);
           break;
+      }
+    },
+
+    setUnreadMessage: function (userId, mode) {
+      if (userId != this.nowChatUser) {
+        this.chatUserList[userId].haveUnreadMessage = true;
+        this.chatUserList[userId].unreadMessageNum += 1;
       }
     },
 
@@ -319,10 +334,93 @@ export default {
       document.getElementById("chat-content").style.height = he - 262 + "px";
     },
 
-    loadChatUser: function () {},
+    loadChatUserList: function () {
+      getChatUserList()
+        .then((res) => {
+          this.chatUserIdList = res.data.id_list;
+          this.chatUserList = res.data.chat_user_list.map((item) => {
+            this.chatUserList[item.id] = {
+              id: item.id,
+              name: item.name, 
+              email: item.email,
+              lastMessage: "Loading",
+              haveUnreadMessage: item.have_unread_message,
+              unreadMessageNum: item.unread_message_num,
+            }
+          });
+        })
+        .catch((error) => {
+          this.$Modal.error(getErrModalOptions(error));
+        });
+    },
+
+    loadChatMessageList: function () {
+      getChatMessages().then((res) => {
+        this.chatMessages = res.data.message_list;
+        let userId;
+        for (userId in this.chatUserIdList) {
+          this.loadChatMessage(userId)
+        }
+      })
+    },
+
+    /**
+     * @description: 获取用户列表
+     * 首先要确定是否有新加入用户进入聊天列表。
+     */
+    initialGetChatUserList: function () {
+      if (this.$router.params.userId) {
+        addUsrToChatList({
+          user_id: this.$route.params.userId,
+        })
+          .then((res) => {
+            this.getChatUserList();
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      } else {
+        this.getChatUserList();
+      }
+    },
+
+    // TODO: 测试后消除注释
+    clearUnreadMessage: function (userId) {
+      clearUnread({
+        user_id: userId,
+      })
+        .then((res) => {
+          this.chatUserList[userId].unreadMessageNum = 0;
+          this.chatUserList[userId].haveUnreadMessage = false;
+        })
+        .catch((error) => {
+          this.$Modal.error(getErrModalOptions(error));
+        });
+    },
+
+    getNewChatUserMessage: function (userId) {
+      getChatUser({
+        user_id: userId,
+      })
+        .then((res) => {
+          this.chatUserList[userId].id = res.data.chat_user.id;
+          this.chatUserList[userId].name = res.data.chat_user.name;
+          this.chatUserList[userId].email = res.data.chat_user.email;
+        })
+        .catch((error) => {
+          this.$Modal.error(getErrModalOptions(error));
+        });
+    },
 
     /**
      * @description 切换聊天用户
+     * 调用了两次clearUnreadMessage
+     * 第一次调用是因为要清除切换之前正在聊天的用户的未读记录，
+     * 因为在和当前用户聊天的时候，一直是在用前端处理unreadMessage，
+     * 当用户为正在聊天用户的时候，接收到新的消息不做setUnreadMessage,
+     * 但是后端依旧将unreadMessage数量递增。因此需要在切换前做一次通信。
+     * 同理，在destory方法中调用也是为了通信做同步。
+     * 第二次是清除切换到的，显而易见。
      */
     changeChatUser: function (userId, name) {
       let i;
@@ -335,10 +433,12 @@ export default {
       this.chatUserIdList[i] = this.chatUserIdList[0];
       this.chatUserIdList[0] = tmp;
       this.$refs[`member${this.nowChatUser}`][0].style.color = "darkgrey";
+      this.clearUnreadMessage(this.nowChatUser);
       this.nowChatUser = userId;
       this.nowChatUserName = name;
       this.$refs[`member${userId}`][0].style.color = "black";
       this.loadChatMessage(userId);
+      this.clearUnreadMessage(this.nowChatUser);
     },
 
     loadChatMessage: function (userId) {
@@ -347,9 +447,13 @@ export default {
         this.chatMessages[userId] != undefined &&
         this.chatMessages[userId].length > 0
       ) {
-        this.chatUserList[userId].lastMessage = this.chatMessages[userId].slice(
+        let tmp = this.chatMessages[userId].slice(
           -1
         )[0].message;
+        if (tmp.length > 25) {
+          tmp = tmp.substring(0, 25) + '...'
+        }
+        this.chatUserList[userId].lastMessage = tmp
       }
       this.$nextTick(function () {
         var div = document.getElementById("chat-content");
