@@ -163,7 +163,11 @@ export default {
           .scroll(0, 0);
       }, 400);
       this.pageComponent.pageIndex = i;
-      this.loadData();
+      if (this.activeTab === "favorite") {
+        this.loadFavor();
+      } else {
+        this.loadData();
+      }
     },
 
     loadData: function () {
@@ -252,6 +256,7 @@ export default {
     },
 
     changeTab: function (name) {
+      // name in ["recommend", "favorite"]
       this.activeTab = name;
       this.pageComponent.pageIndex = 1;
       this.$store.commit("setHomePage", 1);
