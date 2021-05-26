@@ -154,7 +154,7 @@ export default [
     meta: {
       icon: 'ios-hammer',
       title: '管理',
-      access: ['zcx2021', 'lzw_super']
+      access: ['zcx2021', 'lzw_super', 'admin', 'Caesar41']
     },
     component: Main,
     children: [

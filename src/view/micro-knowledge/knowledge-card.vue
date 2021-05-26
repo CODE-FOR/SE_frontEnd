@@ -157,7 +157,7 @@
             <br>
             <template v-if="isReported === true">
               <Form ref="reportHandle" :model="reportHandle" :rules="ruleCustom" :label-width="100">
-                <Form-item label="举报理由：" prop="explanation"><Input type="text" v-model="reportHandle.explanation" placeholder="请输入" /></Form-item>
+                <Form-item label="举报理由：" prop="reportExplanation"><Input type="text" v-model="reportReason" placeholder="请输入" /></Form-item>
               </Form>
               <div align="center">
                 <i-button @click="onReport" style="font-size: 14px">
@@ -165,6 +165,7 @@
                 </i-button>
               </div>
             </template>
+            <template v-else></template>
           </template>
           <template v-else>
             <ButtonGroup>
@@ -210,6 +211,15 @@ import {
 export default {
   name: "KnowledgeCard",
   props: {
+    reportExplanation: {
+      type: String,
+      default: ""
+    },
+
+    explanation: {
+      type: String,
+      default: ""
+    },
 
     isReport: {
       type: Number,
@@ -331,7 +341,7 @@ export default {
       showUserControl: false,
       userInfo: {},
       followText: "",
-      explanatnion: "",
+      reportReason: "",
       reportHandle: {
         explanation: ""
       },
@@ -394,7 +404,7 @@ export default {
     },
 
     setReport: function() {
-      this.isReported = true;
+      this.isReported = !this.isReported;
     },
 
     // TODO: need to be finished!!! -> administrator delete
@@ -447,10 +457,14 @@ export default {
     },
 
     onReport: function () {
-      this.isReported = true;
-      reportPaper("get", this.id)
+      // this.isReported = true;
+      const reportData = {
+        paperId: this.id,
+        reason: this.reportReason
+      };
+      reportPaper("post", reportData)
         .then((res) => {
-          this.$Message.info("已举报，等待管理员审核……");
+          this.$Message.success("已举报，等待管理员审核……");
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));

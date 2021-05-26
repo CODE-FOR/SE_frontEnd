@@ -237,7 +237,7 @@
 
       loadReportData: function() {
         this.reportLoading = true;
-        getReportPaperList(this.pageReport.pageIndex)
+        getReportPaperList(this.pageComponent.pageIndex, "get")
           .then((res) => {
             this.pageReport.pageNum = res.data.page_num;
             this.hasNextPage = res.data.has_next;
@@ -275,56 +275,13 @@
         console.log(this.pageReport.items);
       },
 
-      // TODO:
-      loadFavor: function () {
-        this.loading = true;
-        recentFavor({
-          pindx: this.pageComponent.pageIndex,
-        }).then((res) => {
-          this.pageComponent.pageNum = res.data.pageNum;
-          const mapData = res.data.recent.map((item) => {
-            if (item.type === 0) {
-              return {
-                type: item.type,
-                id: item.id,
-                creator: item.created_by,
-                createAt: getLocalTime(item.created_at),
-                content: item.abstract,
-                tags: item.tags,
-                isLike: item.is_like,
-                isCollect: item.is_collect,
-                totalLike: item.like_num,
-                totalCollect: item.collect_num,
-                source: item.source,
-                author: item.author,
-                title: item.title
-              };
-            } else {
-              return {
-                type: item.type,
-                id: item.id,
-                creator: item.created_by,
-                createAt: getLocalTime(item.created_at),
-                tags: item.tags,
-                isLike: item.is_like,
-                isCollect: item.is_collect,
-                totalLike: item.like_num,
-                totalCollect: item.collect_num,
-                content: item.content
-              };
-            }
-          });
-          this.pageComponent.items.push(...mapData);
-          this.loading = false;
-        });
-      },
-
       changeTab: function (name) {
+        // name in ["paperReport", "paperAll"]
         this.activeTab = name;
         this.pageIndex = 1;
         this.pageComponent.items = []
-        if (this.activeTab === "favorite") {
-          this.loadFavor();
+        if (this.activeTab === "paperReport") {
+          this.loadReportData();
         } else {
           this.loadData();
         }

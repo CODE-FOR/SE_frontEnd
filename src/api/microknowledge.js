@@ -93,10 +93,15 @@ export const getPaperList = (pageIndex, params) => {
   return getRequest(url, 'get', params);
 };
 
+export const reportPaper = (method, params) => {
+  const url = `/api/paper/report/create`;
+  return getRequst(url, method, params);
+}
+
 // TODO: need real api
-export const getReportPaperList = (pageIndex, params) => {
-  const url = `/api/paper/page/${parseInt(pageIndex)}`;
-  return getRequest(url, 'get', params);
+export const getReportPaperList = (pageIndex, method, params) => {
+  const url = `/api/paper/report/page/${parseInt(pageIndex)}`;
+  return getRequest(url, method, params);
 };
 
 export const deletePaper = (method, params) => {
