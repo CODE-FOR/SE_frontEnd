@@ -24,7 +24,7 @@
               <p style="margin-top: 5px">邮箱: {{ userEmail }}</p>
             </i-col>
             <i-col
-              offset="10"
+              :offset="listOffset"
               span="2"
               style="height: 40px; text-align: center"
             >
@@ -39,6 +39,12 @@
               <p class="data-title">总点赞数</p>
               <p>{{ totalLike }}</p>
             </i-col>
+            <template v-if="isOther">
+              <i-col span="2" style="height: 40px; text-align: center">
+                <p class="data-title">私信他们</p>
+                <p><Icon @click="goToChat" type="ios-paper-plane" /></p>
+              </i-col>
+            </template>
           </Row>
         </Card>
       </i-col>
@@ -662,6 +668,10 @@ export default {
     favorText() {
       return this.isOther ? "他的收藏" : "我的收藏";
     },
+
+    listOffset() {
+      return this.isOther ? 8 : 10;
+    },
   },
 
   mounted() {
@@ -750,6 +760,15 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
+    },
+
+    goToChat: function () {
+      this.$router.push({
+        name: "chat",
+        params: {
+          userId: this.$route.params.id,
+        },
+      });
     },
 
     loadPost: function () {

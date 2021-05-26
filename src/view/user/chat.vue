@@ -199,11 +199,13 @@ export default {
         .then((res) => {
           this.$store.commit("setUserProfile", res.data);
           this.currentUserId = this.$store.state.user.userId;
-          this.loadChatUserList();
-          this.loadChatMessageList();
+          // this.loadChatUserList();
+          // this.loadChatMessageList();
+          this.initialGetChatUserList();
           this.nowChatUser = this.chatUserIdList.length > 0 ? this.chatUserIdList[0] : 0;
           this.nowChatUserName = this.chatUserList[this.nowChatUser].name;
           this.changeChatUser(this.nowChatUser, this.nowChatUserName);
+          
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
@@ -348,6 +350,7 @@ export default {
               unreadMessageNum: item.unread_message_num,
             }
           });
+          this.loadChatMessageList();
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
@@ -369,18 +372,19 @@ export default {
      * 首先要确定是否有新加入用户进入聊天列表。
      */
     initialGetChatUserList: function () {
-      if (this.$router.params.userId) {
+      if (this.$route.params.userId) {
+        console.log(this.$route.params.userId)
         addUsrToChatList({
           user_id: this.$route.params.userId,
         })
           .then((res) => {
-            this.getChatUserList();
+            this.loadChatUserList();
           })
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
           });
       } else {
-        this.getChatUserList();
+        this.loadChatUserList();
       }
     },
 
