@@ -232,6 +232,7 @@ export default {
             };
           } else {
             return {
+              title: item.title,
               type: item.type,
               id: item.id,
               creator: item.created_by,
