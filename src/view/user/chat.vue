@@ -357,6 +357,7 @@ export default {
               haveUnreadMessage: item.have_unread_message,
               unreadMessageNum: item.unread_message_num,
             });
+            this.chatMessages[item.id] = [];
             // this.chatUserList[item.id] = {};
           });
           this.loadChatMessageList();

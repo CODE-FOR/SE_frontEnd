@@ -41,7 +41,7 @@
             </i-col>
             <template v-if="isOther">
               <i-col span="2" style="height: 40px; text-align: center">
-                <p class="data-title">私信他们</p>
+                <p class="data-title">私信ta</p>
                 <p><Icon @click="goToChat" type="ios-paper-plane" /></p>
               </i-col>
             </template>
