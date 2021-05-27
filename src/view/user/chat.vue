@@ -126,35 +126,36 @@ import {
   addUsrToChatList,
   clearUnread,
   getChatUser,
-  getChatMessages
+  getChatMessages,
 } from "@/api/chat.js";
 export default {
   data() {
     return {
-      nowChatUser: 3,
+      nowChatUser: 0,
       findMemberName: "",
-      nowChatUserName: "Captain America",
+      nowChatUserName: "xxxx",
       showChatUserMessages: [],
       sendMes: "",
-      chatUserIdList: [3, 4],
-      chatUserList: {
-        3: {
-          id: 3,
-          name: "Captain America",
-          email: "love3000@love.com",
-          lastMessage: "That is American Ass",
-          haveUnreadMessage: true,
-          unreadMessageNum: 2,
-        },
-        4: {
-          id: 4,
-          name: "Cap",
-          email: "love3000@love.com",
-          lastMessage: "That is American Ass",
-          haveUnreadMessage: false,
-          unreadMessageNum: 0,
-        },
-      },
+      chatUserIdList: [],
+      // chatUserList: {
+      //   3: {
+      //     id: 3,
+      //     name: "Captain America",
+      //     email: "love3000@love.com",
+      //     lastMessage: "That is American Ass",
+      //     haveUnreadMessage: true,
+      //     unreadMessageNum: 2,
+      //   },
+      //   4: {
+      //     id: 4,
+      //     name: "Cap",
+      //     email: "love3000@love.com",
+      //     lastMessage: "That is American Ass",
+      //     haveUnreadMessage: false,
+      //     unreadMessageNum: 0,
+      //   },
+      // },
+      chatUserList: {},
       currentUserId: this.$store.state.user.userId,
       chatMessages: {
         3: [
@@ -202,10 +203,14 @@ export default {
           // this.loadChatUserList();
           // this.loadChatMessageList();
           this.initialGetChatUserList();
-          this.nowChatUser = this.chatUserIdList.length > 0 ? this.chatUserIdList[0] : 0;
-          this.nowChatUserName = this.chatUserList[this.nowChatUser].name;
-          this.changeChatUser(this.nowChatUser, this.nowChatUserName);
-          
+          // this.nowChatUser =
+          //   this.chatUserIdList.length > 0 ? this.chatUserIdList[0] : 0;
+          // this.nowChatUserName = this.chatUserList[this.nowChatUser].name;
+          // this.$nextTick(function () {
+          //   this.changeChatUser(this.nowChatUser, this.nowChatUserName);
+          // })
+          // console.log(this.nowChatUser);
+          // this.changeChatUser(this.nowChatUser, this.nowChatUserName);
         })
         .catch((error) => {
           // this.$Modal.error(getErrModalOptions(error));
@@ -296,7 +301,7 @@ export default {
               haveUnreadMessage: false,
               unreadMessageNum: 0,
             });
-            this.getNewChatUserMessage(destid)
+            this.getNewChatUserMessage(destid);
             this.chatMessages[destid] = [];
           } else {
             let i;
@@ -339,21 +344,29 @@ export default {
     loadChatUserList: function () {
       getChatUserList()
         .then((res) => {
-          this.chatUserList = {}
-          console.log(res)
+          this.chatUserList = {};
+          console.log(res);
           this.chatUserIdList = res.data.id_list;
           res.data.chat_user_list.map((item) => {
-            console.log(item.id)
-            this.chatUserList[item.id] = {
+            console.log(item.id);
+            this.$set(this.chatUserList, item.id, {
               id: item.id,
-              name: item.name, 
+              name: item.name,
               email: item.email,
               lastMessage: "Loading",
               haveUnreadMessage: item.have_unread_message,
               unreadMessageNum: item.unread_message_num,
-            }
+            });
+            // this.chatUserList[item.id] = {};
           });
           this.loadChatMessageList();
+          console.log(this.chatUserIdList[0]);
+          this.$nextTick(function () {
+            this.changeChatUser(
+              this.chatUserIdList[0],
+              this.chatUserList[this.chatUserIdList[0]].name
+            );
+          });
         })
         .catch((error) => {
           // this.$Modal.error(getErrModalOptions(error));
@@ -365,9 +378,9 @@ export default {
         this.chatMessages = res.data.message_list;
         let userId;
         for (userId in this.chatUserIdList) {
-          this.loadChatMessage(userId)
+          this.loadChatMessage(userId);
         }
-      })
+      });
     },
 
     /**
@@ -376,7 +389,7 @@ export default {
      */
     initialGetChatUserList: function () {
       if (this.$route.params.userId) {
-        console.log(this.$route.params.userId)
+        console.log(this.$route.params.userId);
         addUsrToChatList({
           user_id: this.$route.params.userId,
         })
@@ -430,6 +443,14 @@ export default {
      * 第二次是清除切换到的，显而易见。
      */
     changeChatUser: function (userId, name) {
+      if (this.nowChatUser === 0) {
+        this.nowChatUser = userId;
+        this.nowChatUserName = name;
+        this.$refs[`member${userId}`][0].style.color = "black";
+        this.loadChatMessage(userId);
+        this.clearUnreadMessage(this.nowChatUser);
+        return;
+      }
       let i;
       for (i = 0; i < this.chatUserIdList.length; i++) {
         if (this.chatUserIdList[i] == userId) {
@@ -439,6 +460,8 @@ export default {
       let tmp = this.chatUserIdList[i];
       this.chatUserIdList[i] = this.chatUserIdList[0];
       this.chatUserIdList[0] = tmp;
+      console.log(userId);
+      console.log(this.$refs[`member${this.nowChatUser}`][0]);
       this.$refs[`member${this.nowChatUser}`][0].style.color = "darkgrey";
       this.clearUnreadMessage(this.nowChatUser);
       this.nowChatUser = userId;
@@ -454,13 +477,11 @@ export default {
         this.chatMessages[userId] != undefined &&
         this.chatMessages[userId].length > 0
       ) {
-        let tmp = this.chatMessages[userId].slice(
-          -1
-        )[0].message;
+        let tmp = this.chatMessages[userId].slice(-1)[0].message;
         if (tmp.length > 25) {
-          tmp = tmp.substring(0, 25) + '...'
+          tmp = tmp.substring(0, 25) + "...";
         }
-        this.chatUserList[userId].lastMessage = tmp
+        this.chatUserList[userId].lastMessage = tmp;
       }
       this.$nextTick(function () {
         var div = document.getElementById("chat-content");
