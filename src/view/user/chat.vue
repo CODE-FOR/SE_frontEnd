@@ -349,7 +349,6 @@ export default {
           console.log(res);
           this.chatUserIdList = res.data.id_list;
           res.data.chat_user_list.map((item) => {
-            console.log(item.id);
             this.$set(this.chatUserList, item.id, {
               id: item.id,
               name: item.name,
@@ -362,7 +361,6 @@ export default {
             // this.chatUserList[item.id] = {};
           });
           this.loadChatMessageList();
-          console.log(this.chatUserIdList[0]);
           this.$nextTick(function () {
             this.changeChatUser(
               this.chatUserIdList[0],
@@ -380,7 +378,7 @@ export default {
         this.chatMessages = res.data.message_list;
         let userId;
         for (userId in this.chatUserIdList) {
-          this.loadChatMessage(userId);
+          this.loadChatMessage(this.chatUserIdList[userId]);
         }
       });
     },
@@ -475,15 +473,19 @@ export default {
 
     loadChatMessage: function (userId) {
       this.showChatUserMessages = this.chatMessages[this.nowChatUser];
+      // console.log(JSON.stringify(this.chatMessages))
       if (
         this.chatMessages[userId] != undefined &&
         this.chatMessages[userId].length > 0
       ) {
+        console.log(userId)
         let tmp = this.chatMessages[userId].slice(-1)[0].message;
         if (tmp.length > 8) {
           tmp = tmp.substring(0, 8) + "...";
         }
         this.chatUserList[userId].lastMessage = tmp;
+      } else {
+        this.chatMessages[userId] = [];
       }
       this.$nextTick(function () {
         var div = document.getElementById("chat-content");
