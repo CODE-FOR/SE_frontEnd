@@ -339,8 +339,11 @@ export default {
     loadChatUserList: function () {
       getChatUserList()
         .then((res) => {
+          this.chatUserList = {}
+          console.log(res)
           this.chatUserIdList = res.data.id_list;
-          this.chatUserList = res.data.chat_user_list.map((item) => {
+          res.data.chat_user_list.map((item) => {
+            console.log(item.id)
             this.chatUserList[item.id] = {
               id: item.id,
               name: item.name, 
