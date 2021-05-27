@@ -178,8 +178,8 @@ export default {
 
   created() {
     let _this = this;
-    this.socket = new WebSocket("ws://localhost:8080/chat/");
-    // this.socket = new WebSocket("ws://114.115.156.182:8080/chat/");
+    // this.socket = new WebSocket("ws://localhost:8080/chat/");
+    this.socket = new WebSocket("ws://114.115.156.182:8080/chat/");
     this.socket.onopen = this.open;
     this.socket.onerror = this.error;
     this.socket.onmessage = this.getMessage;
@@ -208,7 +208,7 @@ export default {
           
         })
         .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
+          // this.$Modal.error(getErrModalOptions(error));
         });
     }
     var he = document.documentElement.clientHeight;
@@ -353,7 +353,7 @@ export default {
           this.loadChatMessageList();
         })
         .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
+          // this.$Modal.error(getErrModalOptions(error));
         });
     },
 
@@ -381,7 +381,7 @@ export default {
             this.loadChatUserList();
           })
           .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
+            // this.$Modal.error(getErrModalOptions(error));
           });
       } else {
         this.loadChatUserList();
@@ -398,7 +398,7 @@ export default {
           this.chatUserList[userId].haveUnreadMessage = false;
         })
         .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
+          // this.$Modal.error(getErrModalOptions(error));
         });
     },
 
@@ -412,7 +412,7 @@ export default {
           this.chatUserList[userId].email = res.data.chat_user.email;
         })
         .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
+          // this.$Modal.error(getErrModalOptions(error));
         });
     },
 

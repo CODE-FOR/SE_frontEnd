@@ -1,6 +1,6 @@
 import { getRequest } from './utils'
 
-export const getUserList = () => {
+export const getChatUserList = () => {
     const url = '/api/chat-user-list'
     return getRequest(url, 'get')
 }
