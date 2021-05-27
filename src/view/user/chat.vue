@@ -232,6 +232,7 @@ export default {
         sender_id: this.currentUserId,
       };
       this.socket.send(JSON.stringify(sendmes));
+      this.sendMes = "";
     },
 
     handleFindMember: function () {
