@@ -480,8 +480,8 @@ export default {
         this.chatMessages[userId].length > 0
       ) {
         let tmp = this.chatMessages[userId].slice(-1)[0].message;
-        if (tmp.length > 25) {
-          tmp = tmp.substring(0, 25) + "...";
+        if (tmp.length > 8) {
+          tmp = tmp.substring(0, 8) + "...";
         }
         this.chatUserList[userId].lastMessage = tmp;
       }
