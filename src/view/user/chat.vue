@@ -550,7 +550,7 @@ body {
         font-size: 14px;
         background: #fff;
         position: relative;
-        margin-top: 8px;
+        margin-top: -20px;
         background: #dbdbdb;
         border-radius: 4px;
       }
@@ -589,7 +589,7 @@ body {
         font-size: 14px;
         margin-right: 10px;
         position: relative;
-        margin-top: 8px;
+        margin-top: -20px;
         background: #a3c3f6;
         text-align: left;
         border-radius: 4px;
