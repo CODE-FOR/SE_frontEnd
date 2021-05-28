@@ -43,16 +43,6 @@
         <Tag v-for="(tag,index) in tags" :key="index" class="topic">{{ tag.name }}</Tag>
       </Row>
     </card>
-    <template v-if="kind!=0">
-      <div>
-        <Row style='text-align: center;font-size: 20px;color: #00B7EE;'>参考</Row>
-        <Row>
-          <Col v-for='(post,index) in evidences' :key="index" span="9" offset='2'>
-          <KnowledgeDetail v-bind='post'></KnowledgeDetail>
-          </Col>
-        </Row>
-      </div>
-    </template>
 
   </div>
 </template>
@@ -89,12 +79,7 @@ export default {
       type: String,
       default: '这是一个展示示例'
     },
-    evidences: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
+
     tags: {
       type: Array,
       default: () => {

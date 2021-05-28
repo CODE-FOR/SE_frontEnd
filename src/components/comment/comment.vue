@@ -1,58 +1,79 @@
 <template>
   <div>
-    <div v-for="(item,i) in comments" :key="i" class="author-title reply-father">
+    <div
+      v-for="(item, i) in comments"
+      :key="i"
+      class="author-title reply-father"
+    >
       <Avatar class="header-img" size="default" :src="item.headImg"></Avatar>
       <div class="author-info">
-        <span class="author-name">{{item.name}}</span>
-        <span class="author-time">{{item.time}}</span>
+        <span class="author-name">{{ item.name }}</span>
+        <span class="author-time">{{ item.time }}</span>
       </div>
+      <!-- 这里是root评论 -->
       <div class="icon-btn">
-        <Button @click="showReplyInput(i,item.name,item.id)">
+        <Button @click="showReplyInput(i, item.name, item.id)">
           <Icon type="ios-chatbubbles" />
-          评论{{false?item.commentNum:''}}
+          评论{{ false ? item.commentNum : "" }}
         </Button>
-        <Poptip v-if="item.id===myId" confirm title="确定要删除吗?删除后将不可恢复。" @on-ok="deleteItem(i,reply)">
-          <Button>
-            <Icon type="ios-trash" />删除
-          </Button>
+        <Poptip
+          v-if="item.id === myId"
+          confirm
+          title="确定要删除吗?删除后将不可恢复。"
+          @on-ok="deleteItem(i, reply)"
+        >
+          <Button> <Icon type="ios-trash" />删除 </Button>
         </Poptip>
+        <Icon
+          :type="dropIconType(item)"
+          style="float: right"
+          @click="handleShowReply(item)"
+        />
 
         <Button @click="likeReply(item)" v-if="false">
           <Icon type="md-arrow-dropup" />
-          点赞{{item.like}}
+          点赞{{ item.like }}
         </Button>
       </div>
       <div class="talk-box">
         <p>
-          <span class="reply">{{item.comment}}</span>
+          <span class="reply">{{ item.comment }}</span>
         </p>
       </div>
-      <div class="reply-box">
-        <div v-for="(reply,j) in item.reply" :key="j" class="author-title">
-          <Avatar class="header-img" size="default" :src="reply.headImg"></Avatar>
+      <div class="reply-box" v-if="item.showReply">
+        <div v-for="(reply, j) in item.reply" :key="j" class="author-title">
+          <Avatar
+            class="header-img"
+            size="default"
+            :src="reply.headImg"
+          ></Avatar>
           <div class="author-info">
-            <span class="author-name">{{reply.name}}</span>
-            <span class="author-time">{{reply.time}}</span>
+            <span class="author-name">{{ reply.name }}</span>
+            <span class="author-time">{{ reply.time }}</span>
           </div>
           <div class="icon-btn">
-            <Button @click="showReplyInput(i,reply.name,reply.id)">
+            <Button @click="showReplyInput(i, reply.name, reply.id)">
               <Icon type="ios-chatbubbles" />
-              评论{{false?reply.commentNum:''}}
+              评论{{ false ? reply.commentNum : "" }}
             </Button>
-            <Poptip confirm title="确定要删除吗?删除后将不可恢复。" @on-ok="deleteReply(i,j)">
-              <Button v-if="reply.id===myId">
+            <Poptip
+              confirm
+              title="确定要删除吗?删除后将不可恢复。"
+              @on-ok="deleteReply(i, j)"
+            >
+              <Button v-if="reply.id === myId">
                 <Icon type="ios-trash" />删除
               </Button>
             </Poptip>
             <Button @click="likeReply(reply)" v-if="false">
               <Icon type="md-arrow-dropup" />
-              点赞{{reply.like}}
+              点赞{{ reply.like }}
             </Button>
           </div>
           <div class="talk-box">
             <p>
-              <span>回复 {{reply.to}}:</span>
-              <span class="reply">{{reply.comment}}</span>
+              <span>回复 {{ reply.to }}:</span>
+              <span class="reply">{{ reply.comment }}</span>
             </p>
           </div>
           <div class="reply-box"></div>
@@ -61,20 +82,43 @@
       <div v-show="_inputShow(i)" class="my-reply my-comment-reply">
         <Avatar class="header-img" size="default" :src="myHeader"></Avatar>
         <div class="reply-info">
-          <div tabindex="0" contenteditable="true" spellcheck="false" placeholder="输入评论..." @input="onDivInput($event)" class="reply-input reply-comment-input"></div>
+          <div
+            tabindex="0"
+            contenteditable="true"
+            spellcheck="false"
+            placeholder="输入评论..."
+            @input="onDivInput($event)"
+            class="reply-input reply-comment-input"
+          ></div>
         </div>
         <div class="reply-btn-box">
-          <Button class="reply-btn" @click="sendCommentReply(i,j)" type="primary">发表评论</Button>
+          <Button
+            class="reply-btn"
+            @click="sendCommentReply(i, j)"
+            type="primary"
+            >发表评论</Button
+          >
         </div>
       </div>
     </div>
     <div v-clickoutside="hideReplyBtn" @click="inputFocus" class="my-reply">
       <Avatar class="header-img" size="default" :src="myHeader"></Avatar>
       <div class="reply-info">
-        <div tabindex="0" contenteditable="true" id="replyInput" spellcheck="false" placeholder="输入评论..." class="reply-input" @focus="showReplyBtn" @input="onDivInput($event)"></div>
+        <div
+          tabindex="0"
+          contenteditable="true"
+          id="replyInput"
+          spellcheck="false"
+          placeholder="输入评论..."
+          class="reply-input"
+          @focus="showReplyBtn"
+          @input="onDivInput($event)"
+        ></div>
       </div>
       <div class="reply-btn-box" v-show="btnShow">
-        <Button class="reply-btn" @click="sendComment" type="primary">发表评论</Button>
+        <Button class="reply-btn" @click="sendComment" type="primary"
+          >发表评论</Button
+        >
       </div>
     </div>
   </div>
@@ -134,6 +178,14 @@ export default {
       default: 0
     }
   },
+
+  mounted () {
+    this.initComments();
+  },
+
+  computed: {
+  },
+
   data () {
     return {
       btnShow: false,
@@ -142,11 +194,39 @@ export default {
       myName: this.$store.state.user.userName,
       to: '',
       toId: -1,
-      comments: this.comments_init
+      comments: [],
+      totalCommentNum: 0,
     }
   },
   directives: { clickoutside },
   methods: {
+
+    initComments () {
+      let mapData = this.comments_init.map((item) => {
+        this.totalCommentNum++;
+        this.totalCommetnNum += item.reply.length
+        return {
+          comment: item.comment,
+          commentId: item.commentId,
+          headImg: item.headImg,
+          id: item.id,
+          inputShow: item.inputShow,
+          name: item.name,
+          parent_comment_id: item.parent_comment_id,
+          reply: item.reply,
+          time: item.time,
+          to: item.to,
+          toId: item.toId,
+          showReply: false
+        }
+      })
+      this.comments.push(...mapData.filter((x)=>x));
+    },
+
+    dropIconType (item) {
+      return item.showReply ? 'ios-arrow-up' : 'ios-arrow-down'
+    },
+
     inputFocus () {
       var replyInput = document.getElementById('replyInput')
       replyInput.style.padding = '8px 8px'
@@ -162,7 +242,6 @@ export default {
       replyInput.style.border = 'none'
     },
     showReplyInput (i, name, id) {
-      console.log(i, name, id)
       this.comments[this.index].inputShow = false
       this.index = i
       this.comments[i].inputShow = true
@@ -200,6 +279,11 @@ export default {
           this.$Message.success('删除失败!')
         })
     },
+
+    handleShowReply (item) {
+      item.showReply = !item.showReply;
+    },
+
     sendComment () {
       if (!this.replyComment) {
         this.$message({

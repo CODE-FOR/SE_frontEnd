@@ -155,7 +155,6 @@ export default {
               this.items.length
             )
           );
-          console.log(this.items);
           this.loading = false;
         })
         .catch((error) => {

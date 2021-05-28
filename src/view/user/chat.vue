@@ -200,17 +200,7 @@ export default {
         .then((res) => {
           this.$store.commit("setUserProfile", res.data);
           this.currentUserId = this.$store.state.user.userId;
-          // this.loadChatUserList();
-          // this.loadChatMessageList();
           this.initialGetChatUserList();
-          // this.nowChatUser =
-          //   this.chatUserIdList.length > 0 ? this.chatUserIdList[0] : 0;
-          // this.nowChatUserName = this.chatUserList[this.nowChatUser].name;
-          // this.$nextTick(function () {
-          //   this.changeChatUser(this.nowChatUser, this.nowChatUserName);
-          // })
-          // console.log(this.nowChatUser);
-          // this.changeChatUser(this.nowChatUser, this.nowChatUserName);
         })
         .catch((error) => {
           // this.$Modal.error(getErrModalOptions(error));
@@ -239,9 +229,7 @@ export default {
       if (this.$refs[this.findMemberName] == undefined) {
         this.$Message.warning("抱歉，未找到该联系人");
       } else {
-        console.log(this.$refs[this.findMemberName][0]);
         let userId = this.$refs[this.findMemberName][0].id;
-        console.log(userId);
         this.changeChatUser(userId, this.chatUserList[userId].name);
       }
     },
@@ -346,7 +334,6 @@ export default {
       getChatUserList()
         .then((res) => {
           this.chatUserList = {};
-          console.log(res);
           this.chatUserIdList = res.data.id_list;
           res.data.chat_user_list.map((item) => {
             this.$set(this.chatUserList, item.id, {
@@ -389,7 +376,6 @@ export default {
      */
     initialGetChatUserList: function () {
       if (this.$route.params.userId) {
-        console.log(this.$route.params.userId);
         addUsrToChatList({
           user_id: this.$route.params.userId,
         })
@@ -460,8 +446,6 @@ export default {
       let tmp = this.chatUserIdList[i];
       this.chatUserIdList[i] = this.chatUserIdList[0];
       this.chatUserIdList[0] = tmp;
-      console.log(userId);
-      console.log(this.$refs[`member${this.nowChatUser}`][0]);
       this.$refs[`member${this.nowChatUser}`][0].style.color = "darkgrey";
       this.clearUnreadMessage(this.nowChatUser);
       this.nowChatUser = userId;
@@ -473,12 +457,10 @@ export default {
 
     loadChatMessage: function (userId) {
       this.showChatUserMessages = this.chatMessages[this.nowChatUser];
-      // console.log(JSON.stringify(this.chatMessages))
       if (
         this.chatMessages[userId] != undefined &&
         this.chatMessages[userId].length > 0
       ) {
-        console.log(userId)
         let tmp = this.chatMessages[userId].slice(-1)[0].message;
         if (tmp.length > 8) {
           tmp = tmp.substring(0, 8) + "...";

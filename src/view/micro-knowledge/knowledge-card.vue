@@ -85,26 +85,6 @@
         论文链接: <a :href="source"> {{ source }} </a> ( {{ publishedYear }} )
       </div>
       <br />
-      <Modal v-model="detailController" :footer-hide="true">
-        <Divider />
-        <Row v-for="item in evidences" :key="item.id">
-          <i-col style="font-size: 18px">
-            {{ item.content }}
-          </i-col>
-          <br />
-          <i-col style="font-size: 14px">
-            参考文献: <a :href="item.source"> {{ item.citation }} </a>
-          </i-col>
-          <i-col style="font-size: 14px">
-            由
-            <a @click.prevent="jumpUserInfo(item.created_by.id)">
-              {{ item.created_by.username }}
-            </a>
-            发布于：{{ getTime(item.created_at) }}
-          </i-col>
-          <Divider />
-        </Row>
-      </Modal>
       <div align="left">
         <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
           tag.name
@@ -319,9 +299,7 @@ export default {
 
     author: {
       type: Array,
-      default: () => {
-        return [];
-      },
+      default: ['default', 'two'],
     },
   },
 
@@ -341,6 +319,7 @@ export default {
       showUserControl: false,
       userInfo: {},
       followText: "",
+      detailController: false,
       reportReason: "",
       reportHandle: {
         explanation: ""

@@ -79,7 +79,7 @@
                       <div v-html="item.title"></div>
                       <!-- <span>{{ item.content }}</span> -->
                     </i-col>
-                    <i-col offset="9" span="3" v-if="!isOther">
+                    <i-col offset="8" span="4" v-if="!isOther">
                       <i-button
                         type="info"
                         style="width: 70px"
@@ -677,7 +677,6 @@ export default {
   mounted() {
     getUserInfo()
       .then((res) => {
-        console.log(res);
         this.$store.commit("setUserProfile", res.data);
       })
       .catch((error) => {
@@ -691,7 +690,6 @@ export default {
       if (!this.$store.state.user.userId) {
         await getUserInfo()
           .then((res) => {
-            console.log(res);
             this.$store.commit("setUserProfile", res.data);
           })
           .catch((error) => {
@@ -777,7 +775,6 @@ export default {
         pindx: this.pageIndex,
       })
         .then((res) => {
-          console.log(res);
           this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
               return {
@@ -827,7 +824,6 @@ export default {
         .then((res) => {
           this.data = res.data.posts.map((item) => {
             if (item.type === 0) {
-              console.log(item);
               return {
                 type: item.type,
                 id: item.id,
@@ -859,8 +855,6 @@ export default {
               };
             }
           });
-          console.log("data");
-          console.log(this.data);
           this.totalCnt = res.data.total_count;
           this.loading = false;
         })
@@ -1074,7 +1068,6 @@ export default {
       const data = {
         icon: file,
       };
-      console.log(data);
       uploadAvatar(data)
         .then((res) => {
           console.log(res);
@@ -1086,7 +1079,6 @@ export default {
 
     clickCutter: function () {
       this.showCutter = true;
-      console.log(this.showCutter);
     },
   },
 };

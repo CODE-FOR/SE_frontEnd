@@ -88,42 +88,7 @@ export default {
       tagList: [],
       pageIndex: 1,
       hasNextPage: true,
-      items: [
-        {
-          type: 0,
-          id: 1,
-          creator: {
-            username: "lzw_super",
-            id: 3,
-          },
-          createAt: "2021-4-29 20:30:01",
-          content: "content",
-          tags: [{ name: "test", id: 1 }],
-          isLike: false,
-          isCollect: false,
-          likeNumber: 0,
-          favorNumber: 0,
-          source: "http://www.google.com",
-          author: ["吕云帆"],
-          title: "abcde",
-        },
-        {
-          type: 1,
-          id: 1,
-          tags: [{ name: "test", id: 1 }],
-          isLike: false,
-          isCollect: false,
-          likeNumber: 0,
-          favorNumber: 0,
-          title: "fghij",
-          content: "content",
-          creator: {
-            username: "lzw_super",
-            id: 3,
-          },
-          createAt: "2021-4-29 20:30:00",
-        },
-      ],
+      items: [],
       loading: true,
       pageComponent: {
         pageSize: 5,
@@ -207,7 +172,6 @@ export default {
             this.hasNextPage = false;
           }
         });
-      console.log(this.pageComponent.items);
     },
 
     // TODO:

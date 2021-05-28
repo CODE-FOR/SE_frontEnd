@@ -99,7 +99,7 @@
               <template v-if="isInDetail === 1">
                 <i-button @click="onComment" style="font-size: 14px">
                   <Icon type="ios-chatbubbles" />
-                  评论
+                  评论 {{ totalCommentNum }}
                 </i-button>
               </template>
               <template v-if="isInDetail === 0">
@@ -123,12 +123,6 @@
       <Card v-if="showComment" style="margin-top: 10px">
         <comment v-bind="comments"></comment>
       </Card>
-      <!-- </template> -->
-      <template v-else-if="displayType === 1">
-        <Button class="cite" @click="onCite" type="primary">{{
-          citeMessage
-        }}</Button>
-      </template>
     </card>
     <Divider />
   </div>
@@ -226,6 +220,7 @@ export default {
       detailController: false,
       showUserControl: false,
       userInfo: {},
+      totalCommentNum: 0,
     };
   },
 
@@ -241,6 +236,22 @@ export default {
     collectColor: function () {
       return this.isCollect ? "#fb7299" : "default";
     },
+
+    reportColor: function () {
+      return this.isReported ? "#fb0316" : "#747b8b";
+    },
+
+    citeStyle: function () {
+      return this.cite ? "margin-left:100px;" : "";
+    },
+
+    popId: function () {
+      return "pop" + this.id;
+    },
+  },
+
+  mounted () {
+    this.getComments()
   },
 
   methods: {
@@ -287,7 +298,7 @@ export default {
     },
 
     onComment: async function () {
-      await this.getComments();
+      // await this.getComments();
       this.showComment = !this.showComment;
     },
 
@@ -348,7 +359,11 @@ export default {
             ...header,
             comments_init: this.convertComments(res.data.comment_list),
           };
-          console.log(this.comments);
+          let comment;
+          for (comment in this.comments.comments_init) {
+            this.totalCommentNum++;
+            this.totalCommentNum += this.comments.comments_init[comment].reply.length;
+          }
         })
         .catch((err) => {
           console.log(err);

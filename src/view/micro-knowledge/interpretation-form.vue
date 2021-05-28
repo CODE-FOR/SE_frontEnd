@@ -224,7 +224,6 @@ export default {
           this.paperInfo.author = res.data.author;
           this.paperInfo.source = res.data.source;
           this.loading = false;
-          console.log(this.paperInfo);
         })
         .catch((error) => {
           console.log(error);
