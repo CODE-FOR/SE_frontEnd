@@ -723,12 +723,14 @@ export default {
             this.totalFollow = res.data.total_fan;
             this.totalPub = res.data.total_post;
             this.icon = res.data.icon;
+            this.changeTab(this.tabName);
           })
           .catch((error) => {
-            this.$Modal.error('不存在此用户');
+            this.$router.push({
+              name: 'error_404'
+            })
           });
-      }
-      this.changeTab(this.tabName);
+      }     
     },
 
     loadFollower: function () {
