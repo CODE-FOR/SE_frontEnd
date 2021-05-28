@@ -710,7 +710,6 @@ export default {
         this.icon = this.$store.state.user.icon;
         getIcon().then(res => {
           this.icon = res.data.icon;
-          console.log(this.icon);
         })
       } else {
         this.isOther = true;
@@ -726,7 +725,7 @@ export default {
             this.icon = res.data.icon;
           })
           .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
+            this.$Modal.error('不存在此用户');
           });
       }
       this.changeTab(this.tabName);

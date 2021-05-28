@@ -30,7 +30,7 @@
           :collapsed="collapsed"
           @on-coll-change="handleCollapsedChange"
         >
-          <user :message-unread-count="unreadCount" :user-avatar="userAvatar" />
+          <User :message-unread-count="unreadCount" :user-avatar="userAvatar" />
           <!-- <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/> -->
         </header-bar>
       </Header>
@@ -58,12 +58,10 @@ import HeaderBar from "./components/header-bar";
 import TagsNav from "./components/tags-nav";
 import User from "./components/user";
 import ABackTop from "./components/a-back-top";
-// import Fullscreen from './components/fullscreen'
 import Language from "./components/language";
 import ErrorStore from "./components/error-store";
 import { mapMutations, mapActions, mapGetters } from "vuex";
 import { getNewTagList, routeEqual } from "@/libs/util";
-// import { getUnreadCount } from '@/api/user'
 import routers from "@/router/routers";
 import minLogo from "@/assets/images/logo-min.jpg";
 import maxLogo from "@/assets/images/logo.jpg";
@@ -97,7 +95,6 @@ export default {
       return this.$store.state.app.tagRouter;
     },
     userAvatar() {
-      // return this.$store.state.user.icon || 'https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png'
       return this.$store.state.user.icon;
     },
     cacheList() {
@@ -204,7 +201,6 @@ export default {
     }
     // 获取未读消息条数
     this.getUnreadMessageCount();
-    console.log(this.$store.state.user)
   },
 };
 </script>
