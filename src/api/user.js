@@ -105,7 +105,7 @@ export const getIcon = (params) => {
 }
 
 export const getIconById = (params) => {
-  const url =  `/api/user/icon`
+  const url =  `/api/user/icon_by_id`
   return getRequest(url, 'get', params)
 }
 
