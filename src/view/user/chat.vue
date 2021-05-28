@@ -526,7 +526,7 @@ body {
   overflow: auto;
   .word {
     display: flex;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 
     img {
       width: 40px;
@@ -552,7 +552,7 @@ body {
         font-size: 14px;
         background: #fff;
         position: relative;
-        margin-top: -20px;
+        margin-top: -30px;
         background: #dbdbdb;
         border-radius: 4px;
       }
@@ -591,7 +591,7 @@ body {
         font-size: 14px;
         margin-right: 10px;
         position: relative;
-        margin-top: -20px;
+        margin-top: -30px;
         background: #a3c3f6;
         text-align: left;
         border-radius: 4px;
