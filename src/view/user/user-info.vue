@@ -1,17 +1,14 @@
 <template>
-  <div>
+  <div class="root-class">
     <Row>
       <i-col offset="4" span="16">
         <Card>
           <Row type="flex" align="bottom">
             <i-col span="3">
-              <Avatar
-                src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                style="width: 100%; height: 100%"
-              />
+              <img :src="icon" style="width:90%; height:90%;virtcal-align:top;border-radius:50%"/>
               <avatar-cutter
                 v-if="showCutter"
-                return-type="file"
+                return-type="url"
                 @cancel="showCutter = false"
                 @enter="handleUploadAvatar"
               >
@@ -296,9 +293,9 @@
                 <div v-else v-for="item in data" :key="item.id">
                   <Row>
                     <i-col span="2">
-                      <Avatar
-                        src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                        style="width: 100%; height: 100%"
+                      <img
+                        :src="item.icon"
+                        style="width: 90%; height: 90%;vertical-align:top;border-radius:50%"
                       />
                     </i-col>
                     <i-col span="5">
@@ -400,9 +397,9 @@
                 <div v-else v-for="item in data" :key="item.id">
                   <Row>
                     <i-col span="2">
-                      <Avatar
-                        src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                        style="width: 100%; height: 100%"
+                      <img
+                        :src="item.icon"
+                        style="width: 90%; height: 90%;vertical-align:top;border-radius:50%"
                       />
                     </i-col>
                     <i-col span="5">
@@ -489,13 +486,13 @@
                     </form-item>
                   </i-form>
                 </i-col>
-              </Row>
+              </Row> -->
               <Divider> 修改头像 </Divider>
               <Row>
-                <i-col offset="10" span="4">
+                <i-col offset="8" span="4">
                   <Button @click="clickCutter" type="primary">上传头像</Button>
                 </i-col>
-              </Row> -->
+              </Row>
               <Divider> 重置密码 </Divider>
               <Row>
                 <i-col offset="7" span="8">
@@ -552,6 +549,7 @@ import {
   myKnowledge,
   getUserInfo,
   uploadAvatar,
+  getIcon,
 } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 import {
@@ -581,7 +579,7 @@ export default {
       totalLike: 102,
       totalFollow: 10,
       totalPub: 11,
-      avatarUrl: "",
+      icon: "",
       isOther: false, // 是否为他人的主页
       showDetail: false,
       tabName: "myPost",
@@ -709,6 +707,11 @@ export default {
         this.totalLike = this.$store.state.user.userTotalLike;
         this.totalFollow = this.$store.state.user.userTotalFan;
         this.totalPub = this.$store.state.user.userTotalPost;
+        this.icon = this.$store.state.user.icon;
+        getIcon().then(res => {
+          this.icon = res.data.icon;
+          console.log(this.icon);
+        })
       } else {
         this.isOther = true;
         getUserInfo(this.$route.params.id)
@@ -720,6 +723,7 @@ export default {
             this.totalLike = res.data.total_like;
             this.totalFollow = res.data.total_fan;
             this.totalPub = res.data.total_post;
+            this.icon = res.data.icon;
           })
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
@@ -1064,16 +1068,16 @@ export default {
     },
 
     // TODO:
-    handleUploadAvatar(file) {
-      const data = {
-        icon: file,
-      };
+    handleUploadAvatar(url) {
+      var data = new FormData();
+      data.append("icon", url);
       uploadAvatar(data)
         .then((res) => {
           console.log(res);
+          this.$Message.success('成功修改头像，刷新可查看')
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     },
 
@@ -1085,6 +1089,9 @@ export default {
 </script>
 
 <style>
+.root-class {
+  min-width: 1300px;
+}
 .user-name {
   font-size: 26px;
   color: #4d4d4d;
@@ -1100,5 +1107,11 @@ export default {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
+}
+.big-avatar {
+  border-radius:50%;
+  overflow:hidden;
+  height:150px;
+  width:150px;
 }
 </style>

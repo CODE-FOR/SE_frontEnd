@@ -3,10 +3,7 @@
   <div>
     <Row>
       <i-col span="4">
-        <Avatar
-          src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-          style="width: 100%; height: 100%"
-        />
+        <img :src="userInfo.icon" style="width:90%;height:90%;vertical-align:top;border-radius:50%"/>
       </i-col>
       <i-col span="10">
         <div class="user-name">
@@ -83,6 +80,7 @@ export default {
       getUserInfo(3)
         .then((res) => {
           this.userInfo = res.data;
+          console.log(res.data);
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));

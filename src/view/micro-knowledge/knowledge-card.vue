@@ -15,9 +15,9 @@
         <Modal v-model="showUserControl" footer-hide>
           <Row>
             <i-col span="4">
-              <Avatar
-                src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                style="width: 100%; height: 100%"
+              <img
+                :src="userInfo.icon"
+                style="width: 90%; height: 90%;vertical-align:top;border-radius:50%"
               />
             </i-col>
             <i-col span="10">
@@ -27,7 +27,6 @@
               <p style="margin-top: 5px">
                 邮箱: {{ userInfo.email || "暂无邮箱信息" }}
               </p>
-              <p>所属组织: {{ userInfo.institution || "暂无组织信息" }}</p>
             </i-col>
           </Row>
           <Divider />

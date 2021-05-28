@@ -96,7 +96,7 @@ export const recentFavor = (params) => {
 
 export const uploadAvatar = (params) => {
   const url = `/api/user/icon`
-  return getRequest(url, 'put', params)
+  return getRequest(url, 'post', params)
 }
 
 export const getIcon = (params) => {

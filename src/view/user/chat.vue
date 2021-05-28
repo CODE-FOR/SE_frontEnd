@@ -30,9 +30,9 @@
               "
             >
               <i-col span="2" style="type: flex">
-                <Avatar
-                  src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                  style="width: 300%; height: 300%"
+                <img
+                  :src="chatUserList[item].icon"
+                  style="width: 300%; height: 300%;vertical-align:top;border-radius:50%"
                 />
               </i-col>
               <i-col offset="7" style="type: flex">
@@ -343,6 +343,7 @@ export default {
               lastMessage: "Loading",
               haveUnreadMessage: item.have_unread_message,
               unreadMessageNum: item.unread_message_num,
+              icon: item.icon,
             });
             this.chatMessages[item.id] = [];
             // this.chatUserList[item.id] = {};

@@ -34,7 +34,7 @@ export default {
   },
   mutations: {
     setAvatar (state, avatarPath) {
-      state.avatarImgPath = avatarPath
+      state.icon = avatarPath
     },
     setUserName (state, name) {
       state.userName = name
@@ -48,6 +48,7 @@ export default {
       state.userTotalLike = params.total_like
       state.userTotalPost = params.total_post
       state.userIsSponsor = params.is_sponsor
+      state.icon = params.icon
     },
     setAccess (state, access) {
       state.access = access

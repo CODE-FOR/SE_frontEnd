@@ -14,9 +14,15 @@
         <Modal v-model="showUserControl" footer-hide>
           <Row>
             <i-col span="4">
-              <Avatar
-                src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-                style="width: 100%; height: 100%"
+              <img
+                :src="userInfo.icon"
+                style="
+                  width: 90%;
+                  height: 90%;
+                  vertical-align: top;
+                  border-radius: 50%;
+                "
+                shape="square"
               />
             </i-col>
             <i-col span="10">
@@ -138,7 +144,10 @@ import {
 import { follow, unfollow, getUserInfo } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
 import comment from "@/components/comment/comment.vue";
-import { likeInterpretation, collectInterpretation } from '../../api/microknowledge';
+import {
+  likeInterpretation,
+  collectInterpretation,
+} from "../../api/microknowledge";
 export default {
   name: "KnowledgeCard",
   components: {
@@ -194,22 +203,22 @@ export default {
 
     isLike: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     isCollect: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     likeNumber: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     favorNumber: {
       type: Number,
-      default: 0
+      default: 0,
     },
   },
 
@@ -250,15 +259,13 @@ export default {
     },
   },
 
-  mounted () {
-    this.getComments()
+  mounted() {
+    this.getComments();
   },
 
   methods: {
     // TODO: need to be finished!!! -> administrator delete
-    deleteInterpretation: function() {
-
-    },
+    deleteInterpretation: function () {},
 
     onLike: function () {
       this.isLike = !this.isLike;
@@ -284,10 +291,7 @@ export default {
       } else {
         this.favorNumber -= 1;
       }
-      collectInterpretation(
-        "get",
-        this.$props.id,
-      )
+      collectInterpretation("get", this.$props.id)
         .then((res) => {
           const info = this.isCollect ? "成功收藏" : "成功取消收藏";
           this.$Message.info(info);
@@ -303,6 +307,7 @@ export default {
     },
 
     convertComments: function (comments) {
+      console.log(comments)
       comments = comments.map((x) => ({
         commentId: x.id,
         name: x.username,
@@ -334,21 +339,22 @@ export default {
     getComments: async function () {
       let username = "";
       let userid = "";
+      let header = {};
       await getUserInfo()
         .then((res) => {
           userid = res.data.id;
           username = res.data.username;
+          header = {
+            myName: username,
+            micro_knowledge_id: this.id,
+            myHeader: this.$store.state.user.icon,
+            myId: userid,
+          };
         })
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
-      let header = {
-        myName: username,
-        micro_knowledge_id: this.id,
-        myHeader:
-          "https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png",
-        myId: userid,
-      };
+
       await getMicroknowledgeComments("get", {
         micro_knowledge_id: this.id,
         pindex: 1,
@@ -362,7 +368,9 @@ export default {
           let comment;
           for (comment in this.comments.comments_init) {
             this.totalCommentNum++;
-            this.totalCommentNum += this.comments.comments_init[comment].reply.length;
+            this.totalCommentNum += this.comments.comments_init[
+              comment
+            ].reply.length;
           }
         })
         .catch((err) => {

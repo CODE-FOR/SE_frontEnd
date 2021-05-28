@@ -4,9 +4,9 @@
       <div v-for="(item, index) in userlist" :key="index">
         <Row>
           <i-col span="2">
-            <Avatar
-              src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png"
-              style="width: 30%; height: 30%"
+            <img
+              :src="item.icon"
+              style="width: 30%; height: 30%;vertical-align:top;border-radius:50%"
             />
           </i-col>
           <i-col span="5">

@@ -5,7 +5,7 @@
     <Modal v-model="showUserControl" footer-hide>
       <Row>
         <i-col span="4">
-          <Avatar src="https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png" style="width: 100%;height: 100%" />
+          <img :src="userInfo.icon" style="width: 100%;height: 100%;vertical-align:top;border-radius:50%" />
         </i-col>
         <i-col span="10">
           <div class="user-name">
@@ -85,9 +85,11 @@ export default {
 
   methods: {
     showUser: function () {
+      console.log('fuck')
       getUserInfo(this.$props.creator.id).then(res => {
         this.showUserControl = true
         this.userInfo = res.data
+        console.log(this.userInfo)
       }).catch(error => {
         this.$Modal.error(getErrModalOptions(error))
       })
