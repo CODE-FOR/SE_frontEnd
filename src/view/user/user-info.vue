@@ -1074,7 +1074,7 @@ export default {
       data.append("icon", url);
       uploadAvatar(data)
         .then((res) => {
-          console.log(res);
+          this.showCutter = false;
           this.$Message.success('成功修改头像，刷新可查看')
         })
         .catch((err) => {
