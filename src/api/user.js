@@ -104,6 +104,11 @@ export const getIcon = (params) => {
   return getRequest(url, 'get', params)
 }
 
+export const getIconById = (params) => {
+  const url =  `/api/user/icon`
+  return getRequest(url, 'get', params)
+}
+
 export const getUnreadCount = () => {
   const url = '/api/notification/num'
   return getRequest(url, 'get', { only_unread: true })

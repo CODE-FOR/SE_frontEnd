@@ -5,7 +5,7 @@
       :key="i"
       class="author-title reply-father"
     >
-      <Avatar class="header-img" size="default" :src="item.headImg"></Avatar>
+      <Avatar class="header-img" size="default" :src="getImg(item)"></Avatar>
       <div class="author-info">
         <span class="author-name">{{ item.name }}</span>
         <span class="author-time">{{ item.time }}</span>
@@ -45,7 +45,7 @@
           <Avatar
             class="header-img"
             size="default"
-            :src="reply.headImg"
+            :src="getImg(reply)"
           ></Avatar>
           <div class="author-info">
             <span class="author-name">{{ reply.name }}</span>
@@ -126,6 +126,7 @@
 <script>
 import { addComment, deleteComment } from '@/api/microknowledge'
 import { createDiscussionComment, deleteDiscussionComment } from '@/api/project'
+import { getIconById } from '@/api/user'
 const clickoutside = {
   // 初始化指令
   bind (el, binding, vnode) {
@@ -337,6 +338,19 @@ export default {
             this.$Message.error('评论失败!')
           })
         }
+      }
+    },
+    getImg (item) {
+      console.log(item.id);
+      if (item.headImg == '') {
+        getIconById({
+          id: item.id,
+        }).then((res) => {
+          item.headImg = res.data.icon;
+          return item.headImg;
+        })
+      } else {
+        return item.headImg;
       }
     },
     sendCommentReply (i, j) {

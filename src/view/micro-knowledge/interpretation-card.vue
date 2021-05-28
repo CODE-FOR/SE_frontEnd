@@ -141,13 +141,14 @@ import {
   getMicroknowledgeComments,
   microKnowledgeIdReq,
 } from "@/api/microknowledge.js";
-import { follow, unfollow, getUserInfo } from "@/api/user";
+import { follow, unfollow, getUserInfo, getIconById } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
 import comment from "@/components/comment/comment.vue";
 import {
   likeInterpretation,
   collectInterpretation,
 } from "../../api/microknowledge";
+import paramsVue from '../login/argu-page/params.vue';
 export default {
   name: "KnowledgeCard",
   components: {
@@ -307,7 +308,6 @@ export default {
     },
 
     convertComments: function (comments) {
-      console.log(comments)
       comments = comments.map((x) => ({
         commentId: x.id,
         name: x.username,
@@ -317,8 +317,7 @@ export default {
         to: x.to_user ? x.to_user.username : 0,
         toId: x.to_user ? x.to_user.id : "",
         inputShow: false,
-        headImg:
-          "https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png",
+        headImg: '',
         parent_comment_id: x.parent_comment_id,
         reply: [],
       }));
