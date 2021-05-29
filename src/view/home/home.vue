@@ -27,7 +27,7 @@
             </Row>
           </TabPane>
           <TabPane label="关注" name="favorite">
-            <template v-if="items.length !== 0">
+            <template v-if="pageComponent.items.length !== 0">
               <template v-for="item in pageComponent.items">
                 <template v-if="item.type === 0">
                   <KnowledgeCard :key="item.id" v-bind="item" />
@@ -174,7 +174,6 @@ export default {
         });
     },
 
-    // TODO:
     loadFavor: function () {
       this.loading = true;
       recentFavor({
