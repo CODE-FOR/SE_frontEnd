@@ -12,7 +12,7 @@
       </div>
       <!-- 这里是root评论 -->
       <div class="icon-btn">
-        <Button @click="showReplyInput(i, item.name, item.id)">
+        <!-- <Button @click="showReplyInput(i, item.name, item.id)">
           <Icon type="ios-chatbubbles" />
           评论{{ false ? item.commentNum : "" }}
         </Button>
@@ -23,22 +23,35 @@
           @on-ok="deleteItem(i, reply)"
         >
           <Button> <Icon type="ios-trash" />删除 </Button>
-        </Poptip>
+        </Poptip> -->
         <Icon
           :type="dropIconType(item)"
           style="float: right"
           @click="handleShowReply(item)"
         />
-
-        <Button @click="likeReply(item)" v-if="false">
-          <Icon type="md-arrow-dropup" />
-          点赞{{ item.like }}
-        </Button>
       </div>
       <div class="talk-box">
         <p>
           <span class="reply">{{ item.comment }}</span>
         </p>
+        <div style="margin-bottom: 35px">
+          <Button
+            @click="showReplyInput(i, item.name, item.id)"
+            style="float: right"
+          >
+            <Icon type="ios-chatbubbles" />
+            评论{{ false ? item.commentNum : "" }}
+          </Button>
+          <Poptip
+            style="float: right"
+            v-if="item.id === myId"
+            confirm
+            title="确定要删除吗?删除后将不可恢复。"
+            @on-ok="deleteItem(i, reply)"
+          >
+            <Button> <Icon type="ios-trash" />删除 </Button>
+          </Poptip>
+        </div>
       </div>
       <div class="reply-box" v-if="item.showReply">
         <div v-for="(reply, j) in item.reply" :key="j" class="author-title">
@@ -65,10 +78,6 @@
                 <Icon type="ios-trash" />删除
               </Button>
             </Poptip>
-            <Button @click="likeReply(reply)" v-if="false">
-              <Icon type="md-arrow-dropup" />
-              点赞{{ reply.like }}
-            </Button>
           </div>
           <div class="talk-box">
             <p>
@@ -124,88 +133,89 @@
   </div>
 </template>
 <script>
-import { addComment, deleteComment } from '@/api/microknowledge'
-import { createDiscussionComment, deleteDiscussionComment } from '@/api/project'
-import { getIconById } from '@/api/user'
+import { addComment, deleteComment } from "@/api/microknowledge";
+import {
+  createDiscussionComment,
+  deleteDiscussionComment,
+} from "@/api/project";
+import { getIconById } from "@/api/user";
 const clickoutside = {
   // 初始化指令
-  bind (el, binding, vnode) {
-    function documentHandler (e) {
+  bind(el, binding, vnode) {
+    function documentHandler(e) {
       // 这里判断点击的元素是否是本身，是本身，则返回
       if (el.contains(e.target)) {
-        return false
+        return false;
       }
       // 判断指令中是否绑定了函数
       if (binding.expression) {
         // 如果绑定了函数 则调用那个函数，此处binding.value就是handleClose方法
-        binding.value(e)
+        binding.value(e);
       }
     }
     // 给当前元素绑定个私有变量，方便在unbind中可以解除事件监听
-    el.vueClickOutside = documentHandler
-    document.addEventListener('click', documentHandler)
+    el.vueClickOutside = documentHandler;
+    document.addEventListener("click", documentHandler);
   },
-  update () { },
-  unbind (el, binding) {
+  update() {},
+  unbind(el, binding) {
     // 解除事件监听
-    document.removeEventListener('click', el.vueClickOutside)
-    delete el.vueClickOutside
-  }
-}
+    document.removeEventListener("click", el.vueClickOutside);
+    delete el.vueClickOutside;
+  },
+};
 export default {
-  name: 'ArticleComment',
+  name: "ArticleComment",
   props: {
     myHeader: {
       type: String,
       default:
-        'https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg'
+        "https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg",
     },
     myId: {
       type: Number,
-      default: 19870621
+      default: 19870621,
     },
     comments_init: {
       type: Array,
       default: function () {
-        return []
-      }
+        return [];
+      },
     },
     micro_knowledge_id: {
       type: Number,
-      default: 0
+      default: 0,
     },
     commentType: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
 
-  mounted () {
+  mounted() {
     this.initComments();
   },
 
-  computed: {
-  },
+  computed: {},
 
-  data () {
+  data() {
     return {
       btnShow: false,
-      index: '0',
-      replyComment: '',
+      index: "0",
+      replyComment: "",
       myName: this.$store.state.user.userName,
-      to: '',
+      to: "",
       toId: -1,
       comments: [],
       totalCommentNum: 0,
-    }
+    };
   },
   directives: { clickoutside },
   methods: {
-
-    initComments () {
+    initComments() {
       let mapData = this.comments_init.map((item) => {
         this.totalCommentNum++;
-        this.totalCommetnNum += item.reply.length
+        this.totalCommetnNum += item.reply.length;
         return {
           comment: item.comment,
           commentId: item.commentId,
@@ -218,238 +228,248 @@ export default {
           time: item.time,
           to: item.to,
           toId: item.toId,
-          showReply: false
-        }
-      })
-      this.comments.push(...mapData.filter((x)=>x));
+          showReply: false,
+        };
+      });
+      this.comments.push(...mapData.filter((x) => x));
     },
 
-    dropIconType (item) {
-      return item.showReply ? 'ios-arrow-up' : 'ios-arrow-down'
+    dropIconType(item) {
+      return item.showReply ? "ios-arrow-up" : "ios-arrow-down";
     },
 
-    inputFocus () {
-      var replyInput = document.getElementById('replyInput')
-      replyInput.style.padding = '8px 8px'
-      replyInput.style.border = '2px solid blue'
-      replyInput.focus()
+    inputFocus() {
+      var replyInput = document.getElementById("replyInput");
+      replyInput.style.padding = "8px 8px";
+      replyInput.style.border = "2px solid blue";
+      replyInput.focus();
     },
-    showReplyBtn () {
-      this.btnShow = true
+    showReplyBtn() {
+      this.btnShow = true;
     },
-    hideReplyBtn () {
-      this.btnShow = false
-      replyInput.style.padding = '10px'
-      replyInput.style.border = 'none'
+    hideReplyBtn() {
+      this.btnShow = false;
+      replyInput.style.padding = "10px";
+      replyInput.style.border = "none";
     },
-    showReplyInput (i, name, id) {
-      this.comments[this.index].inputShow = false
-      this.index = i
-      this.comments[i].inputShow = true
-      this.to = name
-      this.toId = id
+    showReplyInput(i, name, id) {
+      this.comments[this.index].inputShow = false;
+      this.index = i;
+      this.comments[i].inputShow = true;
+      this.to = name;
+      this.toId = id;
     },
-    _inputShow (i) {
-      return this.comments[i].inputShow
+    _inputShow(i) {
+      return this.comments[i].inputShow;
     },
-    deleteItem (i) {
-      const delete_function = this.commentType === 0 ? deleteComment : deleteDiscussionComment
-      delete_function('post', {
-        id: this.comments[i].commentId
+    deleteItem(i) {
+      const delete_function =
+        this.commentType === 0 ? deleteComment : deleteDiscussionComment;
+      delete_function("post", {
+        id: this.comments[i].commentId,
       })
-        .then(res => {
-          this.comments.splice(i, 1)
-          this.$Message.success('删除成功！')
+        .then((res) => {
+          this.comments.splice(i, 1);
+          this.$Message.success("删除成功！");
         })
-        .catch(err => {
-          console.log(err)
-          this.$Message.success('删除失败!')
-        })
+        .catch((err) => {
+          console.log(err);
+          this.$Message.success("删除失败!");
+        });
     },
-    deleteReply (i, j) {
-      const delete_function = this.commentType === 0 ? deleteComment : deleteDiscussionComment
-      delete_function('post', {
-        id: this.comments[i].reply[j].commentId
+    deleteReply(i, j) {
+      const delete_function =
+        this.commentType === 0 ? deleteComment : deleteDiscussionComment;
+      delete_function("post", {
+        id: this.comments[i].reply[j].commentId,
       })
-        .then(res => {
-          this.comments[i].reply.splice(j, 1)
-          this.$Message.success('删除成功！')
+        .then((res) => {
+          this.comments[i].reply.splice(j, 1);
+          this.$Message.success("删除成功！");
         })
-        .catch(err => {
-          console.log(err)
-          this.$Message.success('删除失败!')
-        })
+        .catch((err) => {
+          console.log(err);
+          this.$Message.success("删除失败!");
+        });
     },
 
-    handleShowReply (item) {
+    handleShowReply(item) {
       item.showReply = !item.showReply;
     },
 
-    sendComment () {
+    sendComment() {
       if (!this.replyComment) {
         this.$message({
           showClose: true,
-          type: 'warning',
-          message: '评论不能为空'
-        })
+          type: "warning",
+          message: "评论不能为空",
+        });
       } else {
-        let a = {}
-        let input = document.getElementById('replyInput')
-        let timeNow = new Date().getTime()
-        let time = this.dateStr(timeNow)
-        a.name = this.myName
-        a.id = this.myId
-        a.comment = this.replyComment
-        a.headImg = this.myHeader
-        a.time = time
-        a.reply = []
-        a.commentNum = 0
-        a.like = 0
+        let a = {};
+        let input = document.getElementById("replyInput");
+        let timeNow = new Date().getTime();
+        let time = this.dateStr(timeNow);
+        a.name = this.myName;
+        a.id = this.myId;
+        a.comment = this.replyComment;
+        a.headImg = this.myHeader;
+        a.time = time;
+        a.reply = [];
+        a.commentNum = 0;
+        a.like = 0;
         if (this.commentType === 0) {
-          addComment('post', {
+          addComment("post", {
             micro_knowledge_id: this.micro_knowledge_id,
-            content: a.comment
+            content: a.comment,
           })
-            .then(res => {
-              this.$Message.success('评论成功!')
-              console.log(res)
-              a.commentId = res.data.id
-              this.comments.push(a)
-              this.replyComment = ''
-              input.innerHTML = ''
+            .then((res) => {
+              this.$Message.success("评论成功!");
+              console.log(res);
+              a.commentId = res.data.id;
+              this.comments.push(a);
+              this.replyComment = "";
+              input.innerHTML = "";
             })
-            .catch(err => {
-              console.log(err)
-              this.$Message.error('评论失败!')
-            })
+            .catch((err) => {
+              console.log(err);
+              this.$Message.error("评论失败!");
+            });
         } else {
           createDiscussionComment({
             topic_id: this.micro_knowledge_id,
-            content: a.comment
-          }).then(res => {
-            this.$Message.success('评论成功!')
-            console.log(res)
-            a.commentId = res.data.id
-            this.comments.push(a)
-            this.replyComment = ''
-            input.innerHTML = ''
-          }).catch(err => {
-            console.log(err)
-            this.$Message.error('评论失败!')
+            content: a.comment,
           })
+            .then((res) => {
+              this.$Message.success("评论成功!");
+              console.log(res);
+              a.commentId = res.data.id;
+              this.comments.push(a);
+              this.replyComment = "";
+              input.innerHTML = "";
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$Message.error("评论失败!");
+            });
         }
       }
     },
-    getImg (item) {
+    getImg(item) {
       console.log(item.id);
-      if (item.headImg == '') {
+      if (item.headImg == "") {
         getIconById({
           id: item.id,
         }).then((res) => {
           item.headImg = res.data.icon;
           return item.headImg;
-        })
+        });
       } else {
         return item.headImg;
       }
     },
-    sendCommentReply (i, j) {
+    sendCommentReply(i, j) {
       if (!this.replyComment) {
         this.$message({
           showClose: true,
-          type: 'warning',
-          message: '评论不能为空'
-        })
+          type: "warning",
+          message: "评论不能为空",
+        });
       } else {
-        let a = {}
-        let timeNow = new Date().getTime()
-        let time = this.dateStr(timeNow)
-        a.name = this.myName
-        a.to = this.to
-        a.id = this.myId
-        a.headImg = this.myHeader
-        a.comment = this.replyComment
-        a.time = time
-        a.commentNum = 0
-        a.like = 0
+        let a = {};
+        let timeNow = new Date().getTime();
+        let time = this.dateStr(timeNow);
+        a.name = this.myName;
+        a.to = this.to;
+        a.id = this.myId;
+        a.headImg = this.myHeader;
+        a.comment = this.replyComment;
+        a.time = time;
+        a.commentNum = 0;
+        a.like = 0;
         if (this.commentType === 0) {
-          addComment('post', {
+          addComment("post", {
             micro_knowledge_id: this.micro_knowledge_id,
             content: a.comment,
             parent_comment_id: this.comments[i].commentId,
-            to_user_id: this.toId
+            to_user_id: this.toId,
           })
-            .then(res => {
-              this.$Message.success('评论成功!')
-              console.log(res)
-              a.commentId = res.data.id
-              this.comments[i].reply.push(a)
-              this.replyComment = ''
-              document.getElementsByClassName('reply-comment-input')[i].innerHTML = ''
+            .then((res) => {
+              this.$Message.success("评论成功!");
+              console.log(res);
+              a.commentId = res.data.id;
+              this.comments[i].reply.push(a);
+              this.replyComment = "";
+              document.getElementsByClassName("reply-comment-input")[
+                i
+              ].innerHTML = "";
             })
-            .catch(err => {
-              console.log(err)
-              this.$Message.error('评论失败!')
-            })
+            .catch((err) => {
+              console.log(err);
+              this.$Message.error("评论失败!");
+            });
         } else {
           createDiscussionComment({
             topic_id: this.micro_knowledge_id,
             content: a.comment,
             parent_discussion_id: this.comments[i].commentId,
-            to_user_id: this.toId
-          }).then(res => {
-            this.$Message.success('评论成功!')
-            console.log(res)
-            a.commentId = res.data.id
-            this.comments[i].reply.push(a)
-            this.replyComment = ''
-            document.getElementsByClassName('reply-comment-input')[i].innerHTML = ''
-          }).catch(err => {
-            console.log(err)
-            this.$Message.error('评论失败!')
+            to_user_id: this.toId,
           })
+            .then((res) => {
+              this.$Message.success("评论成功!");
+              console.log(res);
+              a.commentId = res.data.id;
+              this.comments[i].reply.push(a);
+              this.replyComment = "";
+              document.getElementsByClassName("reply-comment-input")[
+                i
+              ].innerHTML = "";
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$Message.error("评论失败!");
+            });
         }
       }
     },
     onDivInput: function (e) {
-      this.replyComment = e.target.innerHTML
+      this.replyComment = e.target.innerHTML;
     },
-    dateStr (date) {
+    dateStr(date) {
       // 获取js 时间戳
-      var time = new Date().getTime()
+      var time = new Date().getTime();
       // 去掉 js 时间戳后三位，与php 时间戳保持一致
-      time = parseInt((time - date) / 1000)
+      time = parseInt((time - date) / 1000);
       // 存储转换值
-      var s
+      var s;
       if (time < 60 * 10) {
         // 十分钟内
-        return '刚刚'
+        return "刚刚";
       } else if (time < 60 * 60 && time >= 60 * 10) {
         // 超过十分钟少于1小时
-        s = Math.floor(time / 60)
-        return s + '分钟前'
+        s = Math.floor(time / 60);
+        return s + "分钟前";
       } else if (time < 60 * 60 * 24 && time >= 60 * 60) {
         // 超过1小时少于24小时
-        s = Math.floor(time / 60 / 60)
-        return s + '小时前'
+        s = Math.floor(time / 60 / 60);
+        return s + "小时前";
       } else if (time < 60 * 60 * 24 * 30 && time >= 60 * 60 * 24) {
         // 超过1天少于30天内
-        s = Math.floor(time / 60 / 60 / 24)
-        return s + '天前'
+        s = Math.floor(time / 60 / 60 / 24);
+        return s + "天前";
       } else {
         // 超过30天ddd
-        date = new Date(parseInt(date))
+        date = new Date(parseInt(date));
         return (
           date.getFullYear() +
-          '/' +
+          "/" +
           (date.getMonth() + 1) +
-          '/' +
+          "/" +
           date.getDate()
-        )
+        );
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
@@ -580,6 +600,7 @@ export default {
 
 .author-title .talk-box {
   margin: 0 50px;
+  /* width: 70%; */
 }
 
 .author-title .talk-box > p {
@@ -589,6 +610,8 @@ export default {
 .author-title .talk-box .reply {
   font-size: 16px;
   color: #000;
+
+  word-break: break-all;
 }
 
 .author-title .reply-box {

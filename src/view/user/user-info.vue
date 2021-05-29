@@ -676,6 +676,7 @@ export default {
     getUserInfo()
       .then((res) => {
         this.$store.commit("setUserProfile", res.data);
+        this.changeTab('myPost');
       })
       .catch((error) => {
         this.$Modal.error(getErrModalOptions(error));

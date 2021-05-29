@@ -444,9 +444,8 @@ export default {
           break;
         }
       }
-      let tmp = this.chatUserIdList[i];
-      this.chatUserIdList[i] = this.chatUserIdList[0];
-      this.chatUserIdList[0] = tmp;
+      this.chatUserIdList.splice(i, 1);
+      this.chatUserIdList.splice(0, 0, userId);
       this.$refs[`member${this.nowChatUser}`][0].style.color = "darkgrey";
       this.clearUnreadMessage(this.nowChatUser);
       this.nowChatUser = userId;
