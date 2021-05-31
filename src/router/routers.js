@@ -65,7 +65,7 @@ export default [
         component: () => import('@/view/home/search')
       },
       {
-        path: 'chat',
+        path: 'wewontchat',
         name: 'chat',
         component: () => import('@/view/user/chat'),
         meta: {
