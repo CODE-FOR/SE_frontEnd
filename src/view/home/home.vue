@@ -1,8 +1,8 @@
 <template>
-  <Row>
+  <Row class="root">
     <i-col offset="4" span="15">
       <Card>
-        <Tabs v-model="activeTab" @on-click="changeTab">
+        <Tabs v-model="activeTab" @on-click="changeTab" :animated="false">
           <TabPane label="推荐" name="recommend">
             <template v-if="pageComponent.items.length !== 0">
               <KnowledgeCard
@@ -29,10 +29,10 @@
           <TabPane label="关注" name="favorite">
             <template v-if="pageComponent.items.length !== 0">
               <template v-for="item in pageComponent.items">
-                <template v-if="item.type === 0">
+                <template v-if="item.type === 0 && knowledgeType != 'interpretation'">
                   <KnowledgeCard :key="item.id" v-bind="item" />
                 </template>
-                <template v-else>
+                <template v-else-if="item.type === 1 && knowledgeType != 'paper'">
                   <InterpretationCard :key="item.id" v-bind="item" />
                 </template>
               </template>
@@ -62,6 +62,23 @@
         ></Page>
       </Card>
     </i-col>
+    <template v-if="activeTab != 'recommend'">
+      <i-col offset="1" span="4">
+        <Card>
+          <p slot="title" style="font-size: 18px">筛选器</p>
+          <p class="type-selector">论文/论文解读：</p>
+          <i-select
+            v-model="knowledgeType"
+            @on-change="selectType"
+            style="width: 80%"
+          >
+            <Option value="paper"> 论文 </Option>
+            <Option value="interpretation"> 论文解读 </Option>
+            <Option value="all"> 全部 </Option>
+          </i-select>
+        </Card>
+      </i-col>
+    </template>
   </Row>
 </template>
 
@@ -80,7 +97,7 @@ export default {
 
   data() {
     return {
-      // activeTab: "favorite",
+      knowledgeType: 'all',
       activeTab: "recommend",
       knowledgeType: "micro-evidence", // TODO: 这个应该用 vuex 记住用户的上一次选择
       selectTagList: [],
@@ -119,6 +136,10 @@ export default {
   },
 
   methods: {
+    selectType: function () {
+      console.log(this.knowledgeType)
+    },
+
     changeIndexPage: function (i) {
       this.$store.commit("setHomePage", i);
       this.pageComponent.items = [];
@@ -181,7 +202,7 @@ export default {
       }).then((res) => {
         this.pageComponent.pageNum = res.data.page_num;
         const mapData = res.data.recent.map((item) => {
-          console.log(res)
+          console.log(res);
           if (item.type === 0) {
             return {
               type: item.type,
@@ -246,5 +267,8 @@ export default {
   font-size: 16px;
   font-weight: bold;
   padding-bottom: 5px;
+}
+.root {
+  min-width: 1300px;
 }
 </style>
