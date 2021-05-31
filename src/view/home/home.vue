@@ -229,8 +229,8 @@ export default {
               tags: item.tags,
               isLike: item.is_like,
               isCollect: item.is_collect,
-              favorNumber: item.like_num,
-              collectNumber: item.collect_num,
+              likeNumber: item.like_num,
+              favorNumber: item.collect_num,
               content: item.content,
             };
           }
