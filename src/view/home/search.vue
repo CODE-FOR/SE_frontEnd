@@ -107,7 +107,7 @@
 
 <script>
 import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
-import InterpretationCard from "@/view/micro-knowledge/knowledge-card";
+import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
 import { getKnowledgePage, getTags } from "@/api/microknowledge";
 import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
 import { getSearchResult } from "../../api/microknowledge";
