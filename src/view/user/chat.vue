@@ -32,7 +32,12 @@
               <i-col span="2" style="type: flex">
                 <img
                   :src="chatUserList[item].icon"
-                  style="width: 300%; height: 300%;vertical-align:top;border-radius:50%"
+                  style="
+                    width: 300%;
+                    height: 300%;
+                    vertical-align: top;
+                    border-radius: 50%;
+                  "
                 />
               </i-col>
               <i-col offset="7" style="type: flex">
@@ -101,7 +106,7 @@
           <Form style="position: relative;bottom" @submit.native.prevent>
             <FormItem key="message">
               <Input
-                type="content"
+                type="text"
                 placeholder="输入聊天内容"
                 @keyup.enter.native="sendMessage"
                 v-model="sendMes"
@@ -137,24 +142,6 @@ export default {
       showChatUserMessages: [],
       sendMes: "",
       chatUserIdList: [],
-      // chatUserList: {
-      //   3: {
-      //     id: 3,
-      //     name: "Captain America",
-      //     email: "love3000@love.com",
-      //     lastMessage: "That is American Ass",
-      //     haveUnreadMessage: true,
-      //     unreadMessageNum: 2,
-      //   },
-      //   4: {
-      //     id: 4,
-      //     name: "Cap",
-      //     email: "love3000@love.com",
-      //     lastMessage: "That is American Ass",
-      //     haveUnreadMessage: false,
-      //     unreadMessageNum: 0,
-      //   },
-      // },
       chatUserList: {},
       currentUserId: this.$store.state.user.userId,
       chatMessages: {
@@ -212,10 +199,13 @@ export default {
 
   methods: {
     sendMessage: function () {
+      if (!this.currentUserId) {
+        console.log("effect");
+        this.currentUserId = this.$store.state.user.userId;
+      }
       let sendmes = {
         msg: {
           message: this.sendMes,
-          time: "2021-05-21",
         },
         code: 600,
         receiver_id: this.nowChatUser,
@@ -240,6 +230,10 @@ export default {
     },
 
     createUserGroup: function () {
+      if (!this.currentUserId) {
+        console.log("effect");
+        this.currentUserId = this.$store.state.user.userId;
+      }
       let sendmes = {
         code: 700,
         user_id: this.currentUserId,
@@ -299,9 +293,11 @@ export default {
                 break;
               }
             }
-            let tmp = this.chatUserIdList[i];
-            this.chatUserIdList[i] = this.chatUserIdList[0];
-            this.chatUserIdList[0] = tmp;
+            this.chatUserIdList.splice(i, 1);
+            this.chatUserIdList.splice(0, 0, userId);
+            this.$nextTick(() => {
+              this.$refs[`member${this.nowChatUser}`][0].style.color = "black";
+            });
           }
           this.chatMessages[destid].push(msgData.msg);
           this.loadChatMessage(destid);
@@ -438,14 +434,14 @@ export default {
         this.clearUnreadMessage(this.nowChatUser);
         return;
       }
-      let i;
-      for (i = 0; i < this.chatUserIdList.length; i++) {
-        if (this.chatUserIdList[i] == userId) {
-          break;
-        }
-      }
-      this.chatUserIdList.splice(i, 1);
-      this.chatUserIdList.splice(0, 0, userId);
+      // let i;
+      // for (i = 0; i < this.chatUserIdList.length; i++) {
+      //   if (this.chatUserIdList[i] == userId) {
+      //     break;
+      //   }
+      // }
+      // this.chatUserIdList.splice(i, 1);
+      // this.chatUserIdList.splice(0, 0, userId);
       this.$refs[`member${this.nowChatUser}`][0].style.color = "darkgrey";
       this.clearUnreadMessage(this.nowChatUser);
       this.nowChatUser = userId;
@@ -484,7 +480,15 @@ export default {
   },
 
   watch: {
-    showChatUserMessages: "scroolToBottom",
+    showChatUserMessages: {
+      handler() {
+        this.$nextTick(function () {
+          var div = document.getElementById("chat-content");
+          div.scrollTop = div.scrollHeight;
+        });
+      },
+      deep: true,
+    },
   },
 };
 </script>
