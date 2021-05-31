@@ -85,11 +85,9 @@ export default {
 
   methods: {
     showUser: function () {
-      console.log('fuck')
       getUserInfo(this.$props.creator.id).then(res => {
         this.showUserControl = true
         this.userInfo = res.data
-        console.log(this.userInfo)
       }).catch(error => {
         this.$Modal.error(getErrModalOptions(error))
       })

@@ -205,7 +205,7 @@ export default {
               favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
-              title: item.title,
+              title: item.title.replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
             };
           });
           this.items.push(...mapData);
@@ -214,7 +214,7 @@ export default {
           const mapData = res.data.res.map((item) => {
             return {
               id: item.id,
-              title: item.title,
+              title: item.title.replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
               content:
                 item.content.replace(/<[^>]+>/g, "").length > 100
                   ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) +

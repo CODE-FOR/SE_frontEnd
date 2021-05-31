@@ -133,7 +133,7 @@ export default {
     return {
       nowChatUser: 0,
       findMemberName: "",
-      nowChatUserName: "xxxx",
+      nowChatUserName: "Loading",
       showChatUserMessages: [],
       sendMes: "",
       chatUserIdList: [],
