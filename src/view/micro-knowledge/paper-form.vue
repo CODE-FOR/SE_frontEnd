@@ -1,36 +1,59 @@
 <template>
-  <Form ref="form" :model="form" :rules="ruleCustom" :label-width="120">
-    <!-- <Form-item label="参考文献" prop="citation"><Input type="text" v-model="form.citation" placeholder='请输入参考文献(GB7714格式)' /></Form-item> -->
-    <Form-item label="标题" prop="title"><Input type="text" v-model="form.title" placeholder="请输入论文标题" /></Form-item>
-    <!-- <Form-item label="参考文献链接(可选)" prop="citationUrl"><Input type="url" placeholder='请输入参考文献链接(可选)' v-model="form.citationUrl" /></Form-item> -->
-    <Form-item label="作者" prop="author"><Input type="text" placeholder='请输入作者(以逗号分隔)' v-model="form.author" /></Form-item>
-    <Form-item label="论文年份" prop="year">
-      <Input-number v-model="form.year" />
-    </Form-item>
-    <Form-item label="主题" prop="topic">
-      <Select v-model="form.topic" multiple style="width:260px" filterable>
-        <Option v-for="item in topicList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select>
-    </Form-item>
-    <!-- <Form-item label="内容" prop="summary"><Input type="textarea" placeholder='内容不超过200字' :maxlength="200" :rows="6" v-model="form.summary" /></Form-item> -->
-    <Form-item label="论文摘要" prop="summary">
-      <TEditor id="tinymce" v-model="form.summary" :init="editorInit"/>
-    </Form-item>
-    <Form-item label="论文链接" prop="paperLink">
-      <Input type="url" placeholder="请输入论文链接" v-model="form.paperLink"/>
-    </Form-item>
-    <Form-item label="标签" prop="tags"><Input type="text" placeholder='请输入至少三个标签(以空格分隔)' v-model="form.tags" /></Form-item>
-    <Button type="primary" @click="handleSubmit('form')" long>发布</Button>
-  </Form>
+  <Card>
+    <Form ref="form" :model="form" :rules="ruleCustom" :label-width="120">
+      <!-- <Form-item label="参考文献" prop="citation"><Input type="text" v-model="form.citation" placeholder='请输入参考文献(GB7714格式)' /></Form-item> -->
+      <Form-item label="标题" prop="title"
+        ><Input type="text" v-model="form.title" placeholder="请输入论文标题"
+      /></Form-item>
+      <!-- <Form-item label="参考文献链接(可选)" prop="citationUrl"><Input type="url" placeholder='请输入参考文献链接(可选)' v-model="form.citationUrl" /></Form-item> -->
+      <Form-item label="作者" prop="author"
+        ><Input
+          type="text"
+          placeholder="请输入作者(以逗号分隔)"
+          v-model="form.author"
+      /></Form-item>
+      <Form-item label="论文年份" prop="year">
+        <Input-number v-model="form.year" />
+      </Form-item>
+      <Form-item label="主题" prop="topic">
+        <Select v-model="form.topic" multiple style="width: 260px" filterable>
+          <Option
+            v-for="item in topicList"
+            :value="item.value"
+            :key="item.value"
+            >{{ item.label }}</Option
+          >
+        </Select>
+      </Form-item>
+      <!-- <Form-item label="内容" prop="summary"><Input type="textarea" placeholder='内容不超过200字' :maxlength="200" :rows="6" v-model="form.summary" /></Form-item> -->
+      <Form-item label="论文摘要" prop="summary">
+        <TEditor id="tinymce" v-model="form.summary" :init="editorInit" />
+      </Form-item>
+      <Form-item label="论文链接" prop="paperLink">
+        <Input
+          type="url"
+          placeholder="请输入论文链接"
+          v-model="form.paperLink"
+        />
+      </Form-item>
+      <Form-item label="标签" prop="tags"
+        ><Input
+          type="text"
+          placeholder="请输入至少三个标签(以空格分隔)"
+          v-model="form.tags"
+      /></Form-item>
+      <Button type="primary" @click="handleSubmit('form')" long>发布</Button>
+    </Form>
+  </Card>
 </template>
 <script>
 // import tinymce from 'tinymce/tinymce'
-import { createPaper, getTags } from '@/api/microknowledge.js'
-import { getErrModalOptions } from '@/libs/util.js'
-import TEditor from '@/components/TEditor.vue'
+import { createPaper, getTags } from "@/api/microknowledge.js";
+import { getErrModalOptions } from "@/libs/util.js";
+import TEditor from "@/components/TEditor.vue";
 export default {
   components: { TEditor },
-  data () {
+  data() {
     // const validateCitation = (rule, value, callback) => {
     //   if (value === '') {
     //     callback(new Error('请输入参考文献'))
@@ -40,23 +63,23 @@ export default {
     // }
 
     const validateTitle = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入标题'))
+      if (value === "") {
+        callback(new Error("请输入标题"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     const validateSummary = (rule, value, callback) => {
-      value = tinymce.activeEditor.getContent()
-      if (value === '') {
-        callback(new Error('请输入微证据内容(不超过5000字)'))
+      value = tinymce.activeEditor.getContent();
+      if (value === "") {
+        callback(new Error("请输入微证据内容(不超过5000字)"));
       } else if (value.length > 5000) {
-        callback(new Error('内容不得超过5000字'))
+        callback(new Error("内容不得超过5000字"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     // const validateUrl = (rule, value, callback) => {
     //   if (value === '') {
@@ -69,14 +92,18 @@ export default {
     // }
 
     const validateLink = (rule, value, callback) => {
-      if (value === '') {
-        callback()
-      } else if (!value.match(/^((ht|f)tps?):\/\/[\w-]+(\.[\w-]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/)) {
-        callback(new Error('论文链接不正确'))
+      if (value === "") {
+        callback();
+      } else if (
+        !value.match(
+          /^((ht|f)tps?):\/\/[\w-]+(\.[\w-]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/
+        )
+      ) {
+        callback(new Error("论文链接不正确"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     // const validateAuthor = (rule, value, callback) => {
     //   if (value === '' {
@@ -85,36 +112,36 @@ export default {
     // }
 
     const validateTags = (rule, value, callback) => {
-      if (value === '' || value.split(' ').length < 3) {
-        callback(new Error('请输入至少3个标签(以空格分隔)'))
+      if (value === "" || value.split(" ").length < 3) {
+        callback(new Error("请输入至少3个标签(以空格分隔)"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     const validateNotNull = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请输入！'))
+        callback(new Error("请输入！"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     const validateArrayNotEmpty = (rule, value, callback) => {
       if (value.length === 0) {
-        callback(new Error('请选择主题'))
+        callback(new Error("请选择主题"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     const validateAuthorArrayNotEmpty = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入作者'))
+      if (value === "") {
+        callback(new Error("请输入作者"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     return {
       topicList: [
@@ -131,12 +158,12 @@ export default {
       ],
       form: {
         topic: [],
-        summary: '',
-        tags: '',
+        summary: "",
+        tags: "",
         year: null,
-        paperLink: '',
-        title: '',
-        author: []
+        paperLink: "",
+        title: "",
+        author: [],
         // citationUrl: '',
         // citation: ''
       },
@@ -152,62 +179,76 @@ export default {
         //   validator: validateUrl,
         //   trigger: 'blur'
         // }],
-        title: [{
-          required: true,
-          validator: validateTitle,
-          trigger: 'blur'
-        }],
+        title: [
+          {
+            required: true,
+            validator: validateTitle,
+            trigger: "blur",
+          },
+        ],
         topic: [
           {
             required: true,
             validator: validateArrayNotEmpty,
-            trigger: 'blur'
-          }
+            trigger: "blur",
+          },
         ],
         summary: [
           {
             required: true,
             validator: validateSummary,
-            trigger: 'blur'
-          }
+            trigger: "blur",
+          },
         ],
-        paperLink: [{
-          required: true,
-          validator: validateLink,
-          trigger: 'blur'
-        }],
-        year: [{
-          required: true,
-          validator: validateNotNull,
-          trigger: 'blur'
-        }],
+        paperLink: [
+          {
+            required: true,
+            validator: validateLink,
+            trigger: "blur",
+          },
+        ],
+        year: [
+          {
+            required: true,
+            validator: validateNotNull,
+            trigger: "blur",
+          },
+        ],
         tags: [
           {
             required: true,
             validator: validateTags,
-            trigger: 'blur'
-          }
+            trigger: "blur",
+          },
         ],
         author: [
           {
             required: true,
             validator: validateAuthorArrayNotEmpty,
-            trigger: 'blur'
-          }
-        ]
-      }
-    }
+            trigger: "blur",
+          },
+        ],
+      },
+    };
   },
-  mounted () {
-    this.getTopicList()
+  mounted() {
+    this.getTopicList();
   },
   methods: {
-    handleSubmit (name) {
+    handleSubmit(name) {
       // console.log(name)
       // console.log(name)
-      this.$refs[name].validate(valid => {
+      this.$refs[name].validate((valid) => {
         if (valid) {
-          const tags = this.form.topic.map(tag => { return { name: tag, type: 0 } }).concat(this.form.tags.split(' ').map(tag => { return { name: tag, type: 1 } }));
+          const tags = this.form.topic
+            .map((tag) => {
+              return { name: tag, type: 0 };
+            })
+            .concat(
+              this.form.tags.split(" ").map((tag) => {
+                return { name: tag, type: 1 };
+              })
+            );
           const data = {
             abstract: tinymce.activeEditor.getContent(),
             tags: tags,
@@ -216,38 +257,43 @@ export default {
             published_year: this.form.year,
             source: this.form.paperLink,
             title: this.form.title,
-            author: this.form.author.split(',')
+            author: this.form.author.split(","),
           };
           console.log(data);
-          createPaper('post', data).then(res => {
-            this.$Message.success('发布成功!')
-            this.$router.push({
-              name: 'home'
+          createPaper("post", data)
+            .then((res) => {
+              this.$Message.success("发布成功!");
+              this.$router.push({
+                name: "home",
+              });
             })
-          }).catch(
-            this.$Modal.error(getErrModalOptions(err))
-          )
+            .catch(this.$Modal.error(getErrModalOptions(err)));
         } else {
-          this.$Message.error('发布失败!')
+          this.$Message.error("发布失败!");
         }
       });
     },
-    getTopicList () {
-      getTags('get', {
+    getTopicList() {
+      getTags("get", {
         pindx: 1,
         num_per_page: 99,
-        presupposed: true
-      }).then(res => {
-        this.topicList = res.data.page.map(tag => ({ value: tag.name, label: tag.name }))
-      }).catch(err => {
-        console.log(err)
+        presupposed: true,
       })
+        .then((res) => {
+          this.topicList = res.data.page.map((tag) => ({
+            value: tag.name,
+            label: tag.name,
+          }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    handleReset (name) {
-      this.$refs[name].resetFields()
-    }
-  }
-}
+    handleReset(name) {
+      this.$refs[name].resetFields();
+    },
+  },
+};
 </script>
 
 <style>

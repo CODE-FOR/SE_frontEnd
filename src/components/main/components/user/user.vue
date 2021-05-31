@@ -1,5 +1,5 @@
 <template>
-  <div class="user-avatar-dropdown">
+  <div class="user-avatar-dropdown" style="position:relative; z-index: 500">
     <Dropdown @on-click="handleClick">
       <Badge :dot="!!messageUnreadCount">
         <Avatar :src="icon" />
