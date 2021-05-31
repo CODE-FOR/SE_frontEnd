@@ -181,6 +181,7 @@ export default {
       }).then((res) => {
         this.pageComponent.pageNum = res.data.page_num;
         const mapData = res.data.recent.map((item) => {
+          console.log(res)
           if (item.type === 0) {
             return {
               type: item.type,
@@ -191,8 +192,8 @@ export default {
               tags: item.tags,
               isLike: item.is_like,
               isCollect: item.is_collect,
-              totalLike: item.like_num,
-              totalCollect: item.collect_num,
+              likeNumber: item.like_num,
+              favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
               title: item.title,
@@ -207,8 +208,8 @@ export default {
               tags: item.tags,
               isLike: item.is_like,
               isCollect: item.is_collect,
-              totalLike: item.like_num,
-              totalCollect: item.collect_num,
+              favorNumber: item.like_num,
+              collectNumber: item.collect_num,
               content: item.content,
             };
           }
