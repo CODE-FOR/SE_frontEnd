@@ -93,7 +93,7 @@ export default {
       tags: [],
       source: "source",
       publishedYear: 2000,
-      author: "author",
+      author: ["Kimmy Granger"],
       items: [],
       loading: true,
       likeNumber: 0,

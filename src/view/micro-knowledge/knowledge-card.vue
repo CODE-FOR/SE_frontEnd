@@ -298,7 +298,7 @@ export default {
 
     author: {
       type: Array,
-      default: ['default', 'two'],
+      default: () => [['Kimmy Granger']],
     },
   },
 
