@@ -168,7 +168,7 @@ export default {
     let _this = this;
     // this.socket = new WebSocket("ws://localhost:8080/chat/");
     // this.socket = new WebSocket("ws://114.115.156.182:8080/chat/");
-    this.socket = new WebSocket("ws://pap2.zixfy.com/chat/")
+    this.socket = new WebSocket("wss://pap2.zixfy.com/chat/")
     this.socket.onopen = this.open;
     this.socket.onerror = this.error;
     this.socket.onmessage = this.getMessage;
