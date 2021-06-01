@@ -259,7 +259,6 @@ export default {
             title: this.form.title,
             author: this.form.author.split(","),
           };
-          console.log(data);
           createPaper("post", data)
             .then((res) => {
               this.$Message.success("发布成功!");
@@ -267,7 +266,11 @@ export default {
                 name: "home",
               });
             })
-            .catch(this.$Modal.error(getErrModalOptions(err)));
+            .catch((error) => {
+              if (error.response.status == 444) {
+                this.$Message.error("您在1小时内已经发布了5篇论文，检测到风险行为，已停止您发布论文的权限！");
+              }
+            });
         } else {
           this.$Message.error("发布失败!");
         }

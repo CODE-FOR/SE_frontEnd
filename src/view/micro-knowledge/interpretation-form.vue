@@ -248,7 +248,7 @@ export default {
 
           createInterpretation('post', data)
             .then((res) => {
-              this.$Message.success("发布成功!请等待审核！");
+              this.$Message.success("发布成功!");
               this.$router.push({
                 name: 'paper',
                 params: {
@@ -258,6 +258,9 @@ export default {
               })
             })
             .catch((err) => {
+              if (err.response.status == 444) {
+                this.$Message.error("您在1小时内已经发布了5篇论文，检测到风险行为，已停止您发布论文的权限！");
+              }
               this.$Modal.error(getErrModalOptions(err));
             });
         } else {
@@ -276,30 +279,6 @@ export default {
       this.$refs[name].resetFields();
     },
 
-    // TODO: only choose one paper, but citation can have two
-    handleChosePaper(event) {
-      if (event.cited) {
-        if (this.form.paperCitation === "") {
-          [this.form.papaerId1, this.form.paperCitation] = [
-            event.id,
-            event.content,
-          ];
-        } else if (this.form.citation2 === "") {
-          [this.form.citationid2, this.form.citation2] = [
-            event.id,
-            event.content,
-          ];
-        }
-      } else {
-        if (this.form.papaerId1 === event.id) {
-          [this.form.papaerId1, this.form.paperCitation] = [
-            this.form.citationid2,
-            this.form.citation2,
-          ];
-        }
-        [this.form.citationid2, this.form.citation2] = ["", ""];
-      }
-    },
 
     changeToprops(array) {
       return array.map((item) => {
