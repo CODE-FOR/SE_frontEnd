@@ -109,13 +109,12 @@ export default {
   },
 
   mounted() {
-    console.log(this.administrator)
-    console.log('effect')
+    if (this.administrator != 0 && this.administrator != 1) {
+      this.administrator = 0;
+    }
     if (sessionStorage.getItem("administrator")) {
       this.administrator = parseInt(sessionStorage.getItem("administrator"))
     }
-    console.log(this.administrator)
-    console.log('?')
     sessionStorage.setItem(
       "administrator",
       this.administrator

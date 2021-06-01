@@ -17,6 +17,8 @@ const router = new Router({
 const LOGIN_PAGE_NAME = 'login'
 const WRITE_INTERPRETATION_PAGE = 'publish_interpretation'
 const CHOSE_PAPER_PAGE = 'paper'
+const ACCESS = ['zcx2021', 'lzw_super', 'admin', 'Caesar41']
+const MANAGE = ['manage_paper', 'manage_interpretation', 'manage_user']
 
 // const turnTo = (to, access, next) => {
 //   if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
@@ -50,6 +52,16 @@ router.beforeEach((to, from, next) => {
   } else if (from.name === CHOSE_PAPER_PAGE && token && to.name === WRITE_INTERPRETATION_PAGE) {
     store.commit('getPaperId', parseInt(from.params.id))
     next()
+  } else if (MANAGE.includes(to.name)) {
+    let acc = store.state.user.access
+    if (ACCESS.includes(acc)) {
+      next()
+    } else {
+      Message.warning("检测到风险行为，再次尝试将进行封号处理！！！")
+      next({
+        name: 'home'
+      })
+    }
   }
   else {
     next()
