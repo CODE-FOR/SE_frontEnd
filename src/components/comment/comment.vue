@@ -32,7 +32,8 @@
       </div>
       <div class="talk-box">
         <p>
-          <span class="reply">{{ item.comment }}</span>
+          <!-- <span class="reply">{{ item.comment }}</span> -->
+          <span class="reply" v-html="item.comment"></span>
         </p>
         <div style="margin-bottom: 35px">
           <Button
@@ -82,7 +83,8 @@
           <div class="talk-box">
             <p>
               <span>回复 {{ reply.to }}:</span>
-              <span class="reply">{{ reply.comment }}</span>
+              <!-- <span class="reply">{{ reply.comment }}</span> -->
+              <span class="reply" v-html="reply.comment"></span>
             </p>
           </div>
           <div class="reply-box"></div>
@@ -232,6 +234,7 @@ export default {
         };
       });
       this.comments.push(...mapData.filter((x) => x));
+      console.log(this.comments);
     },
 
     dropIconType(item) {
