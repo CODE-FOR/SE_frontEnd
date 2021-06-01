@@ -49,6 +49,7 @@ export default {
       state.userTotalPost = params.total_post
       state.userIsSponsor = params.is_sponsor
       state.icon = params.icon
+      state.access = state.userName
     },
     setAccess (state, access) {
       state.access = access
