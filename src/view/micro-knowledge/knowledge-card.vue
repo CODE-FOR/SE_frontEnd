@@ -144,6 +144,9 @@
             </ButtonGroup>
             <br />
             <br />
+            <template v-if="this.showReportReason === true">
+              举报理由：{{ this.reportReason }}
+            </template>
             <template v-if="isReported === true">
               <Form
                 ref="reportHandle"
@@ -154,7 +157,7 @@
                 <Form-item label="举报理由：" prop="reportExplanation"
                   ><Input
                     type="text"
-                    v-model="reportReason"
+                    v-model="reportHandleReason"
                     placeholder="请输入"
                 /></Form-item>
               </Form>
@@ -167,6 +170,9 @@
             <template v-else></template>
           </template>
           <template v-if="isReport === 1">
+            <template v-if="this.showReportReason === true">
+              举报理由：{{ this.reportReason }}
+            </template>
             <ButtonGroup>
               <i-button @click="deletePaper" style="font-size: 14px">
                 删除
@@ -219,6 +225,16 @@ import {
 export default {
   name: "KnowledgeCard",
   props: {
+    reportReason: {
+      type: String,
+      default: "",
+    },
+
+    showReportReason: {
+      type: Boolean,
+      default: false,
+    },
+
     reportExplanation: {
       type: String,
       default: "",
@@ -344,7 +360,7 @@ export default {
       userInfo: {},
       followText: "",
       detailController: false,
-      reportReason: "",
+      reportHandleReason: "",
       reportHandle: {
         explanation: "",
       },
@@ -463,7 +479,7 @@ export default {
       // this.isReported = true;
       const reportData = {
         paperId: this.id,
-        reason: this.reportReason,
+        reason: this.reportHandleReason,
       };
       reportPaper("post", reportData)
         .then((res) => {
@@ -528,6 +544,8 @@ export default {
         params: {
           id: this.id,
           administrator: this.isAdmin,
+          showReportReason: this.showReportReason,
+          reportReason: this.reportReason
         },
       });
     },

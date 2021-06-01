@@ -12,6 +12,7 @@
                 :isInDetial="0"
                 :isAdmin="1"
                 :isReport="0"
+                :showReportReason="true"
               />
             </template>
             <Row v-if="reportLoading">
@@ -36,6 +37,7 @@
               @on-change="changeReportPage"
             ></Page>
           </TabPane>
+          <!--
           <TabPane label="全部论文" name="paperAll">
             <template v-if="pageComponent.items.length !== 0">
               <KnowledgeCard
@@ -69,6 +71,7 @@
               @on-change="changeIndexPage"
             ></Page>
           </TabPane>
+          -->
         </Tabs>
       </Card>
     </i-col>
@@ -241,13 +244,13 @@
           .then((res) => {
             this.pageReport.pageNum = res.data.page_num;
             this.hasNextPage = res.data.has_next;
-            const mapData = res.data.papers.map((item) => {
-              alert(item);
+            const mapData = res.data.reports.map((item) => {
               return {
                 type: 0,
                 id: item.id,
                 creator: item.created_by,
                 createAt: getLocalTime(item.created_at),
+                reportReason: item.reason,
                 publishedYear: item.paper.published_year,
                 content:
                   item.paper.abstract.replace(/<[^>]+>/g, "").length > 100
