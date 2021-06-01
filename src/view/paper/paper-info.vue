@@ -109,8 +109,23 @@ export default {
   },
 
   mounted() {
+    console.log(this.administrator)
+    console.log('effect')
+    if (sessionStorage.getItem("administrator")) {
+      this.administrator = parseInt(sessionStorage.getItem("administrator"))
+    }
+    console.log(this.administrator)
+    console.log('?')
+    sessionStorage.setItem(
+      "administrator",
+      this.administrator
+    );
     this.pageComponent.pageIndex = this.$store.state.paperInfo.page;
     this.loadData();
+  },
+
+  destroyed() {
+    sessionStorage.removeItem('administrator');
   },
 
   methods: {

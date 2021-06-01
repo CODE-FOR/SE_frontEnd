@@ -2,9 +2,10 @@
   <div>
     <template v-if="isInDetail === 0 && isInPublishInterpretaion === false">
       <div class="ivu-card-head">
-        <h2><div v-html="title"/></h2>
+        <h2><div v-html="title" /></h2>
       </div>
     </template>
+    <template v-esle></template>
     <card :bordered="false" dis-hover :style="citeStyle">
       <div slot="title" align="left">
         发布者:
@@ -17,7 +18,12 @@
             <i-col span="4">
               <img
                 :src="userInfo.icon"
-                style="width: 90%; height: 90%;vertical-align:top;border-radius:50%"
+                style="
+                  width: 90%;
+                  height: 90%;
+                  vertical-align: top;
+                  border-radius: 50%;
+                "
               />
             </i-col>
             <i-col span="10">
@@ -125,18 +131,32 @@
                   <i-button @click="setReport" style="font-size: 14px">
                     举报
                   </i-button>
-                  <i-button @click="writeInterpretation" style="font-size: 14px">
+                  <i-button
+                    @click="writeInterpretation"
+                    style="font-size: 14px"
+                  >
                     <Icon type="ios-paper-plane" />
                     写解读
                   </i-button>
                 </template>
               </template>
+              <template v-else />
             </ButtonGroup>
-            <br>
-            <br>
+            <br />
+            <br />
             <template v-if="isReported === true">
-              <Form ref="reportHandle" :model="reportHandle" :rules="ruleCustom" :label-width="100">
-                <Form-item label="举报理由：" prop="reportExplanation"><Input type="text" v-model="reportReason" placeholder="请输入" /></Form-item>
+              <Form
+                ref="reportHandle"
+                :model="reportHandle"
+                :rules="ruleCustom"
+                :label-width="100"
+              >
+                <Form-item label="举报理由：" prop="reportExplanation"
+                  ><Input
+                    type="text"
+                    v-model="reportReason"
+                    placeholder="请输入"
+                /></Form-item>
               </Form>
               <div align="center">
                 <i-button @click="onReport" style="font-size: 14px">
@@ -146,7 +166,7 @@
             </template>
             <template v-else></template>
           </template>
-          <template v-else>
+          <template v-if="isReport === 1">
             <ButtonGroup>
               <i-button @click="deletePaper" style="font-size: 14px">
                 删除
@@ -155,10 +175,20 @@
                 撤销举报
               </i-button>
             </ButtonGroup>
-            <br>
-            <br>
-            <Form ref="reportHandle" :model="reportHandle" :rules="ruleCustom" :label-width="60">
-              <Form-item label="说明：" prop="explanation"><Input type="text" v-model="reportHandle.explanation" placeholder="请输入" /></Form-item>
+            <br />
+            <br />
+            <Form
+              ref="reportHandle"
+              :model="reportHandle"
+              :rules="ruleCustom"
+              :label-width="60"
+            >
+              <Form-item label="说明：" prop="explanation"
+                ><Input
+                  type="text"
+                  v-model="reportHandle.explanation"
+                  placeholder="请输入"
+              /></Form-item>
             </Form>
           </template>
         </i-col>
@@ -186,25 +216,23 @@ import {
   collectInterpretation,
 } from "@/api/microknowledge";
 
-
 export default {
   name: "KnowledgeCard",
   props: {
     reportExplanation: {
       type: String,
-      default: ""
+      default: "",
     },
 
     explanation: {
       type: String,
-      default: ""
+      default: "",
     },
 
     isReport: {
       type: Number,
       default: 0,
     },
-
 
     isAdmin: {
       type: Number,
@@ -298,19 +326,16 @@ export default {
 
     author: {
       type: Array,
-      default: () => [['Kimmy Granger']],
+      default: () => [["Kimmy Granger"]],
     },
   },
 
-
-
   data() {
-
     const validateExp = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入（不可为空）'))
+      if (value === "") {
+        callback(new Error("请输入（不可为空）"));
       } else {
-        callback()
+        callback();
       }
     };
 
@@ -321,15 +346,17 @@ export default {
       detailController: false,
       reportReason: "",
       reportHandle: {
-        explanation: ""
+        explanation: "",
       },
       ruleCustom: {
-        explanation: [{
-          required: true,
-          validator: validateExp,
-          trigger: 'blur'
-        }]
-      }
+        explanation: [
+          {
+            required: true,
+            validator: validateExp,
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
 
@@ -365,7 +392,7 @@ export default {
 
   methods: {
     // TODO: need to be finished!!! -> administrator delete
-    deletePaper: function() {
+    deletePaper: function () {
       if (confirm("确定要删除该论文吗？")) {
         const data = {
           paperId: this.id,
@@ -381,14 +408,12 @@ export default {
       }
     },
 
-    setReport: function() {
+    setReport: function () {
       this.isReported = !this.isReported;
     },
 
     // TODO: need to be finished!!! -> administrator delete
-    cancelReport: function() {
-
-    },
+    cancelReport: function () {},
 
     writeInterpretation: function () {
       this.$store.commit("getPaperId", this.id);
@@ -438,7 +463,7 @@ export default {
       // this.isReported = true;
       const reportData = {
         paperId: this.id,
-        reason: this.reportReason
+        reason: this.reportReason,
       };
       reportPaper("post", reportData)
         .then((res) => {
@@ -502,8 +527,8 @@ export default {
         name: "paper",
         params: {
           id: this.id,
-          administrator: this.isAdmin
-        }
+          administrator: this.isAdmin,
+        },
       });
     },
   },
