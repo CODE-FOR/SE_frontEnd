@@ -2,7 +2,7 @@
   <Row>
     <i-col offset="4" span="15">
       <Card>
-        <Tabs value="paperReport">
+        <Tabs value="paperReport" animated="false">
           <TabPane label="举报论文列表" name="paperReport">
             <template v-if="pageReport.items.length !== 0">
               <KnowledgeCard
@@ -242,25 +242,26 @@
             this.pageReport.pageNum = res.data.page_num;
             this.hasNextPage = res.data.has_next;
             const mapData = res.data.papers.map((item) => {
+              alert(item);
               return {
                 type: 0,
                 id: item.id,
                 creator: item.created_by,
                 createAt: getLocalTime(item.created_at),
-                publishedYear: item.published_year,
+                publishedYear: item.paper.published_year,
                 content:
-                  item.abstract.replace(/<[^>]+>/g, "").length > 100
-                    ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
+                  item.paper.abstract.replace(/<[^>]+>/g, "").length > 100
+                    ? item.paper.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
                     "..."
-                    : item.abstract.replace(/<[^>]+>/g, ""),
+                    : item.paper.abstract.replace(/<[^>]+>/g, ""),
                 tags: item.tags,
-                isLike: item.is_like,
-                isCollect: item.is_collect,
-                likeNumber: item.like_num,
-                favorNumber: item.collect_num,
-                source: item.source,
-                author: item.author,
-                title: item.title
+                isLike: item.paper.is_like,
+                isCollect: item.paper.is_collect,
+                likeNumber: item.paper.like_num,
+                favorNumber: item.paper.collect_num,
+                source: item.paper.source,
+                author: item.paper.author,
+                title: item.paper.title
               };
             });
             this.pageReport.items.push(...mapData.filter((x) => x));

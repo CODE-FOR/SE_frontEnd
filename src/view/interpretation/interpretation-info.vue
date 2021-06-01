@@ -2,7 +2,7 @@
   <div>
     <i-col offset="2" span="20">
       <Card>
-        <Tabs value="paperAbstract">
+        <Tabs value="paperAbstract" animated="false">
           <TabPane label="论文解读详情" name="paperAbstract">
             <template v-if="loading">
               <i-col class="demo-spin-col" offset="8" span="8">

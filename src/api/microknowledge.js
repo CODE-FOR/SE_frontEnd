@@ -95,7 +95,7 @@ export const getPaperList = (pageIndex, params) => {
 
 export const reportPaper = (method, params) => {
   const url = `/api/paper/report/create`;
-  return getRequst(url, method, params);
+  return getRequest(url, method, params);
 }
 
 // TODO: need real api
