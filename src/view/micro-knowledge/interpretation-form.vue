@@ -259,7 +259,7 @@ export default {
             })
             .catch((err) => {
               if (err.response.status == 444) {
-                this.$Message.error("您在1小时内已经发布了5篇论文，检测到风险行为，已停止您发布论文的权限！");
+                this.$Message.error("您在1小时内已经发布了20篇论文解读，检测到风险行为，已停止您发布论文的权限！");
               }
               this.$Modal.error(getErrModalOptions(err));
             });
