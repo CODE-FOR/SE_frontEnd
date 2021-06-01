@@ -252,7 +252,8 @@ export default {
               this.$router.push({
                 name: 'paper',
                 params: {
-                  id: this.paperInfo.id
+                  id: this.paperInfo.id,
+                  administrator: 0
                 }
               })
             })
