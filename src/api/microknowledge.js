@@ -105,7 +105,7 @@ export const getReportPaperList = (pageIndex, method, params) => {
 };
 
 export const deletePaper = (method, params) => {
-  const url = `/api/???`;
+  const url = `/api/paper/delete`;
   return getRequest(url, method, params);
 };
 
