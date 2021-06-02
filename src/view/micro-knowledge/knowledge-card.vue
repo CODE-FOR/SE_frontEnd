@@ -171,7 +171,8 @@
           </template>
           <template v-if="isReport === 1">
             <template v-if="this.showReportReason === true">
-              举报理由：{{ this.reportReason }}
+              <Row>举报理由：{{ this.reportReason }}</Row>
+              <br />
             </template>
             <ButtonGroup>
               <i-button @click="deletePaper" style="font-size: 14px">

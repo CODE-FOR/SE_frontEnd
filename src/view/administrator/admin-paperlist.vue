@@ -247,7 +247,7 @@
             const mapData = res.data.reports.map((item) => {
               return {
                 type: 0,
-                id: item.id,
+                id: item.paper.id,
                 creator: item.created_by,
                 createAt: getLocalTime(item.created_at),
                 reportReason: item.reason,

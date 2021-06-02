@@ -111,7 +111,7 @@
         },
       };
     },
-    
+
     mounted() {
       if (this.administrator != 0 && this.administrator != 1) {
         this.administrator = 0;
