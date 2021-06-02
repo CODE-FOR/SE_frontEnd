@@ -98,7 +98,6 @@ export const reportPaper = (method, params) => {
   return getRequest(url, method, params);
 }
 
-// TODO: need real api
 export const getReportPaperList = (pageIndex, method, params) => {
   const url = `/api/paper/report/page/${parseInt(pageIndex)}`;
   return getRequest(url, method, params);
@@ -108,6 +107,19 @@ export const deletePaper = (method, params) => {
   const url = `/api/paper/delete`;
   return getRequest(url, method, params);
 };
+
+// TODO: need real api
+export const cancelReport = (method, params) => {
+  const url = `/api/???`;
+  return getRequest(url, method, params);
+}
+
+export const reportInterpretation = (method, params) => {
+  const url = `/api/interpretation/report/create`;
+  return getRequest(url, method, params);
+}
+
+
 
 export const recommend = (params) => {
   const url = '/api/recommend';

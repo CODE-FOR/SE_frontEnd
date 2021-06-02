@@ -103,6 +103,9 @@
                 收藏 {{ favorNumber }}
               </i-button>
               <template v-if="isInDetail === 1">
+                <i-button @click="setReport" style="font-size: 14px">
+                  举报
+                </i-button>
                 <i-button @click="onComment" style="font-size: 14px">
                   <Icon type="ios-chatbubbles" />
                   评论 {{ totalCommentNum }}
@@ -118,6 +121,34 @@
                 </i-button>
               </template>
             </ButtonGroup>
+            <br />
+            <br />
+            <!--
+            <template v-if="this.showReportReason === true">
+              举报理由：{{ this.reportReason }}
+            </template>
+            -->
+            <template v-if="isReported === true">
+              <Form
+                ref="reportHandle"
+                :model="reportHandle"
+                :rules="ruleCustom"
+                :label-width="100"
+              >
+                <Form-item label="举报理由：" prop="reportExplanation"
+                ><Input
+                  type="text"
+                  v-model="reportHandleReason"
+                  placeholder="请输入"
+                /></Form-item>
+              </Form>
+              <div align="center">
+                <i-button @click="onReport" style="font-size: 14px">
+                  确认举报
+                </i-button>
+              </div>
+            </template>
+            <template v-else></template>
           </template>
           <template v-else>
             <i-button @click="deleteInterpretation" style="font-size: 14px">
@@ -140,6 +171,7 @@ import {
   likeMicroKnowledge,
   getMicroknowledgeComments,
   microKnowledgeIdReq,
+  reportInterpretation
 } from "@/api/microknowledge.js";
 import { follow, unfollow, getUserInfo, getIconById } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
@@ -155,6 +187,21 @@ export default {
     comment,
   },
   props: {
+    reportReason: {
+      type: String,
+      default: "",
+    },
+
+    showReportReason: {
+      type: Boolean,
+      default: false,
+    },
+
+    reportExplanation: {
+      type: String,
+      default: "",
+    },
+
     isAdmin: {
       type: Number,
       default: 0,
@@ -212,6 +259,12 @@ export default {
       default: false,
     },
 
+    // 举报
+    isReported: {
+      type: Boolean,
+      default: false,
+    },
+
     likeNumber: {
       type: Number,
       default: 0,
@@ -231,6 +284,7 @@ export default {
       showUserControl: false,
       userInfo: {},
       totalCommentNum: 0,
+      reportHandleReason: "",
     };
   },
 
@@ -267,6 +321,25 @@ export default {
   methods: {
     // TODO: need to be finished!!! -> administrator delete
     deleteInterpretation: function () {},
+
+    setReport: function() {
+      this.isReported = !this.isReported;
+    },
+
+    onReport: function () {
+      // this.isReported = true;
+      const reportData = {
+        interpretationId: this.id,
+        reason: this.reportHandleReason,
+      };
+      reportInterpretation("post", reportData)
+        .then((res) => {
+          this.$Message.success("已举报，等待管理员审核……");
+        })
+        .catch((error) => {
+          this.$Modal.error(getErrModalOptions(error));
+        });
+    },
 
     onLike: function () {
       this.isLike = !this.isLike;

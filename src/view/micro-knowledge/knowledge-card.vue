@@ -155,10 +155,10 @@
                 :label-width="100"
               >
                 <Form-item label="举报理由：" prop="reportExplanation"
-                  ><Input
-                    type="text"
-                    v-model="reportHandleReason"
-                    placeholder="请输入"
+                ><Input
+                  type="text"
+                  v-model="reportHandleReason"
+                  placeholder="请输入"
                 /></Form-item>
               </Form>
               <div align="center">
@@ -373,7 +373,7 @@ export default {
             trigger: "blur",
           },
         ],
-      },
+      }
     };
   },
 

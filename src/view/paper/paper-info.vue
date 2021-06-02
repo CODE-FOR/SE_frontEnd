@@ -32,6 +32,7 @@
               <InterpretationCard
                 v-for="item in pageComponent.items"
                 :key="item.id"
+                :isReported="false"
                 v-bind="item"
               />
               <Row v-if="loading">
