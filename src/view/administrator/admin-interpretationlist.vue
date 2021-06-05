@@ -1,46 +1,57 @@
 <template>
   <div>
-    <template v-if="items.length !== 0">
-      <InterpretationCard
-        v-for="item in pageComponent.items"
-        :key="item.id"
-        v-bind="item"
-        :isAdmin="1"
-      />
-      <Row v-if="loading">
-        <i-col class="demo-spin-col" offset="8" span="8">
-          <Spin fix>
-            <Icon
-              type="ios-loading"
-              size="18"
-              class="demo-spin-icon-load"
-            ></Icon>
-            <div>Loading</div>
-          </Spin>
-        </i-col>
-      </Row>
-      <Page
-        :total="items.length"
-        :current="pageComponent.pageIndex"
-        :page-size="pageComponent.pageSize"
-        prev-text="上一页"
-        next-text="下一页"
-        show-elevator
-        @on-change="changeIndexPage"
-      ></Page>
-    </template>
-    <template v-else>
-      <i-col class="demo-spin-col" offset="8" span="8">
-        <Spin fix>
-          <Icon
-            type="ios-loading"
-            size="18"
-            class="demo-spin-icon-load"
-          ></Icon>
-          <div>Loading</div>
-        </Spin>
-      </i-col>
-    </template>
+    <i-col offset="4" span="15">
+      <Card>
+        <Tabs value="InterpretationReport" animated="false">
+          <TabPane label="举报论文解读列表" name="InterpretationReport">
+            <template v-if="pageComponent.items.length !== 0">
+              <InterpretationCard
+                v-for="item in pageComponent.items"
+                :key="item.id"
+                v-bind="item"
+                :isAdmin="1"
+                :isReport="0"
+                :isInDetail="0"
+                :showReportReason="true"
+              />
+              <Row v-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
+              <Page
+                :total="items.length"
+                :current="pageComponent.pageIndex"
+                :page-size="pageComponent.pageSize"
+                prev-text="上一页"
+                next-text="下一页"
+                show-elevator
+                @on-change="changeIndexPage"
+              ></Page>
+            </template>
+            <template v-else>
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </template>
+          </TabPane>
+        </Tabs>
+      </Card>
+    </i-col>
   </div>
 </template>
 
@@ -48,7 +59,7 @@
 <script>
   import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
   import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
-  import { getTags, recommend, microKnowledgeIdReq } from "@/api/microknowledge";
+  import { getTags, recommend, microKnowledgeIdReq, getReportInterpretationList } from "@/api/microknowledge";
   import { getPaperInterpreations } from "@/api/microknowledge";
   import { getErrModalOptions, getLocalTime } from "@/libs/util.js";
   export default {
@@ -81,14 +92,15 @@
 
     mounted() {
       this.pageComponent.pageIndex = this.$store.state.paperInfo.page;
-      this.loadData();
+      this.loadReportData();
     },
 
     methods: {
-      loadData: function () {
+      loadReportData: function () {
         this.loading = true;
-        microKnowledgeIdReq(this.id, 0, "get")
+        getReportInterpretationList(this.pageComponent.pageIndex, "get")
           .then((res) => {
+            /*
             this.title = res.data.title;
             this.content = res.data.abstract;
             this.creator = res.data.created_by;
@@ -101,24 +113,30 @@
             this.isCollect = res.data.is_collect;
             this.favorNumber = res.data.collect_num;
             this.likeNumber = res.data.like_num;
-            const mapData = res.data.interpretations.map((item) => {
+            */
+            this.pageComponent.pageNum = res.data.page_num;
+            //this.hasNextPage = res.data.has_next;
+            const mapData = res.data.reports.map((item) => {
               return {
-                id: item.id,
-                content: item.content.replace(/<[^>]+>/g, "").length > 100
-                  ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
-                  : item.content.replace(/<[^>]+>/g, ""),
-                title: item.title,
-                tags: item.tags,
-                creator: item.created_by,
-                createAt: getLocalTime(item.created_at),
-                isLike: item.is_like,
-                isCollect: item.is_collect,
-                likeNumber: item.like_num,
-                favorNumber: item.collect_num,
+                reporter: item.created_by,
+                reportAt: item.created_at,
+                reportReason: item.reason,
+                id: item.interpretation.id,
+                content: item.interpretation.content.replace(/<[^>]+>/g, "").length > 100
+                  ? item.interpretation.content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
+                  : item.interpretation.content.replace(/<[^>]+>/g, ""),
+                title: item.interpretation.title,
+                tags: item.interpretation.tags,
+                creator: item.interpretation.created_by,
+                createAt: getLocalTime(item.interpretation.created_at),
+                isLike: item.interpretation.is_like,
+                isCollect: item.interpretation.is_collect,
+                likeNumber: item.interpretation.like_num,
+                favorNumber: item.interpretation.collect_num,
               }
-            })
-            this.items = []
-            this.items.push(...mapData)
+            });
+            this.items = [];
+            this.items.push(...mapData);
             this.pageComponent.items = this.items.slice(
               (this.pageComponent.pageIndex - 1) * this.pageComponent.pageSize,
               Math.min(

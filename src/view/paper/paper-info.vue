@@ -114,7 +114,7 @@
     },
 
     mounted() {
-      if (this.administrator != 0 && this.administrator != 1) {
+      if (this.administrator !== 0 && this.administrator !== 1) {
         this.administrator = 0;
       }
       if (sessionStorage.getItem("administrator")) {

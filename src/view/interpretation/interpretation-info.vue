@@ -29,6 +29,7 @@
                 :isCollect="isCollect"
                 :likeNumber="likeNumber"
                 :favorNumber="favorNumber"
+                :isReport="administrator"
               />
             </template>
           </TabPane>
@@ -49,6 +50,7 @@ export default {
   data() {
     return {
       id: parseInt(this.$route.params.id),
+      administrator: parseInt(this.$route.params.administrator),
       title: "456",
       tags: [],
       content: "456",
@@ -64,7 +66,23 @@ export default {
   },
 
   mounted() {
+    if (this.administrator !== 0 && this.administrator !== 1) {
+      this.administrator = 0;
+    }
+    if (sessionStorage.getItem("interpretation_administrator")) {
+      this.administrator = parseInt(sessionStorage.getItem("interpretation_administrator"))
+    }
+    sessionStorage.setItem(
+      "interpretation_administrator",
+      this.administrator
+    );
+    //this.pageComponent.pageIndex = this.$store.state.interpretationInfo.page;
+    //alert(1);
     this.loadData();
+  },
+
+  destroyed() {
+    sessionStorage.removeItem('interpretation_administrator');
   },
 
   methods: {

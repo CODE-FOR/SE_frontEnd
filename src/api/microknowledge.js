@@ -119,6 +119,11 @@ export const reportInterpretation = (method, params) => {
   return getRequest(url, method, params);
 }
 
+export const getReportInterpretationList = (pageIndex, method, params) => {
+  const url = `/api/interpretation/report/page/${parseInt(pageIndex)}`;
+  return getRequest(url, method, params);
+};
+
 
 
 export const recommend = (params) => {

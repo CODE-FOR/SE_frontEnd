@@ -1,64 +1,75 @@
 <template>
-  <div>
-    <template v-if="userlist.length !== 0">
-      <div v-for="(item, index) in userlist" :key="index">
-        <Row>
-          <i-col span="2">
-            <img
-              :src="item.icon"
-              style="width: 30%; height: 30%;vertical-align:top;border-radius:50%"
-            />
-          </i-col>
-          <i-col span="5">
-            <div class="user-name">
-              {{ item.nick_name === "" ? item.username : item.nick_name }}
-            </div>
-            <p style="margin-top: 5px">
-              邮箱: {{ item.email || "暂无邮箱信息" }}
-            </p>
-          </i-col>
-          <i-col offset="10" span="7">
-            <i-button
-              type="primary"
-              style="width: 40%; height: 35px; top: 31px; position: relative"
-              @click="jumpUserInfo(item.id)"
-            >
-              他的主页
-            </i-button>
-            &nbsp;&nbsp;
-            <template v-if="item.in === false">
-              <i-button
-                type="primary"
-                style="width: 40%; height: 35px; top: 31px; position: relative"
-                @click="handleImprison(index)"
-              >
-                关进小黑屋
-              </i-button>
+  <Row>
+    <i-col offset="4" span="15">
+      <Card>
+        <Tabs value="userList" animated="false">
+          <TabPane label="用户列表" name="userList">
+            <template v-if="userlist.length !== 0">
+              <div v-for="(item, index) in userlist" :key="index">
+                <Row>
+                  <i-col span="2">
+                    <img
+                      :src="item.icon"
+                      style="width: 30%; height: 30%;vertical-align:top;border-radius:50%"
+                    />
+                  </i-col>
+                  <i-col span="5">
+                    <div class="user-name">
+                      {{ item.nick_name === "" ? item.username : item.nick_name }}
+                    </div>
+                    <p style="margin-top: 5px">
+                      邮箱: {{ item.email || "暂无邮箱信息" }}
+                    </p>
+                  </i-col>
+                  <i-col offset="10" span="7">
+                    <i-button
+                      type="primary"
+                      style="width: 40%; height: 35px; top: 31px; position: relative"
+                      @click="jumpUserInfo(item.id)"
+                    >
+                      他的主页
+                    </i-button>
+                    &nbsp;&nbsp;
+                    <template v-if="item.in === false">
+                      <i-button
+                        type="primary"
+                        style="width: 40%; height: 35px; top: 31px; position: relative"
+                        @click="handleImprison(index)"
+                      >
+                        关进小黑屋
+                      </i-button>
+                    </template>
+                    <template v-else>
+                      <i-button
+                        type="primary"
+                        style="width: 40%; height: 35px; top: 31px; position: relative"
+                        @click="handleOutprison(index)"
+                      >
+                        解封
+                      </i-button>
+                    </template>
+                  </i-col>
+                </Row>
+                <Divider />
+              </div>
+              <div style="float: right">
+                <Page
+                  :total="totalCnt"
+                  :page-size="pageSize"
+                  :current="pageIndex"
+                  @on-change="changePage"
+                  show-total
+                />
+              </div>
             </template>
-            <template v-else>
-              <i-button
-                type="primary"
-                style="width: 40%; height: 35px; top: 31px; position: relative"
-                @click="handleOutprison(index)"
-              >
-                解封
-              </i-button>
-            </template>
-          </i-col>
-        </Row>
-        <Divider />
-      </div>
-      <div style="float: right">
-        <Page
-          :total="totalCnt"
-          :page-size="pageSize"
-          :current="pageIndex"
-          @on-change="changePage"
-          show-total
-        />
-      </div>
-    </template>
-  </div>
+          </TabPane>
+          <TabPane label="封禁用户列表" name="userIn">
+
+          </TabPane>
+        </Tabs>
+      </Card>
+    </i-col>
+  </Row>
 </template>
 
 <script>
@@ -125,9 +136,16 @@ export default {
 
   methods: {
     getUserList: function () {
-      getUserList(this.pageIndex).then((res) => {
-        this.userlist = res.data.user_list;
+      getUserList(this.pageIndex, "get").then((res) => {
+        // this.userlist = res.data.user_list;
         this.totalCnt = res.data.total_user;
+        const mapData = res.data.users.map((item) => {
+          return {
+            username: item.users.username,
+
+          }
+        });
+        this.userlist.push(...mapData.filter((x) => x));
       });
     },
 

@@ -92,7 +92,7 @@
       <br />
       <Row>
         <i-col span="12">
-          <template v-if="isAdmin === 0">
+          <template v-if="isReport === 0">
             <ButtonGroup>
               <i-button @click="onLike" style="font-size: 14px">
                 <Icon type="md-thumbs-up" :color="likeColor" />
@@ -150,10 +150,39 @@
             </template>
             <template v-else></template>
           </template>
-          <template v-else>
+          <template v-if="isReport === 1">
+            <template v-if="this.showReportReason === true">
+              <Row>举报理由：{{ this.reportReason }}</Row>
+              <br />
+            </template>
+            <ButtonGroup>
+              <i-button @click="deletePaper" style="font-size: 14px">
+                删除
+              </i-button>
+              <i-button @click="cancelReport" style="font-size: 14px">
+                撤销举报
+              </i-button>
+            </ButtonGroup>
+            <br />
+            <br />
+            <Form
+              ref="reportHandle"
+              :model="reportHandle"
+              :rules="ruleCustom"
+              :label-width="60"
+            >
+              <Form-item label="说明：" prop="explanation"
+              ><Input
+                type="text"
+                v-model="reportHandle.explanation"
+                placeholder="请输入"
+              /></Form-item>
+            </Form>
+            <!--
             <i-button @click="deleteInterpretation" style="font-size: 14px">
               删除
             </i-button>
+            -->
           </template>
         </i-col>
       </Row>
@@ -203,6 +232,11 @@ export default {
     },
 
     isAdmin: {
+      type: Number,
+      default: 0,
+    },
+
+    isReport: {
       type: Number,
       default: 0,
     },
@@ -285,6 +319,18 @@ export default {
       userInfo: {},
       totalCommentNum: 0,
       reportHandleReason: "",
+      reportHandle: {
+        explanation: "",
+      },
+      ruleCustom: {
+        explanation: [
+          {
+            required: true,
+            validator: validateExp,
+            trigger: "blur",
+          },
+        ],
+      }
     };
   },
 
@@ -320,7 +366,13 @@ export default {
 
   methods: {
     // TODO: need to be finished!!! -> administrator delete
-    deleteInterpretation: function () {},
+    deleteInterpretation: function () {
+
+    },
+
+    cancelReport: function() {
+
+    },
 
     setReport: function() {
       this.isReported = !this.isReported;
@@ -504,6 +556,7 @@ export default {
         name: "interpretation",
         params: {
           id: this.id,
+          administrator: this.isAdmin
         },
       });
     },

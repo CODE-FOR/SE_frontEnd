@@ -37,41 +37,6 @@
               @on-change="changeReportPage"
             ></Page>
           </TabPane>
-          <!--
-          <TabPane label="全部论文" name="paperAll">
-            <template v-if="pageComponent.items.length !== 0">
-              <KnowledgeCard
-                v-for="item in pageComponent.items"
-                :key="item.id"
-                v-bind="item"
-                :isInDetial="0"
-                :isAdmin="1"
-                :isReport="0"
-              />
-            </template>
-            <Row v-if="loading">
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
-            </Row>
-            <Page
-              :total="pageComponent.pageNum * 5"
-              :current="pageComponent.pageIndex"
-              :page-size="pageComponent.pageSize"
-              prev-text="上一页"
-              next-text="下一页"
-              show-elevator
-              @on-change="changeIndexPage"
-            ></Page>
-          </TabPane>
-          -->
         </Tabs>
       </Card>
     </i-col>
@@ -172,21 +137,9 @@
           console.log(err);
         });
       this.loadReportData();
-      this.loadData();
     },
 
     methods: {
-      changeIndexPage: function (i) {
-        this.pageComponent.items = [];
-        setTimeout(() => {
-          document
-            .getElementsByClassName("content-wrapper ivu-layout-content")[0]
-            .scroll(0, 0);
-        }, 400);
-        this.pageComponent.pageIndex = i;
-        this.loadData();
-      },
-
       changeReportPage: function (i) {
         this.pageReport.items = [];
         setTimeout(() => {
@@ -198,49 +151,9 @@
         this.loadReportData();
       },
 
-      loadData: function () {
-        this.loading = true;
-        getPaperList(this.pageComponent.pageIndex)
-          .then((res) => {
-            this.pageComponent.pageNum = res.data.page_num;
-            this.hasNextPage = res.data.has_next;
-            const mapData = res.data.papers.map((item) => {
-              return {
-                type: 0,
-                id: item.id,
-                creator: item.created_by,
-                createAt: getLocalTime(item.created_at),
-                publishedYear: item.published_year,
-                content:
-                  item.abstract.replace(/<[^>]+>/g, "").length > 100
-                    ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
-                    "..."
-                    : item.abstract.replace(/<[^>]+>/g, ""),
-                tags: item.tags,
-                isLike: item.is_like,
-                isCollect: item.is_collect,
-                likeNumber: item.like_num,
-                favorNumber: item.collect_num,
-                source: item.source,
-                author: item.author,
-                title: item.title
-              };
-            });
-            this.pageComponent.items.push(...mapData.filter((x) => x));
-            this.loading = false;
-          })
-          .catch((error) => {
-            console.log(error.response.status);
-            if (error.response.status === 400) {
-              this.hasNextPage = false;
-            }
-          });
-        console.log(this.pageComponent.items);
-      },
-
       loadReportData: function() {
         this.reportLoading = true;
-        getReportPaperList(this.pageComponent.pageIndex, "get")
+        getReportPaperList(this.pageReport.pageIndex, "get")
           .then((res) => {
             this.pageReport.pageNum = res.data.page_num;
             this.hasNextPage = res.data.has_next;
@@ -248,8 +161,10 @@
               return {
                 type: 0,
                 id: item.paper.id,
-                creator: item.created_by,
-                createAt: getLocalTime(item.created_at),
+                creator: item.paper.created_by,
+                createAt: getLocalTime(item.paper.created_at),
+                reporter: item.created_by,
+                reportAt: getLocalTime(item.created_at),
                 reportReason: item.reason,
                 publishedYear: item.paper.published_year,
                 content:
@@ -278,22 +193,10 @@
           });
         console.log(this.pageReport.items);
       },
-
-      changeTab: function (name) {
-        // name in ["paperReport", "paperAll"]
-        this.activeTab = name;
-        this.pageIndex = 1;
-        this.pageComponent.items = []
-        if (this.activeTab === "paperReport") {
-          this.loadReportData();
-        } else {
-          this.loadData();
-        }
-      },
-    },
+    }
   };
-</script>
 
+</script>
 <style lang="less">
   .ivu-tabs-tab {
     font-size: 20px;
