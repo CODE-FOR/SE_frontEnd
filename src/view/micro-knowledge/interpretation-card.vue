@@ -82,7 +82,7 @@
         </Modal>
       </div>
       <p slot="extra">论文解读发布于: {{ createAt }}</p>
-      <Row v-html="content"></Row>
+      <Row v-html="content" style="word-break: break-all;"></Row>
       <br />
       <Row>
         <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
@@ -273,6 +273,12 @@ export default {
       },
     },
 
+    watch: {
+      $route(to, from) {
+        this.showUser = false;
+      },
+    },
+
     createAt: {
       type: String,
       default: "年/月/日",
@@ -326,7 +332,7 @@ export default {
         explanation: [
           {
             required: true,
-            validator: validateExp,
+            // validator: validateExp,
             trigger: "blur",
           },
         ],

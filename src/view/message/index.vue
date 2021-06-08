@@ -146,7 +146,8 @@ export default {
     },
     async convertContent(msg) {
       let name = "";
-      await getUserInfo(msg.to_user)
+      console.log(msg);
+      await getUserInfo(msg.from_user)
         .then((res) => {
           name =
             res.data.nickname === "" ? res.data.username : res.data.nickname;
@@ -155,14 +156,14 @@ export default {
           console.log(err);
         });
       return `<a href='/user/user-info/${
-        msg.to_user
+        msg.from_user
       }'>${name}</a><p>${this.convertTitle(msg.content)}</p>`;
     },
     convertTo(arr) {
       return arr.map((x, index) => ({
         title: "有一位用户" + this.convertTitle(x.content),
         creat_time: x.created_at,
-        to_user: parseInt(x.to_user),
+        from_user: parseInt(x.from_user.id),
         content: x.content,
         msg_id: index,
         loading: false,

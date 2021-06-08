@@ -15,8 +15,8 @@ import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
-import VueSocketIO from 'vue-socket.io'
-import ClientSocktIo from 'socket.io-client'
+import VueDOMPurifyHTML from 'vue-dompurify-html'
+Vue.use(VueDOMPurifyHTML)
 // import TEditor from '@/components/TEditor.vue'
 // 实际打包时应该不引入mock
 /* eslint-disable */

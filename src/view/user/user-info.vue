@@ -5,7 +5,15 @@
         <Card>
           <Row type="flex" align="bottom">
             <i-col span="3">
-              <img :src="icon" style="width:90%; height:90%;virtcal-align:top;border-radius:50%"/>
+              <img
+                :src="icon"
+                style="
+                  width: 90%;
+                  height: 90%;
+                  virtcal-align: top;
+                  border-radius: 50%;
+                "
+              />
               <avatar-cutter
                 v-if="showCutter"
                 return-type="url"
@@ -33,9 +41,22 @@
               <p>{{ totalFollow }}</p>
             </i-col>
             <i-col span="2" style="height: 40px; text-align: center">
-              <p class="data-title">总点赞数</p>
-              <p>{{ totalLike }}</p>
+              <template v-if="isOther">
+                <template v-if="!isFollowing">
+                  <p class="data-title">关注Ta</p>
+                  <p>
+                    <Icon type="ios-person-add-outline" @click="handleFollow"> </Icon>
+                  </p>
+                </template>
+                <template v-else>
+                  <p class="data-title">取消关注</p>
+                  <p>
+                    <Icon type="ios-person-add" @click="handleFollow"/>
+                  </p>
+                </template>
+              </template>
             </i-col>
+
             <template v-if="isOther">
               <i-col span="2" style="height: 40px; text-align: center">
                 <p class="data-title">私信ta</p>
@@ -295,7 +316,12 @@
                     <i-col span="2">
                       <img
                         :src="item.icon"
-                        style="width: 90%; height: 90%;vertical-align:top;border-radius:50%"
+                        style="
+                          width: 90%;
+                          height: 90%;
+                          vertical-align: top;
+                          border-radius: 50%;
+                        "
                       />
                     </i-col>
                     <i-col span="5">
@@ -399,7 +425,12 @@
                     <i-col span="2">
                       <img
                         :src="item.icon"
-                        style="width: 90%; height: 90%;vertical-align:top;border-radius:50%"
+                        style="
+                          width: 90%;
+                          height: 90%;
+                          vertical-align: top;
+                          border-radius: 50%;
+                        "
                       />
                     </i-col>
                     <i-col span="5">
@@ -546,7 +577,7 @@ import {
   fanList,
   followerList,
   unfollow,
-  myKnowledge,
+  follow,
   getUserInfo,
   uploadAvatar,
   getIcon,
@@ -580,6 +611,7 @@ export default {
       totalFollow: 10,
       totalPub: 11,
       icon: "",
+      isFollowing: false,
       isOther: false, // 是否为他人的主页
       showDetail: false,
       tabName: "myPost",
@@ -609,7 +641,8 @@ export default {
           { required: true, message: "请填写邮箱", trigger: "blur" },
           {
             validator: (rule, value, callback) => {
-              const pattern = /^([A-Za-z0-9_.])+@([A-Za-z0-9._])+\.([A-Za-z]+)$/;
+              const pattern =
+                /^([A-Za-z0-9_.])+@([A-Za-z0-9._])+\.([A-Za-z]+)$/;
               if (!pattern.test(value)) {
                 callback(new Error("请填写合法的邮箱"));
               } else {
@@ -654,6 +687,7 @@ export default {
 
   watch: {
     $route(to, from) {
+      this.showDetail = false;
       this.init();
     },
   },
@@ -676,7 +710,7 @@ export default {
     getUserInfo()
       .then((res) => {
         this.$store.commit("setUserProfile", res.data);
-        this.changeTab('myPost');
+        this.changeTab("myPost");
       })
       .catch((error) => {
         this.$Modal.error(getErrModalOptions(error));
@@ -709,9 +743,9 @@ export default {
         this.totalFollow = this.$store.state.user.userTotalFan;
         this.totalPub = this.$store.state.user.userTotalPost;
         this.icon = this.$store.state.user.icon;
-        getIcon().then(res => {
+        getIcon().then((res) => {
           this.icon = res.data.icon;
-        })
+        });
       } else {
         this.isOther = true;
         getUserInfo(this.$route.params.id)
@@ -724,14 +758,15 @@ export default {
             this.totalFollow = res.data.total_fan;
             this.totalPub = res.data.total_post;
             this.icon = res.data.icon;
+            this.isFollowing = res.data.is_following;
             this.changeTab(this.tabName);
           })
           .catch((error) => {
             this.$router.push({
-              name: 'error_404'
-            })
+              name: "error_404",
+            });
           });
-      }     
+      }
     },
 
     loadFollower: function () {
@@ -820,6 +855,30 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
+    },
+
+    handleFollow: function () {
+      if (this.isFollowing) {
+        unfollow(this.$route.params.id)
+          .then((res) => {
+            this.isFollowing = false;
+            this.totalFollow -= 1;
+            this.$Message.info("成功取消关注");
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      } else {
+        follow(this.$route.params.id)
+          .then((res) => {
+            this.isFollowing = true;
+            this.totalFollow += 1;
+            this.$Message.info("成功关注");
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      }
     },
 
     loadFavor: function () {
@@ -1021,6 +1080,7 @@ export default {
               createAt: getLocalTime(res.data.created_at),
               content: res.data.abstract,
               tags: res.data.tags,
+              type: 0,
               isLike: res.data.is_like,
               isCollect: res.data.is_collect,
               likeNumber: res.data.like_num,
@@ -1034,14 +1094,15 @@ export default {
           })
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
-          });
+          }); 
       } else {
         getInterpretation(id)
           .then((res) => {
+            console.log(res);
             this.post = {
               id: res.data.id,
               creator: res.data.created_by,
-              type: 1,
+              type: type,
               createAt: getLocalTime(res.data.created_at),
               content: res.data.content,
               tags: res.data.tags,
@@ -1053,6 +1114,7 @@ export default {
             };
             this.postType = type;
             this.showDetail = true;
+            console.log(this.post);
           })
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
@@ -1076,7 +1138,7 @@ export default {
       uploadAvatar(data)
         .then((res) => {
           this.showCutter = false;
-          this.$Message.success('成功修改头像，刷新可查看')
+          this.$Message.success("成功修改头像，刷新可查看");
         })
         .catch((err) => {
           // console.log(err);
@@ -1111,9 +1173,9 @@ export default {
   -webkit-box-orient: vertical;
 }
 .big-avatar {
-  border-radius:50%;
-  overflow:hidden;
-  height:150px;
-  width:150px;
+  border-radius: 50%;
+  overflow: hidden;
+  height: 150px;
+  width: 150px;
 }
 </style>

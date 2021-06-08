@@ -39,18 +39,6 @@
               :key="item.key"
               v-bind="item"
             />
-            <Row if="loading">
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
-            </Row>
           </template>
           <div style="text-align: center; font-size: 20px" v-else>
             <br />
@@ -174,9 +162,9 @@ export default {
       this.loadData();
     },
 
-    loadData: function () {
-      this.items = []
+    loadData: function () {   
       this.loading = true;
+      console.log('in')
       getSearchResult({
         pindx: this.pageIndex,
         tags: (this.tagSearch = "" ? null : this.tagSearch),
@@ -184,7 +172,7 @@ export default {
         paper: this.searchPaper,
         interpretation: this.searchInterpretation,
       }).then((res) => {
-        console.log(res)
+        this.items = []
         this.totalData = res.data.total_res;
         if (this.searchPaper) {
           const mapData = res.data.res.map((item) => {
@@ -208,6 +196,7 @@ export default {
               title: item.title.replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
             };
           });
+          console.log('push')
           this.items.push(...mapData);
           this.loading = false;
         } else {
@@ -248,7 +237,7 @@ export default {
       
       this.items = [];
       this.loadData();
-      changeIndexPage(1);
+      this.changeIndexPage(1);
     },
 
     changeTag: function (tags) {
@@ -261,7 +250,7 @@ export default {
       
       this.items = [];
       this.loadData();
-      changeIndexPage(1);
+      this.changeIndexPage(1);
     },
   },
 };

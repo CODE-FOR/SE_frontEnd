@@ -83,7 +83,7 @@
       </div>
 
       <p slot="extra">论文发布于: {{ createAt }}</p>
-      <div align="left" v-html="content"></div>
+      <div align="left" v-html="content" style="word-break: break-all;"></div>
       <!-- <Row>{{ content }}</Row> -->
       <br />
       <div align="left">
