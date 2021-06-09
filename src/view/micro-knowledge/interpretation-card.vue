@@ -318,6 +318,8 @@ export default {
 
   data() {
     return {
+      reporter: "",
+      reportAt: "",
       showComment: false,
       comments: [],
       detailController: false,

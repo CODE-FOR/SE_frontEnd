@@ -58,7 +58,7 @@
                   :page-size="pageSize"
                   :current="pageIndex"
                   @on-change="changePage"
-                  show-total
+                  show-elevator
                 />
               </div>
             </template>
@@ -74,7 +74,8 @@
 
 <script>
 import UserCard from "@/view/user/user-card";
-import { prison, getUserList } from "@/api/user";
+import { prisonOut, prisonIn, getUserList } from "@/api/user";
+import {getUserInfo} from "../../api/user";
 export default {
   name: "home",
 
@@ -83,6 +84,7 @@ export default {
   data() {
     return {
       userlist: [
+        /*
         {
           id: 1,
           username: "admin",
@@ -123,9 +125,11 @@ export default {
           institution: null,
           in: false,
         },
+
+         */
       ],
       pageIndex: 1,
-      totalCnt: 7,
+      totalCnt: 10,
       pageSize: 5,
     };
   },
@@ -137,12 +141,15 @@ export default {
   methods: {
     getUserList: function () {
       getUserList(this.pageIndex, "get").then((res) => {
-        // this.userlist = res.data.user_list;
-        this.totalCnt = res.data.total_user;
-        const mapData = res.data.users.map((item) => {
+        this.userlist = [];
+        this.totalCnt = res.data.total_page * 5;
+        const mapData = res.data.user_list.map((item) => {
           return {
-            username: item.users.username,
-
+            id: item.user_id,
+            username: item.user_name,
+            nick_name: "",
+            email: item.email,
+            in: item.is_banned
           }
         });
         this.userlist.push(...mapData.filter((x) => x));
@@ -151,7 +158,7 @@ export default {
 
     changePage: function (i) {
       //   this.$store.commit("setHomePage", i);
-      //   this.list = [];
+      this.userlist = [];
       setTimeout(() => {
         document
           .getElementsByClassName("content-wrapper ivu-layout-content")[0]
@@ -196,20 +203,33 @@ export default {
     },
 
     handleImprison: function (id) {
-    //   prison(id)
-    //     .then((res) => {
-    //       this.$Message.info("成功禁言该用户");
-    //     })
-    //     .catch((error) => {
-    //       this.$Modal.error(getErrModalOptions(error));
-    //     });
-        this.userlist[id].in = true;
-        this.$Message.info("成功禁言该用户");
+      const data = {
+        userId: id,
+        reason: ""
+      };
+      prisonIn(data)
+        .then((res) => {
+          this.$Message.info("成功禁言该用户");
+        })
+        .catch((error) => {
+          this.$Modal.error(getErrModalOptions(error));
+        });
+      this.userlist[id].in = true;
+      // this.$Message.info("成功禁言该用户");
     },
 
     handleOutprison: function (id) {
-        this.userlist[id].in = false;
-        this.$Message.info("成功解封该用户");
+      const data = {
+        userId: id
+      };
+      prisonOut(data)
+        .then((res) => {
+          this.$Message.info("成功解封该用户");
+        })
+        .catch((error) => {
+         this.$Modal.error(getErrModalOptions(error));
+      });
+      this.userlist[id].in = false;
     },
 
     jumpUserInfo: function (id) {

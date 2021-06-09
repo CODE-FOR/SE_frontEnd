@@ -62,12 +62,18 @@ export const fanList = (id, params) => {
 }
 
 export const getUserList = (pindx, params) => {
-  const url = `/api/user/page/${pindx}`
+  const url = `/api/user-list/${pindx}`
   return getRequest(url, 'get', params)
 }
 
-export const prison = (id, params) => {
-  const url = `/api/user/${id}/prison`
+export const prisonIn = (params) => {
+  const url = `/api/ban/manage`;
+  return getRequest(url, 'post', params)
+}
+
+export const prisonOut= (params) => {
+  const url = `/api/unban/manage`;
+  return getRequest(url, 'post', params)
 }
 
 export const myKnowledge = (id, params) => {
@@ -163,3 +169,5 @@ export const restoreTrash = msg_id => {
     }
   })
 }
+
+
