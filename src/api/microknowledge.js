@@ -139,7 +139,7 @@ export const getReportInterpretationList = (pageIndex, method, params) => {
 
 export const recommend = (params) => {
   const url = '/api/recommend';
-  return getRequest(url, 'get', params);
+  return getRequest(url, 'get');
 };
 
 export const verifyMicroKnowledge = (id, method, params) => {

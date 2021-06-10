@@ -158,6 +158,9 @@ export default {
 
     loadData: function () {
       this.loading = true;
+      recommend().then((res) => {
+        console.log(res);
+      })
       getPaperList(this.pageComponent.pageIndex)
         .then((res) => {
           this.pageComponent.pageNum = res.data.page_num;
