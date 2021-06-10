@@ -277,6 +277,8 @@ export default {
             .catch((error) => {
               if (error.response.status == 444) {
                 this.$Message.error("您在1小时内已经发布了5篇论文，检测到风险行为，已停止您发布论文的权限！");
+              } else if (error.response.status === 567) {
+                this.$Message.error("您已被禁言")
               }
             });
         } else {
