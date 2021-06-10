@@ -34,7 +34,7 @@
                       <i-button
                         type="primary"
                         style="width: 40%; height: 35px; top: 31px; position: relative"
-                        @click="handleImprison(item.id)"
+                        @click="handleImprison(item.id, index)"
                       >
                         关进小黑屋
                       </i-button>
@@ -43,7 +43,7 @@
                       <i-button
                         type="primary"
                         style="width: 40%; height: 35px; top: 31px; position: relative"
-                        @click="handleOutprison(item.id)"
+                        @click="handleOutprison(item.id, index)"
                       >
                         解封
                       </i-button>
@@ -102,7 +102,7 @@
                       <i-button
                         type="primary"
                         style="width: 40%; height: 35px; top: 31px; position: relative"
-                        @click="handleOutprison(item.id)"
+                        @click="handleOutprison(item.id, index)"
                       >
                         解封
                       </i-button>
@@ -137,6 +137,7 @@
 import UserCard from "@/view/user/user-card";
 import { prisonOut, prisonIn, getUserList, getPrisonList } from "@/api/user";
 import {getUserInfo} from "../../api/user";
+import {forEach} from "../../libs/tools";
 export default {
   name: "home",
 
@@ -241,7 +242,7 @@ export default {
     },
 
     changePage: function (i) {
-      //   this.$store.commit("setHomePage", i);
+      // this.$store.commit("setHomePage", i);
       this.userlist = [];
       setTimeout(() => {
         document
@@ -264,7 +265,7 @@ export default {
       this.getPrisonList();
     },
 
-    handleImprison: function (id) {
+    handleImprison: function (id, index) {
       const data = {
         userId: id,
         reason: ""
@@ -276,11 +277,11 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
-      this.userlist[id].in = true;
+      this.userlist[index].in = true;
       // this.$Message.info("成功禁言该用户");
     },
 
-    handleOutprison: function (id) {
+    handleOutprison: function (id, index) {
       const data = {
         userId: id
       };
@@ -291,7 +292,7 @@ export default {
         .catch((error) => {
          this.$Modal.error(getErrModalOptions(error));
       });
-      this.userlist[id].in = false;
+      this.userlist[index].in = false;
     },
 
     jumpUserInfo: function (id) {
