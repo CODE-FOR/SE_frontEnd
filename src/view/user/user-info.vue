@@ -45,13 +45,14 @@
                 <template v-if="!isFollowing">
                   <p class="data-title">关注Ta</p>
                   <p>
-                    <Icon type="ios-person-add-outline" @click="handleFollow"> </Icon>
+                    <Icon type="ios-person-add-outline" @click="handleFollow">
+                    </Icon>
                   </p>
                 </template>
                 <template v-else>
                   <p class="data-title">取消关注</p>
                   <p>
-                    <Icon type="ios-person-add" @click="handleFollow"/>
+                    <Icon type="ios-person-add" @click="handleFollow" />
                   </p>
                 </template>
               </template>
@@ -590,7 +591,12 @@ import {
 } from "@/api/microknowledge";
 import KnowledgeCard from "@/view/micro-knowledge/knowledge-card";
 import AvatarCutter from "@/components/avatar-cutter/avatar-cutter";
-import { favorList, getInterpretation } from "@/api/microknowledge.js";
+import {
+  favorList,
+  getInterpretation,
+  deletePaper,
+  deleteInterpretation,
+} from "@/api/microknowledge.js";
 import InterpretationCard from "@/view/micro-knowledge/interpretation-card";
 export default {
   name: "UserInfo",
@@ -1056,15 +1062,33 @@ export default {
         title: "确定删除该发布",
         content: "请注意该操作不可逆",
         onOk() {
-          microKnowledgeIdReq(id, type, "delete")
-            .then((res) => {
-              vm.$Message.info("成功删除");
-              vm.pageIndex = 1;
-              vm.loadPost();
+          if (type == 0) {
+            deletePaper("post", {
+              paperId: id,
+              reason: "个人删除",
             })
-            .catch((err) => {
-              vm.$Modal.error(getErrModalOptions(err));
-            });
+              .then((res) => {
+                vm.$Message.info("成功删除");
+                vm.pageIndex = 1;
+                vm.loadPost();
+              })
+              .catch((err) => {
+                vm.$Message.error("删除失败");
+              });
+          } else {
+            deleteInterpretation("post", {
+              interpretationId: id,
+              reason: "个人删除",
+            })
+              .then((res) => {
+                vm.$Message.info("成功删除");
+                vm.pageIndex = 1;
+                vm.loadPost();
+              })
+              .catch((err) => {
+                vm.$Message.error("删除失败");
+              });
+          }
         },
       });
     },
@@ -1094,7 +1118,7 @@ export default {
           })
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
-          }); 
+          });
       } else {
         getInterpretation(id)
           .then((res) => {

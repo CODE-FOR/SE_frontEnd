@@ -2,7 +2,7 @@
   <div>
     <template v-if="isInDetail === 0 && isInPublishInterpretaion === false">
       <div class="ivu-card-head">
-        <h2><div v-html="title" /></h2>
+        <h2>{{title}}</h2>
       </div>
     </template>
     <template v-esle></template>
