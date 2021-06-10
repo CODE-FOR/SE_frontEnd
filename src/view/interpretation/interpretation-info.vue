@@ -30,6 +30,8 @@
                 :likeNumber="likeNumber"
                 :favorNumber="favorNumber"
                 :isReport="administrator"
+                :showReportReason="showReportReason"
+                :reportReason="reportReason"
               />
             </template>
           </TabPane>
@@ -51,6 +53,8 @@ export default {
     return {
       id: parseInt(this.$route.params.id),
       administrator: parseInt(this.$route.params.administrator),
+      showReportReason: this.$route.params.showReportReason,
+      reportReason: this.$route.params.reportReason,
       title: "456",
       tags: [],
       content: "456",
