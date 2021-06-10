@@ -137,7 +137,7 @@
         this.loading = true;
         microKnowledgeIdReq(this.id, 0, "get")
           .then((res) => {
-            this.title = res.data.title;
+            this.title = res.data.title.replace(/<[^>]+>/g, "");
             this.content = res.data.abstract;
             this.creator = res.data.created_by;
             this.createAt = getLocalTime(res.data.created_at);
@@ -155,7 +155,7 @@
                 content: item.content.replace(/<[^>]+>/g, "").length > 100
                   ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
                   : item.content.replace(/<[^>]+>/g, ""),
-                title: item.title,
+                title: item.title.replace(/<[^>]+>/g, ""),
                 tags: item.tags,
                 creator: item.created_by,
                 createAt: getLocalTime(item.created_at),

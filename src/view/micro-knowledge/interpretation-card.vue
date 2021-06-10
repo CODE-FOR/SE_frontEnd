@@ -2,7 +2,8 @@
   <div>
     <div class="ivu-card-head">
       <!-- <template v-if="kind === 1"> -->
-      <h2>{{title}}</h2>
+      <h2 v-if="title.length > 0"><div v-html="title"/></h2>
+      <h2 v-else>标题内容不合法</h2>
       <!-- </template> -->
     </div>
     <card :bordered="false" dis-hover :style="citeStyle">
@@ -200,9 +201,7 @@ import {
   likeMicroKnowledge,
   getMicroknowledgeComments,
   microKnowledgeIdReq,
-  reportInterpretation,
-  cancelInterpretationReport,
-  deleteInterpretation
+  reportInterpretation
 } from "@/api/microknowledge.js";
 import { follow, unfollow, getUserInfo, getIconById } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
@@ -320,8 +319,6 @@ export default {
 
   data() {
     return {
-      reporter: "",
-      reportAt: "",
       showComment: false,
       comments: [],
       detailController: false,
@@ -377,35 +374,11 @@ export default {
   methods: {
     // TODO: need to be finished!!! -> administrator delete
     deleteInterpretation: function () {
-      if (confirm("确定要删除该论文解读吗？")) {
-        const data = {
-          interpretationId: this.id,
-          reason: this.reportHandle.explanation
-        };
-        deleteInterpretation("post", data)
-          .then((res) => {
-            this.$Message.success("已删除该论文")
-          })
-          .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
-          });
-      }
+
     },
 
     cancelReport: function() {
-      if (confirm("确定要撤销对该论文解读的举报吗？")) {
-        const data = {
-          interpretationId: this.id,
-          reason: this.reportHandle.explanation
-        };
-        cancelInterpretationReport("post", data)
-          .then((res) => {
-            this.$Message.success("已删除该论文")
-          })
-          .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
-          });
-      }
+
     },
 
     setReport: function() {

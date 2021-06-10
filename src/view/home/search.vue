@@ -193,7 +193,7 @@ export default {
               favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
-              title: item.title.replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
+              title: item.title.replace(/<[^>]+>/g, "").replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
             };
           });
           console.log('push')
@@ -203,7 +203,7 @@ export default {
           const mapData = res.data.res.map((item) => {
             return {
               id: item.id,
-              title: item.title.replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
+              title: item.title.replace(/<[^>]+>/g, "").replace(this.query, "<font color= 'red'>" + this.query + "</font>"),
               content:
                 item.content.replace(/<[^>]+>/g, "").length > 100
                   ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) +

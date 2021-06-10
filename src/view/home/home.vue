@@ -181,7 +181,7 @@ export default {
               favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
-              title: item.title,
+              title: item.title.replace(/<[^>]+>/g, ""),
             };
           });
           this.pageComponent.items.push(...mapData.filter((x) => x));
@@ -217,11 +217,11 @@ export default {
               favorNumber: item.collect_num,
               source: item.source,
               author: item.author,
-              title: item.title,
+              title: item.title.replace(/<[^>]+>/g, ""),
             };
           } else {
             return {
-              title: item.title,
+              title: item.title.replace(/<[^>]+>/g, ""),
               type: item.type,
               id: item.id,
               creator: item.created_by,

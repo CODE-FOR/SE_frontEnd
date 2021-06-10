@@ -96,7 +96,7 @@ export default {
           this.paperId = parseInt(res.data.paper.id);
           this.creator = res.data.created_by;
           this.createAt = getLocalTime(res.data.created_at);
-          this.title = res.data.title;
+          this.title = res.data.title.replace(/<[^>]+>/g, "");
           this.likeNumber = res.data.like_num;
           this.isLike = res.data.is_like;
           this.isCollect = res.data.is_collect;

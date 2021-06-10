@@ -2,7 +2,8 @@
   <div>
     <template v-if="isInDetail === 0 && isInPublishInterpretaion === false">
       <div class="ivu-card-head">
-        <h2>{{title}}</h2>
+        <h2 v-if="title.length > 0"><div v-html="title"/></h2>
+        <h2 v-else style="color:grey">标题内容不合法</h2>
       </div>
     </template>
     <template v-esle></template>
@@ -219,7 +220,6 @@ import {
   collectPaper,
   reportPaper,
   deletePaper,
-  cancelPaperReport,
   likeInterpretaion,
   collectInterpretation,
 } from "@/api/microknowledge";
@@ -431,21 +431,7 @@ export default {
     },
 
     // TODO: need to be finished!!! -> administrator delete
-    cancelReport: function () {
-      if (confirm("确定要撤销对该论文的举报吗？")) {
-        const data = {
-          paperId: this.id,
-          reason: this.reportHandle.explanation
-        };
-        cancelPaperReport("post", data)
-          .then((res) => {
-            this.$Message.success("已撤销对该论文的举报")
-          })
-          .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
-          });
-      }
-    },
+    cancelReport: function () {},
 
     writeInterpretation: function () {
       this.$store.commit("getPaperId", this.id);

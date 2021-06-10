@@ -112,12 +112,20 @@ export default {
     // }
 
     const validateTags = (rule, value, callback) => {
-      if (value === "" || value.split(" ").length < 3) {
+      if (value === "" || value.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ').split(" ").length < 3) {
         callback(new Error("请输入至少3个标签(以空格分隔)"));
       } else {
         callback();
       }
     };
+
+    const validateYear = (rule, value, callback) => {
+      if (value == null || value < 1700 || value > 2021) {
+        callback(new Error("年份错误，必须大于1700且小于2021"))
+      } else {
+        callback();
+      }
+    }
 
     const validateNotNull = (rule, value, callback) => {
       if (!value) {
@@ -210,7 +218,7 @@ export default {
         year: [
           {
             required: true,
-            validator: validateNotNull,
+            validator: validateYear,
             trigger: "blur",
           },
         ],
@@ -245,8 +253,8 @@ export default {
               return { name: tag, type: 0 };
             })
             .concat(
-              this.form.tags.split(" ").map((tag) => {
-                return { name: tag, type: 1 };
+              this.form.tags.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ').split(" ").map((tag) => {
+                return { name: tag.replace(/<[^>]+>/g, "").length > 0 ? tag.replace(/<[^>]+>/g, "") : '不合法标签', type: 1 };
               })
             );
           const data = {

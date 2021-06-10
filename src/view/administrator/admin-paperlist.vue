@@ -179,7 +179,7 @@
                 favorNumber: item.paper.collect_num,
                 source: item.paper.source,
                 author: item.paper.author,
-                title: item.paper.title
+                title: item.paper.title.replace(/<[^>]+>/g, "")
               };
             });
             this.pageReport.items.push(...mapData.filter((x) => x));

@@ -125,7 +125,7 @@
                 content: item.interpretation.content.replace(/<[^>]+>/g, "").length > 100
                   ? item.interpretation.content.replace(/<[^>]+>/g, "").substring(0, 100) + "..."
                   : item.interpretation.content.replace(/<[^>]+>/g, ""),
-                title: item.interpretation.title,
+                title: item.interpretation.title.replace(/<[^>]+>/g, ""),
                 tags: item.interpretation.tags,
                 creator: item.interpretation.created_by,
                 createAt: getLocalTime(item.interpretation.created_at),
