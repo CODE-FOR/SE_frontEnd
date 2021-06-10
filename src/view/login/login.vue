@@ -96,6 +96,8 @@ export default {
         this.$Message.error('登录失败!')
         if (err.response.data.code === 401) {
           this.login_error = '账号或密码错误'
+        } else if (err.response.data.code === 567) {
+          this.login_error = '您已被封禁'
         } else {
           this.login_error = '用户未注册'
         }
