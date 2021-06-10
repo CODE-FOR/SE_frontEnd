@@ -409,7 +409,6 @@ export default {
   },
 
   methods: {
-    // TODO: need to be finished!!! -> administrator delete
     deletePaper: function () {
       if (confirm("确定要删除该论文吗？")) {
         const data = {

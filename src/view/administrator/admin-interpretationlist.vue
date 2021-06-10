@@ -13,6 +13,7 @@
                 :isReport="0"
                 :isInDetail="0"
                 :showReportReason="true"
+                :reportReason="item.reportReason"
               />
               <Row v-if="loading">
                 <i-col class="demo-spin-col" offset="8" span="8">

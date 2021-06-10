@@ -124,11 +124,9 @@
             </ButtonGroup>
             <br />
             <br />
-            <!--
             <template v-if="this.showReportReason === true">
               举报理由：{{ this.reportReason }}
             </template>
-            -->
             <template v-if="isReported === true">
               <Form
                 ref="reportHandle"
@@ -157,7 +155,7 @@
               <br />
             </template>
             <ButtonGroup>
-              <i-button @click="deletePaper" style="font-size: 14px">
+              <i-button @click="deleteInterpretation" style="font-size: 14px">
                 删除
               </i-button>
               <i-button @click="cancelReport" style="font-size: 14px">
@@ -201,7 +199,9 @@ import {
   likeMicroKnowledge,
   getMicroknowledgeComments,
   microKnowledgeIdReq,
-  reportInterpretation
+  reportInterpretation,
+  cancelInterpretationReport,
+  deleteInterpretation,
 } from "@/api/microknowledge.js";
 import { follow, unfollow, getUserInfo, getIconById } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
@@ -372,7 +372,6 @@ export default {
   },
 
   methods: {
-    // TODO: need to be finished!!! -> administrator delete
     deleteInterpretation: function () {
 
     },
@@ -563,7 +562,9 @@ export default {
         name: "interpretation",
         params: {
           id: this.id,
-          administrator: this.isAdmin
+          administrator: this.isAdmin,
+          showReportReason: this.showReportReason,
+          reportReason: this.reportReason
         },
       });
     },
