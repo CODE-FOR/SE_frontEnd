@@ -34,7 +34,7 @@
                       <i-button
                         type="primary"
                         style="width: 40%; height: 35px; top: 31px; position: relative"
-                        @click="handleImprison(index)"
+                        @click="handleImprison(item.id)"
                       >
                         关进小黑屋
                       </i-button>
@@ -43,7 +43,7 @@
                       <i-button
                         type="primary"
                         style="width: 40%; height: 35px; top: 31px; position: relative"
-                        @click="handleOutprison(index)"
+                        @click="handleOutprison(item.id)"
                       >
                         解封
                       </i-button>
@@ -102,7 +102,7 @@
                       <i-button
                         type="primary"
                         style="width: 40%; height: 35px; top: 31px; position: relative"
-                        @click="handleOutprison(index)"
+                        @click="handleOutprison(item.id)"
                       >
                         解封
                       </i-button>
@@ -253,7 +253,7 @@ export default {
     },
 
     changePrisonPage: function (i) {
-      //   this.$store.commit("setHomePage", i);
+      // this.$store.commit("setHomePage", i);
       this.userIn = [];
       setTimeout(() => {
         document
