@@ -160,7 +160,7 @@ export default {
         console.log(err);
       });
     this.pageComponent.pageIndex = this.$store.state.home.page;
-    this.loadData();
+    this.loadRecommend();
   },
 
   methods: {
