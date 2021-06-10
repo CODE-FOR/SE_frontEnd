@@ -2,7 +2,7 @@
   <Row>
     <i-col offset="4" span="15">
       <Card>
-        <Tabs value="userList" animated="false">
+        <Tabs value="userList" @on-click="changeTab" animated="false">
           <TabPane label="用户列表" name="userList">
             <template v-if="userlist.length !== 0">
               <div v-for="(item, index) in userlist" :key="index">
@@ -64,7 +64,68 @@
             </template>
           </TabPane>
           <TabPane label="封禁用户列表" name="userIn">
-
+            <template v-if="userIn.length !== 0">
+              <div v-for="(item, index) in userIn" :key="index">
+                <Row>
+                  <i-col span="2">
+                    <img
+                      :src="item.icon"
+                      style="width: 30%; height: 30%;vertical-align:top;border-radius:50%"
+                    />
+                  </i-col>
+                  <i-col span="5">
+                    <div class="user-name">
+                      {{ item.nick_name === "" ? item.username : item.nick_name }}
+                    </div>
+                    <p style="margin-top: 5px">
+                      邮箱: {{ item.email || "暂无邮箱信息" }}
+                    </p>
+                  </i-col>
+                  <i-col offset="10" span="7">
+                    <i-button
+                      type="primary"
+                      style="width: 40%; height: 35px; top: 31px; position: relative"
+                      @click="jumpUserInfo(item.id)"
+                    >
+                      他的主页
+                    </i-button>
+                    &nbsp;&nbsp;
+                    <template v-if="item.in === false">
+                      <i-button
+                        type="primary"
+                        style="width: 40%; height: 35px; top: 31px; position: relative"
+                      >
+                        已解封
+                      </i-button>
+                    </template>
+                    <template v-else>
+                      <i-button
+                        type="primary"
+                        style="width: 40%; height: 35px; top: 31px; position: relative"
+                        @click="handleOutprison(index)"
+                      >
+                        解封
+                      </i-button>
+                    </template>
+                  </i-col>
+                </Row>
+                <Divider />
+              </div>
+              <div style="float: right">
+                <Page
+                  :total="prisonTotalCnt"
+                  :page-size="prisonPageSize"
+                  :current="prisonPageIndex"
+                  @on-change="changePrisonPage"
+                  show-elevator
+                />
+              </div>
+            </template>
+            <template v-else>
+              <div align="center">
+                无禁言用户
+              </div>
+            </template>
           </TabPane>
         </Tabs>
       </Card>
@@ -74,7 +135,7 @@
 
 <script>
 import UserCard from "@/view/user/user-card";
-import { prisonOut, prisonIn, getUserList } from "@/api/user";
+import { prisonOut, prisonIn, getUserList, getPrisonList } from "@/api/user";
 import {getUserInfo} from "../../api/user";
 export default {
   name: "home",
@@ -129,13 +190,18 @@ export default {
          */
       ],
       pageIndex: 1,
-      totalCnt: 10,
+      totalCnt: 0,
       pageSize: 5,
+      userIn: [],
+      prisonPageIndex: 1,
+      prisonTotalCnt: 0,
+      prisonPageSize: 5
     };
   },
 
   mounted() {
     this.getUserList();
+    this.getPrisonList();
   },
 
   methods: {
@@ -156,6 +222,24 @@ export default {
       });
     },
 
+    getPrisonList: function () {
+      getPrisonList(this.prisonPageIndex, "get").then((res) => {
+        this.userIn = [];
+        this.prisonTotalCnt = res.data.total_page * 5;
+        const mapData = res.data.ban_list.map((item) => {
+          return {
+            id: item.user_id,
+            username: item.user_name,
+            nick_name: "",
+            email: item.email,
+            in: true,
+            reason: item.reason
+          }
+        });
+        this.userIn.push(...mapData.filter((x) => x));
+      });
+    },
+
     changePage: function (i) {
       //   this.$store.commit("setHomePage", i);
       this.userlist = [];
@@ -168,38 +252,16 @@ export default {
       this.getUserList();
     },
 
-    showUser: function () {
-      getUserInfo(3)
-        .then((res) => {
-          this.userInfo = res.data;
-        })
-        .catch((error) => {
-          this.$Modal.error(getErrModalOptions(error));
-        });
-    },
-
-    handleFollow: function () {
-      if (this.userInfo.is_following) {
-        unfollow(this.creator.id)
-          .then((res) => {
-            this.userInfo.is_following = false;
-            this.userInfo.total_fan -= 1;
-            this.$Message.info("成功取消关注");
-          })
-          .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
-          });
-      } else {
-        follow(this.creator.id)
-          .then((res) => {
-            this.userInfo.is_following = true;
-            this.userInfo.total_fan += 1;
-            this.$Message.info("成功关注");
-          })
-          .catch((error) => {
-            this.$Modal.error(getErrModalOptions(error));
-          });
-      }
+    changePrisonPage: function (i) {
+      //   this.$store.commit("setHomePage", i);
+      this.userIn = [];
+      setTimeout(() => {
+        document
+          .getElementsByClassName("content-wrapper ivu-layout-content")[0]
+          .scroll(0, 0);
+      }, 400);
+      this.prisonPageIndex = i;
+      this.getPrisonList();
     },
 
     handleImprison: function (id) {
@@ -239,6 +301,20 @@ export default {
           id: id,
         },
       });
+    },
+
+    changeTab: function (name) {
+      // name in ["recommend", "favorite"]
+      this.activeTab = name;
+      this.pageIndex = 1;
+      this.prisonPageIndex = 1;
+      // this.$store.commit("setHomePage", 1);
+      // this.pageComponent.items = [];
+      if (this.activeTab === "userList") {
+        this.getUserList();
+      } else {
+        this.getPrisonList();
+      }
     },
   },
 };

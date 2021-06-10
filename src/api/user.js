@@ -66,6 +66,11 @@ export const getUserList = (pindx, params) => {
   return getRequest(url, 'get', params)
 }
 
+export const getPrisonList = (pindx, params) => {
+  const url = `/api/ban-list/${pindx}`
+  return getRequest(url, 'get', params)
+}
+
 export const prisonIn = (params) => {
   const url = `/api/ban/manage`;
   return getRequest(url, 'post', params)
