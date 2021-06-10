@@ -126,7 +126,7 @@ export default {
   data() {
     return {
       knowledgeType: "all",
-      activeTab: "recommend",
+      activeTab: "realRec",
       knowledgeType: "micro-evidence", // TODO: 这个应该用 vuex 记住用户的上一次选择
       selectTagList: [],
       tagSearch: "",
@@ -310,7 +310,7 @@ export default {
       this.pageComponent.items = [];
       if (this.activeTab === "favorite") {
         this.loadFavor();
-      } else if (this.activeTab === "recomment") {
+      } else if (this.activeTab === "recommend") {
         this.loadData();
       } else {
         this.loadRecommend();
