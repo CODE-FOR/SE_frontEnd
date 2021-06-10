@@ -346,7 +346,7 @@
                         "
                         @click="jumpUserInfo(item.id)"
                       >
-                        他的主页
+                        Ta的主页
                       </i-button>
                     </i-col>
                     <i-col offset="10" span="7" v-else>
@@ -360,7 +360,7 @@
                         "
                         @click="jumpUserInfo(item.id)"
                       >
-                        他的主页
+                        Ta的主页
                       </i-button>
                       &nbsp;&nbsp;
                       <i-button
@@ -455,7 +455,7 @@
                         "
                         @click="jumpUserInfo(item.id)"
                       >
-                        他的主页
+                        Ta的主页
                       </i-button>
                     </i-col>
                   </Row>
@@ -700,11 +700,11 @@ export default {
 
   computed: {
     postText() {
-      return this.isOther ? "他的发布" : "我的发布";
+      return this.isOther ? "Ta的发布" : "我的发布";
     },
 
     favorText() {
-      return this.isOther ? "他的收藏" : "我的收藏";
+      return this.isOther ? "Ta的收藏" : "我的收藏";
     },
 
     listOffset() {

@@ -42,7 +42,7 @@
         </i-col>
         <i-col span="7" offset="2">
           <i-button type="primary" style="width: 100%" @click="jumpUserInfo">
-            他的主页
+            Ta的主页
           </i-button>
         </i-col>
       </Row>

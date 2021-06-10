@@ -27,7 +27,7 @@
                       style="width: 40%; height: 35px; top: 31px; position: relative"
                       @click="jumpUserInfo(item.id)"
                     >
-                      他的主页
+                      Ta的主页
                     </i-button>
                     &nbsp;&nbsp;
                     <template v-if="item.in === false">
@@ -87,7 +87,7 @@
                       style="width: 40%; height: 35px; top: 31px; position: relative"
                       @click="jumpUserInfo(item.id)"
                     >
-                      他的主页
+                      Ta的主页
                     </i-button>
                     &nbsp;&nbsp;
                     <template v-if="item.in === false">

@@ -76,7 +76,7 @@
                 style="width: 100%"
                 @click="jumpUserInfo(userInfo.id)"
               >
-                他的主页
+                Ta的主页
               </i-button>
             </i-col>
           </Row>
