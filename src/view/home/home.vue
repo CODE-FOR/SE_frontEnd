@@ -3,7 +3,7 @@
     <i-col offset="4" span="15">
       <Card>
         <Tabs v-model="activeTab" @on-click="changeTab" :animated="false">
-          <TabPane label="推荐" name="recommend">
+          <TabPane label="论文列表" name="recommend">
             <template v-if="pageComponent.items.length !== 0">
               <KnowledgeCard
                 v-for="item in pageComponent.items"
@@ -29,10 +29,14 @@
           <TabPane label="关注" name="favorite">
             <template v-if="pageComponent.items.length !== 0">
               <template v-for="item in pageComponent.items">
-                <template v-if="item.type === 0 && knowledgeType != 'interpretation'">
+                <template
+                  v-if="item.type === 0 && knowledgeType != 'interpretation'"
+                >
                   <KnowledgeCard :key="item.id" v-bind="item" />
                 </template>
-                <template v-else-if="item.type === 1 && knowledgeType != 'paper'">
+                <template
+                  v-else-if="item.type === 1 && knowledgeType != 'paper'"
+                >
                   <InterpretationCard :key="item.id" v-bind="item" />
                 </template>
               </template>
@@ -50,8 +54,32 @@
               </Row>
             </template>
           </TabPane>
+          <TabPane label="智能推荐" name="realRec">
+            <template v-if="pageComponent.items.length !== 0">
+              <InterpretationCard
+                v-for="item in pageComponent.items"
+                :key="item.id"
+                :isReport="0"
+                :isAdmin="0"
+                v-bind="item"
+              />
+            </template>
+            <Row v-if="loading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </Row>
+          </TabPane>
         </Tabs>
         <Page
+          v-if="activeTab != 'realRec'"
           :total="pageComponent.pageNum * 5"
           :current="pageComponent.pageIndex"
           :page-size="pageComponent.pageSize"
@@ -97,7 +125,7 @@ export default {
 
   data() {
     return {
-      knowledgeType: 'all',
+      knowledgeType: "all",
       activeTab: "recommend",
       knowledgeType: "micro-evidence", // TODO: 这个应该用 vuex 记住用户的上一次选择
       selectTagList: [],
@@ -137,7 +165,7 @@ export default {
 
   methods: {
     selectType: function () {
-      console.log(this.knowledgeType)
+      console.log(this.knowledgeType);
     },
 
     changeIndexPage: function (i) {
@@ -151,16 +179,39 @@ export default {
       this.pageComponent.pageIndex = i;
       if (this.activeTab === "favorite") {
         this.loadFavor();
-      } else {
+      } else if (this.activeTab === "recommend") {
         this.loadData();
       }
     },
 
-    loadData: function () {
+    loadRecommend: function () {
       this.loading = true;
       recommend().then((res) => {
-        console.log(res);
-      })
+        this.pageComponent.items = res.data.recommend.map((item) => {
+          return {
+            title: item.title.replace(/<[^>]+>/g, ""),
+            id: item.id,
+            creator: item.created_by,
+            createAt: getLocalTime(item.created_at),
+            tags: item.tags,
+            isLike: item.is_like,
+            isCollect: item.is_collect,
+            likeNumber: item.like_num,
+            favorNumber: item.collect_num,
+            content:
+                item.content.replace(/<[^>]+>/g, "").length > 100
+                  ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
+                  : item.content.replace(/<[^>]+>/g, ""),
+          };
+        });
+        this.loading = false;
+        console.log(JSON.stringify(this.pageComponent.items))
+      });
+    },
+
+    loadData: function () {
+      this.loading = true;
       getPaperList(this.pageComponent.pageIndex)
         .then((res) => {
           this.pageComponent.pageNum = res.data.page_num;
@@ -212,7 +263,11 @@ export default {
               id: item.id,
               creator: item.created_by,
               createAt: getLocalTime(item.created_at),
-              content: item.abstract,
+              content:
+                item.abstract.replace(/<[^>]+>/g, "").length > 100
+                  ? item.abstract.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
+                  : item.abstract.replace(/<[^>]+>/g, ""),
               tags: item.tags,
               isLike: item.is_like,
               isCollect: item.is_collect,
@@ -234,7 +289,11 @@ export default {
               isCollect: item.is_collect,
               likeNumber: item.like_num,
               favorNumber: item.collect_num,
-              content: item.content,
+              content:
+                item.content.replace(/<[^>]+>/g, "").length > 100
+                  ? item.content.replace(/<[^>]+>/g, "").substring(0, 100) +
+                    "..."
+                  : item.content.replace(/<[^>]+>/g, ""),
             };
           }
         });
@@ -251,8 +310,10 @@ export default {
       this.pageComponent.items = [];
       if (this.activeTab === "favorite") {
         this.loadFavor();
-      } else {
+      } else if (this.activeTab === "recomment") {
         this.loadData();
+      } else {
+        this.loadRecommend();
       }
     },
   },

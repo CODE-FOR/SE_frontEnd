@@ -2,7 +2,7 @@
   <div>
     <div class="ivu-card-head">
       <!-- <template v-if="kind === 1"> -->
-      <h2 v-if="title.length > 0"><div v-html="title"/></h2>
+      <h2 v-if="title.length > 0"><div v-html="title" /></h2>
       <h2 v-else>标题内容不合法</h2>
       <!-- </template> -->
     </div>
@@ -83,7 +83,7 @@
         </Modal>
       </div>
       <p slot="extra">论文解读发布于: {{ createAt }}</p>
-      <Row v-html="content" style="word-break: break-all;"></Row>
+      <Row v-html="content" style="word-break: break-all"></Row>
       <br />
       <Row>
         <Tag v-for="(tag, index) in tags" :key="index" class="sysTopics">{{
@@ -92,7 +92,7 @@
       </Row>
       <br />
       <Row>
-        <i-col span="12">
+        <i-col span="16">
           <template v-if="isReport === 0">
             <ButtonGroup>
               <i-button @click="onLike" style="font-size: 14px">
@@ -105,11 +105,16 @@
               </i-button>
               <template v-if="isInDetail === 1">
                 <i-button @click="setReport" style="font-size: 14px">
+                  <Icon type="ios-megaphone" />
                   举报
                 </i-button>
                 <i-button @click="onComment" style="font-size: 14px">
                   <Icon type="ios-chatbubbles" />
                   评论 {{ totalCommentNum }}
+                </i-button>
+                <i-button @click="gotoPaper" style="font-size: 14px">
+                  <Icon type="md-document" />
+                  查看被解读论文
                 </i-button>
               </template>
               <template v-if="isInDetail === 0">
@@ -135,10 +140,10 @@
                 :label-width="100"
               >
                 <Form-item label="举报理由：" prop="reportExplanation"
-                ><Input
-                  type="text"
-                  v-model="reportHandleReason"
-                  placeholder="请输入"
+                  ><Input
+                    type="text"
+                    v-model="reportHandleReason"
+                    placeholder="请输入"
                 /></Form-item>
               </Form>
               <div align="center">
@@ -171,10 +176,10 @@
               :label-width="60"
             >
               <Form-item label="说明：" prop="explanation"
-              ><Input
-                type="text"
-                v-model="reportHandle.explanation"
-                placeholder="请输入"
+                ><Input
+                  type="text"
+                  v-model="reportHandle.explanation"
+                  placeholder="请输入"
               /></Form-item>
             </Form>
             <!--
@@ -210,7 +215,7 @@ import {
   likeInterpretation,
   collectInterpretation,
 } from "../../api/microknowledge";
-import paramsVue from '../login/argu-page/params.vue';
+import paramsVue from "../login/argu-page/params.vue";
 export default {
   name: "KnowledgeCard",
   components: {
@@ -220,6 +225,11 @@ export default {
     reportReason: {
       type: String,
       default: "",
+    },
+
+    paperId: {
+      type: Number,
+      default: 0,
     },
 
     showReportReason: {
@@ -337,7 +347,7 @@ export default {
             trigger: "blur",
           },
         ],
-      }
+      },
     };
   },
 
@@ -372,16 +382,22 @@ export default {
   },
 
   methods: {
-    deleteInterpretation: function () {
+    deleteInterpretation: function () {},
 
-    },
+    cancelReport: function () {},
 
-    cancelReport: function() {
-
-    },
-
-    setReport: function() {
+    setReport: function () {
       this.isReported = !this.isReported;
+    },
+
+    gotoPaper: function () {
+      console.log("?");
+      this.$router.push({
+        name: "paper",
+        params: {
+          id: this.paperId,
+        },
+      });
     },
 
     onReport: function () {
@@ -448,7 +464,7 @@ export default {
         to: x.to_user ? x.to_user.username : 0,
         toId: x.to_user ? x.to_user.id : "",
         inputShow: false,
-        headImg: '',
+        headImg: "",
         parent_comment_id: x.parent_comment_id,
         reply: [],
       }));
@@ -498,9 +514,8 @@ export default {
           let comment;
           for (comment in this.comments.comments_init) {
             this.totalCommentNum++;
-            this.totalCommentNum += this.comments.comments_init[
-              comment
-            ].reply.length;
+            this.totalCommentNum +=
+              this.comments.comments_init[comment].reply.length;
           }
         })
         .catch((err) => {
@@ -564,7 +579,7 @@ export default {
           id: this.id,
           administrator: this.isAdmin,
           showReportReason: this.showReportReason,
-          reportReason: this.reportReason
+          reportReason: this.reportReason,
         },
       });
     },

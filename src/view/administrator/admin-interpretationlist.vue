@@ -2,7 +2,7 @@
   <div>
     <i-col offset="4" span="15">
       <Card>
-        <Tabs value="InterpretationReport" animated="false">
+        <Tabs value="InterpretationReport" :animated="false">
           <TabPane label="举报论文解读列表" name="InterpretationReport">
             <template v-if="pageComponent.items.length !== 0">
               <InterpretationCard

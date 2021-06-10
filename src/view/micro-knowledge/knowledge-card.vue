@@ -130,6 +130,7 @@
                 </template>
                 <template v-else>
                   <i-button @click="setReport" style="font-size: 14px">
+                    <Icon type="ios-megaphone" />
                     举报
                   </i-button>
                   <i-button

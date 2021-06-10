@@ -5,7 +5,7 @@
     </h1>
     <i-col offset="2" span="20">
       <Card>
-        <Tabs value="paperAbstract">
+        <Tabs value="paperAbstract" :animated="false">
           <TabPane label="论文详情" name="paperAbstract">
             <KnowledgeCard
               :key="id"

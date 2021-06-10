@@ -24,6 +24,7 @@
                 :tags="tags"
                 :creator="creator"
                 :createAt="createAt"
+                :paperId="paperId"
                 :isInDetail="1"
                 :isLike="isLike"
                 :isCollect="isCollect"

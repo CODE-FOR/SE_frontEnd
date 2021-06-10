@@ -2,7 +2,7 @@
   <Row>
     <i-col offset="4" span="15">
       <Card>
-        <Tabs value="paperReport" animated="false">
+        <Tabs value="paperReport" :animated="false">
           <TabPane label="举报论文列表" name="paperReport">
             <template v-if="pageReport.items.length !== 0">
               <KnowledgeCard

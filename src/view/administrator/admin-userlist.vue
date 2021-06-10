@@ -2,7 +2,7 @@
   <Row>
     <i-col offset="4" span="15">
       <Card>
-        <Tabs value="userList" @on-click="changeTab" animated="false">
+        <Tabs value="userList" @on-click="changeTab" :animated="false">
           <TabPane label="用户列表" name="userList">
             <template v-if="userlist.length !== 0">
               <div v-for="(item, index) in userlist" :key="index">
