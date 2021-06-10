@@ -169,6 +169,7 @@
             </ButtonGroup>
             <br />
             <br />
+            <!--
             <Form
               ref="reportHandle"
               :model="reportHandle"
@@ -182,6 +183,7 @@
                   placeholder="请输入"
               /></Form-item>
             </Form>
+            -->
             <!--
             <i-button @click="deleteInterpretation" style="font-size: 14px">
               删除
@@ -382,9 +384,37 @@ export default {
   },
 
   methods: {
-    deleteInterpretation: function () {},
+    deleteInterpretation: function () {
+      if (confirm("确定要删除该论文解读吗？")) {
+        const data = {
+          interpretationId: this.id,
+          reason: this.reportHandle.explanation
+        };
+        deleteInterpretation("post", data)
+          .then((res) => {
+            this.$Message.success("已删除该论文解读")
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      }
+    },
 
-    cancelReport: function () {},
+    cancelReport: function () {
+      if (confirm("确定要撤销对该论文解读的举报吗？")) {
+        const data = {
+          interpretationId: this.id,
+          reason: this.reportHandle.explanation
+        };
+        cancelInterpretationReport("post", data)
+          .then((res) => {
+            this.$Message.success("已撤销对该论文解读的举报")
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      }
+    },
 
     setReport: function () {
       this.isReported = !this.isReported;
