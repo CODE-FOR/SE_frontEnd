@@ -108,9 +108,20 @@ export const deletePaper = (method, params) => {
   return getRequest(url, method, params);
 };
 
+export const deleteInterpretation = (method, params) => {
+  const url = `/api/interpretation/delete`;
+  return getRequest(url, method, params);
+};
+
 // TODO: need real api
-export const cancelReport = (method, params) => {
-  const url = `/api/???`;
+export const cancelPaperReport = (method, params) => {
+  const url = `/api/paper/report/cancel`;
+  return getRequest(url, method, params);
+};
+
+// TODO: need real api
+export const cancelInterpretationReport = (method, params) => {
+  const url = `/api/interpretation/report/cancel`;
   return getRequest(url, method, params);
 }
 
