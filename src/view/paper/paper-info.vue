@@ -7,25 +7,39 @@
       <Card>
         <Tabs value="paperAbstract" :animated="false">
           <TabPane label="论文详情" name="paperAbstract">
-            <KnowledgeCard
-              :key="id"
-              :id="id"
-              :content="content"
-              :creator="creator"
-              :createAt="createAt"
-              :tags="tags"
-              :source="source"
-              :publishedYear="publishedYear"
-              :author="author"
-              :isInDetail="1"
-              :isLike="isLike"
-              :likeNumber="likeNumber"
-              :isCollect="isCollect"
-              :favorNumber="favorNumber"
-              :isReport="administrator"
-              :showReportReason="showReportReason"
-              :reportReason="reportReason"
-            />
+            <template v-if="loading">
+              <i-col class="demo-spin-col" offset="8" span="8">
+                <Spin fix>
+                  <Icon
+                    type="ios-loading"
+                    size="18"
+                    class="demo-spin-icon-load"
+                  ></Icon>
+                  <div>Loading</div>
+                </Spin>
+              </i-col>
+            </template>
+            <template v-else>
+              <KnowledgeCard
+                :key="id"
+                :id="id"
+                :content="content"
+                :creator="creator"
+                :createAt="createAt"
+                :tags="tags"
+                :source="source"
+                :publishedYear="publishedYear"
+                :author="author"
+                :isInDetail="1"
+                :isLike="isLike"
+                :likeNumber="likeNumber"
+                :isCollect="isCollect"
+                :favorNumber="favorNumber"
+                :isReport="administrator"
+                :showReportReason="showReportReason"
+                :reportReason="reportReason"
+              />
+            </template>
           </TabPane>
           <TabPane label="论文解读列表" name="interpretationList">
             <template v-if="items.length !== 0">

@@ -186,6 +186,7 @@
             </ButtonGroup>
             <br />
             <br />
+            <!--
             <Form
               ref="reportHandle"
               :model="reportHandle"
@@ -199,6 +200,7 @@
                   placeholder="请输入"
               /></Form-item>
             </Form>
+            -->
           </template>
         </i-col>
       </Row>
@@ -213,6 +215,7 @@ import {
   likeMicroKnowledge,
   getMicroknowledgeComments,
   microKnowledgeIdReq,
+  cancelPaperReport
 } from "@/api/microknowledge.js";
 import { follow, unfollow, getUserInfo } from "@/api/user";
 import { getErrModalOptions, getLocalTime } from "@/libs/util";
@@ -431,7 +434,20 @@ export default {
     },
 
     // TODO: need to be finished!!! -> administrator delete
-    cancelReport: function () {},
+    cancelReport: function () {
+      if (confirm("确定要撤销对该论文的举报吗？")) {
+        const data = {
+          paperId: this.id,
+          reason: this.reportHandle.explanation
+        };
+        cancelPaperReport("post", data)
+          .then((res) => {
+            this.$Message.success("已撤销对该论文的举报")
+          })
+          .catch((error) => {
+            this.$Modal.error(getErrModalOptions(error));
+          });
+      }},
 
     writeInterpretation: function () {
       this.$store.commit("getPaperId", this.id);
