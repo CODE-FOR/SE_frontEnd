@@ -284,6 +284,10 @@ export default {
         } else {
           this.$Message.error("发布失败!");
         }
+      }).catch((error) => {
+        if (error.response.status === 567) {
+          this.$Message.error("您已被禁言");
+        }
       });
     },
     getTopicList() {

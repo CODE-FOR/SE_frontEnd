@@ -234,12 +234,9 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-
           const tags = this.form.tags.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ').split(' ')
             .map(tag => { return { name: tag.replace(/<[^>]+>/g, "").length > 0 ? tag.replace(/<[^>]+>/g, "") : '不合法标签', type: 1 } });
-
           const data = {
-
             title: this.form.interpretationTitle,
             content: tinymce.activeEditor.getContent(),
             tags: tags,
@@ -258,15 +255,19 @@ export default {
               })
             })
             .catch((err) => {
-              if (err.response.status == 444) {
+              if (err.response.status === 444) {
                 this.$Message.error("您在1小时内已经发布了20篇论文解读，检测到风险行为，已停止您发布论文的权限！");
-              } else if (err.response.status == 567) {
+              } else if (err.response.status === 567) {
                 this.$Message.error("您已被禁言")
               }
-              this.$Modal.error(getErrModalOptions(err));
+              //this.$Modal.error(getErrModalOptions(err));
             });
         } else {
           this.$Message.error("发布失败!");
+        }
+      }).catch((err) => {
+        if (err.response.status === 567) {
+          this.$Message.error("您已被禁言")
         }
       });
     },
