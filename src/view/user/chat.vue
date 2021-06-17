@@ -332,6 +332,9 @@ export default {
         .then((res) => {
           this.chatUserList = {};
           this.chatUserIdList = res.data.id_list;
+          if (this.chatUserIdList.length === 0) {
+            this.nowChatUserName = '空空如野'
+          }
           res.data.chat_user_list.map((item) => {
             this.$set(this.chatUserList, item.id, {
               id: item.id,
@@ -465,6 +468,7 @@ export default {
         this.chatUserList[userId].lastMessage = tmp;
       } else {
         this.chatMessages[userId] = [];
+        this.chatUserList[userId].lastMessage = '';
       }
       this.$nextTick(function () {
         var div = document.getElementById("chat-content");
