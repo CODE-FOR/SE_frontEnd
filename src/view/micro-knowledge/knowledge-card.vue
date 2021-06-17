@@ -185,22 +185,6 @@
               </i-button>
             </ButtonGroup>
             <br />
-            <br />
-            <!--
-            <Form
-              ref="reportHandle"
-              :model="reportHandle"
-              :rules="ruleCustom"
-              :label-width="60"
-            >
-              <Form-item label="说明：" prop="explanation"
-                ><Input
-                  type="text"
-                  v-model="reportHandle.explanation"
-                  placeholder="请输入"
-              /></Form-item>
-            </Form>
-            -->
           </template>
         </i-col>
       </Row>
@@ -426,6 +410,9 @@ export default {
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
           });
+        this.$router.push({
+          name: "manage_paper"
+        });
       }
     },
 
@@ -447,7 +434,11 @@ export default {
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
           });
-      }},
+        this.$router.push({
+          name: "manage_paper"
+        });
+      }
+    },
 
     writeInterpretation: function () {
       this.$store.commit("getPaperId", this.id);
@@ -506,6 +497,9 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
+      this.$router.push({
+        name: "home"
+      });
     },
 
     showUser: function () {

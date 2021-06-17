@@ -12,19 +12,30 @@
                 :isAdmin="0"
                 v-bind="item"
               />
+              <Row v-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
             </template>
-            <Row v-if="loading">
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
-            </Row>
+            <template v-else>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  无论文和论文解读
+                </center>
+                <br />
+                <br />
+              </Row>
+            </template>
           </TabPane>
           <TabPane label="关注" name="favorite">
             <template v-if="pageComponent.items.length !== 0">
@@ -53,6 +64,17 @@
                 </i-col>
               </Row>
             </template>
+            <template v-else>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  无关注信息
+                </center>
+                <br />
+                <br />
+              </Row>
+            </template>
           </TabPane>
           <TabPane label="智能推荐" name="realRec">
             <template v-if="pageComponent.items.length !== 0">
@@ -63,19 +85,30 @@
                 :isAdmin="0"
                 v-bind="item"
               />
+              <Row v-if="loading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
             </template>
-            <Row v-if="loading">
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
-            </Row>
+            <template v-else>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  无智能推荐
+                </center>
+                <br />
+                <br />
+              </Row>
+            </template>
           </TabPane>
         </Tabs>
         <Page

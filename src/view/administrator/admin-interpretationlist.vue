@@ -38,16 +38,15 @@
               ></Page>
             </template>
             <template v-else>
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  无论文解读举报信息
+                </center>
+                <br />
+                <br />
+              </Row>
             </template>
           </TabPane>
         </Tabs>
@@ -68,6 +67,7 @@
     data() {
       return {
         // id: parseInt(this.$route.params.id),
+        isEmpty: false,
         id: 20,
         title: "title",
         content: "abstract",
@@ -101,22 +101,7 @@
         this.loading = true;
         getReportInterpretationList(this.pageComponent.pageIndex, "get")
           .then((res) => {
-            /*
-            this.title = res.data.title;
-            this.content = res.data.abstract;
-            this.creator = res.data.created_by;
-            this.createAt = getLocalTime(res.data.created_at);
-            this.publishedYear = res.data.publishedYear;
-            this.tags = res.data.tags;
-            this.author = res.data.author;
-            this.source = res.data.source;
-            this.isLike = res.data.is_like;
-            this.isCollect = res.data.is_collect;
-            this.favorNumber = res.data.collect_num;
-            this.likeNumber = res.data.like_num;
-            */
             this.pageComponent.pageNum = res.data.page_num;
-            //this.hasNextPage = res.data.has_next;
             const mapData = res.data.reports.map((item) => {
               return {
                 reporter: item.created_by,

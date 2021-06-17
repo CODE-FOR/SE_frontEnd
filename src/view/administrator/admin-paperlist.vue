@@ -14,28 +14,39 @@
                 :isReport="0"
                 :showReportReason="true"
               />
+              <Row v-if="reportLoading">
+                <i-col class="demo-spin-col" offset="8" span="8">
+                  <Spin fix>
+                    <Icon
+                      type="ios-loading"
+                      size="18"
+                      class="demo-spin-icon-load"
+                    ></Icon>
+                    <div>Loading</div>
+                  </Spin>
+                </i-col>
+              </Row>
+              <Page
+                :total="pageReport.pageNum * 5"
+                :current="pageReport.pageIndex"
+                :page-size="pageReport.pageSize"
+                prev-text="上一页"
+                next-text="下一页"
+                show-elevator
+                @on-change="changeReportPage"
+              ></Page>
             </template>
-            <Row v-if="reportLoading">
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
-            </Row>
-            <Page
-              :total="pageReport.pageNum * 5"
-              :current="pageReport.pageIndex"
-              :page-size="pageReport.pageSize"
-              prev-text="上一页"
-              next-text="下一页"
-              show-elevator
-              @on-change="changeReportPage"
-            ></Page>
+            <template v-else>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  无论文举报信息
+                </center>
+                <br />
+                <br />
+              </Row>
+            </template>
           </TabPane>
         </Tabs>
       </Card>

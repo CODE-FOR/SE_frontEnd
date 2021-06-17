@@ -122,9 +122,15 @@
               </div>
             </template>
             <template v-else>
-              <div align="center">
-                无禁言用户
-              </div>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  无禁言用户
+                </center>
+                <br />
+                <br />
+              </Row>
             </template>
           </TabPane>
         </Tabs>

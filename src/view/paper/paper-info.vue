@@ -72,16 +72,15 @@
               ></Page>
             </template>
             <template v-else>
-              <i-col class="demo-spin-col" offset="8" span="8">
-                <Spin fix>
-                  <Icon
-                    type="ios-loading"
-                    size="18"
-                    class="demo-spin-icon-load"
-                  ></Icon>
-                  <div>Loading</div>
-                </Spin>
-              </i-col>
+              <Row>
+                <br />
+                <br />
+                <center>
+                  尚无论文解读，快来发表你的观点吧！
+                </center>
+                <br />
+                <br />
+              </Row>
             </template>
           </TabPane>
         </Tabs>

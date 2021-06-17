@@ -168,27 +168,6 @@
               </i-button>
             </ButtonGroup>
             <br />
-            <br />
-            <!--
-            <Form
-              ref="reportHandle"
-              :model="reportHandle"
-              :rules="ruleCustom"
-              :label-width="60"
-            >
-              <Form-item label="说明：" prop="explanation"
-                ><Input
-                  type="text"
-                  v-model="reportHandle.explanation"
-                  placeholder="请输入"
-              /></Form-item>
-            </Form>
-            -->
-            <!--
-            <i-button @click="deleteInterpretation" style="font-size: 14px">
-              删除
-            </i-button>
-            -->
           </template>
         </i-col>
       </Row>
@@ -397,6 +376,9 @@ export default {
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
           });
+        this.$router.push({
+          name: "manage_interpretation"
+        });
       }
     },
 
@@ -413,6 +395,9 @@ export default {
           .catch((error) => {
             this.$Modal.error(getErrModalOptions(error));
           });
+        this.$router.push({
+          name: "manage_interpretation"
+        });
       }
     },
 
@@ -443,6 +428,9 @@ export default {
         .catch((error) => {
           this.$Modal.error(getErrModalOptions(error));
         });
+      this.$router.push({
+        name: "home"
+      });
     },
 
     onLike: function () {
